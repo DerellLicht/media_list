@@ -43,7 +43,7 @@ endif
 #CFLAGS += -U__STRICT_ANSI__
 #***************************************************************
 
-CPPSRC=media_list.cpp zplay_audio.cpp
+CPPSRC=media_list.cpp zplay_audio.cpp ext_lookup.cpp file_fmts.cpp mp3.parser.cpp
 
 OBJS = $(CSRC:.c=.o) $(CPPSRC:.cpp=.o)
 
@@ -83,3 +83,8 @@ $(BIN): $(OBJS)
 	$(TOOLS)\g++ $(OBJS) $(LFLAGS) -o $(BIN) $(LIBS) 
 
 # DO NOT DELETE
+
+media_list.o: media_list.h
+ext_lookup.o: media_list.h file_fmts.h
+file_fmts.o: media_list.h file_fmts.h
+mp3.parser.o: media_list.h

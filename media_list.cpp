@@ -10,16 +10,7 @@
 #include <stdio.h>
 #include <stdlib.h>  //  PATH_MAX
 
-#ifndef PATH_MAX
-#define PATH_MAX  260
-#endif
-
-typedef  unsigned char  uchar ;
-typedef  unsigned int   uint ;
-typedef  unsigned long  ulong ;
-
-//  this definition was excluded by WINNT.H
-#define FILE_ATTRIBUTE_VOLID  0x00000008
+#include "media_list.h"
 
 WIN32_FIND_DATA fdata ; //  long-filename file struct
 
@@ -31,6 +22,7 @@ int _CRT_glob = 0 ;
 
 uint filecount = 0 ;
 
+double total_ptime = 0.0 ;
 //lint -esym(843, show_all)
 bool show_all = true ;
 
@@ -38,22 +30,48 @@ bool show_all = true ;
 //lint -esym(818, filespec, argv)  //could be declared as pointing to const
 //lint -e10  Expecting '}'
 
-union u64toul {
-   ULONGLONG i ;
-   ulong u[2] ;
-};
-
-//************************************************************
-struct ffdata {
-   uchar          attrib ;
-   FILETIME       ft ;
-   ULONGLONG      fsize ;
-   char           *filename ;
-   uchar          dirflag ;
-   struct ffdata  *next ;
-} ;
 ffdata *ftop  = NULL;
 ffdata *ftail = NULL;
+
+//  name of drive+path without filenames
+char base_path[PATH_MAX] ;
+unsigned base_len ;  //  length of base_path
+
+//*****************************************************************************
+// ULLONG_MAX = 18,446,744,073,709,551,615
+//*****************************************************************************
+char *convert_to_commas(ULONGLONG uli, char *outstr)
+{  //lint !e1066
+   int slen, inIdx, j ;
+   char *strptr ;
+   char temp_ull_str[MAX_ULL_COMMA_LEN+1] ;
+   static char local_ull_str[MAX_ULL_COMMA_LEN+1] ;
+   if (outstr == NULL) {
+       outstr = local_ull_str ;
+   }
+
+   // sprintf(temp_ull_str, "%"PRIu64"", uli);
+   // sprintf(temp_ull_str, "%llu", uli);
+   sprintf(temp_ull_str, "%I64u", uli);
+   // _ui64toa(uli, temp_ull_str, 10) ;
+   slen = strlen(temp_ull_str) ;
+   inIdx = --slen ;//  convert byte-count to string index 
+
+   //  put NULL at end of output string
+   strptr = outstr + MAX_ULL_COMMA_LEN ;
+   *strptr-- = 0 ;   //  make sure there's a NULL-terminator
+
+   for (j=0; j<slen; j++) {
+      *strptr-- = temp_ull_str[inIdx--] ;
+      if ((j+1) % 3 == 0)
+         *strptr-- = ',' ;
+   }
+   *strptr = temp_ull_str[inIdx] ;
+
+   //  copy string from tail-aligned to head-aligned
+   strcpy(outstr, strptr) ;
+   return outstr ;
+}
 
 //**********************************************************************************
 int read_files(char *filespec)
@@ -174,10 +192,21 @@ int main(int argc, char **argv)
    }
 
    if (file_spec[0] == 0) {
-      puts("Usage: readall <filespec>");
+      puts("Usage: media_list <filespec>");
       return -1;
    }
 
+   //  Extract base path from first filespec,
+   //  and strip off filename
+   strcpy(base_path, file_spec) ;
+   char *strptr = strrchr(base_path, '\\') ;
+   if (strptr != 0) {
+       strptr++ ;  //lint !e613  skip past backslash, to filename
+      *strptr = 0 ;  //  strip off filename
+   }
+   base_len = strlen(base_path) ;
+   // printf("base path: %s\n", base_path);
+   
    int result = read_files(file_spec);
    if (result < 0) {
       printf("filespec: %s, %s\n", file_spec, strerror(-result));
@@ -187,9 +216,22 @@ int main(int argc, char **argv)
       if (filecount > 0) {
          puts("");
          for (ffdata *ftemp = ftop; ftemp != NULL; ftemp = ftemp->next) {
-            printf("%s\n", ftemp->filename);
+            // printf("%s\n", ftemp->filename);
+            print_media_info(ftemp);
          }
 
+      }
+      
+      //  see if there is any special results to display
+      char mlstr[80] ;
+      if (total_ptime > 0x01) {
+         if (total_ptime < 60.0) {
+            sprintf(mlstr, "%.2f seconds     ", total_ptime) ;
+         } else {
+            total_ptime /= 60.0 ;
+            sprintf(mlstr, "%.2f minutes     ", total_ptime) ;
+         }
+         printf("total playing time: %s\n", mlstr) ;
       }
    }
    return 0;
