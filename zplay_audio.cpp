@@ -182,7 +182,7 @@ int get_zplay_info(char *fname, char *mlstr)
    
    int result = zplay_audio_file(fname);
    if (result != 0) {
-      sprintf(mlstr, "%s: Error %d\n", fname, result);
+      sprintf(mlstr, "Error %d", result);
    }
    else {
       uint play_msecs = pInfo.Length.hms.minute * 60 ;

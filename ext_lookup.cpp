@@ -45,6 +45,7 @@ static mm_lookup_t const mm_lookup[] = {
 { "ac3",  get_zplay_info },
 { "aac",  get_zplay_info },
 { "pcm",  get_zplay_info },
+{ "mp4",  get_zplay_info },
 { "", 0 }} ;
 
 static char const monthstr[12][4] = { "Jan", "Feb", "Mar", "Apr", "May", "Jun",
