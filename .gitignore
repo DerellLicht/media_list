@@ -3,3 +3,4 @@
 *.bak
 files/
 _lint.tmp
+*.zip

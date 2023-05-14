@@ -43,13 +43,9 @@ all: $(BIN)
 clean:
 	rm -f *.o ndir*.exe *~ *.zip
 
-source src:
-	rm -f *.zip
-	zip -D ndir32src.zip *.cpp *.h *.cpp readme.txt revisions.txt makefile
-   
 dist:
-	rm -f ndir.zip
-	zip ndir.zip ndir*.exe readme.txt revisions.txt   
+	rm -f media_list.zip
+	zip media_list.zip media_list.exe Readme.md libzplay.dll
 
 wc:
 	wc -l *.cpp
