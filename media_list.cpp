@@ -193,7 +193,7 @@ int main(int argc, char **argv)
    }
 
    if (file_spec[0] == 0) {
-      strcpy(file_spec, ".\\*");
+      strcpy(file_spec, ".");
    }
 
    result = qualify(file_spec) ;
