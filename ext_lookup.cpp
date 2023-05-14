@@ -45,7 +45,6 @@ static mm_lookup_t const mm_lookup[] = {
 { "ac3",  get_zplay_info },
 { "aac",  get_zplay_info },
 { "pcm",  get_zplay_info },
-{ "mp4",  get_zplay_info },
 { "", 0 }} ;
 
 static char const monthstr[12][4] = { "Jan", "Feb", "Mar", "Apr", "May", "Jun",
@@ -55,40 +54,28 @@ static char const monthstr[12][4] = { "Jan", "Feb", "Mar", "Apr", "May", "Jun",
 //************************************************************************
 int print_media_info(ffdata const * const fptr)
 {
-   char mlstr[30] ;
+   char mlstr[31] = "";
    int show_normal_info ;
    // uchar SHRattr = fptr->attrib & 7;
-   FILETIME lft;
-   FileTimeToLocalFileTime (&(fptr->ft), &lft);
-   // parse_time outdt;
-   // // outdt.dtime[0] = fptr->ftime ;
-   // // outdt.dtime[1] = fptr->fdate ;
-   // FileTimeToDosDateTime (&lft, &(outdt.dtime[1]), &(outdt.dtime[0]));
-   // int secs  = outdt.outdata.ft_tsec * 2;
-   // int mins  = outdt.outdata.ft_min;
-   // int hour  = outdt.outdata.ft_hour;
-   // int day   = outdt.outdata.ft_day;
-   // int month = outdt.outdata.ft_month;
-   // long year = 1980L + (long) outdt.outdata.ft_year;
-   SYSTEMTIME sdt ;
-   FileTimeToSystemTime(&lft, &sdt) ;
-   int secs  = sdt.wSecond ;
-   int mins  = sdt.wMinute ;
-   int hour  = sdt.wHour   ;
-   int day   = sdt.wDay    ;
-   int month = sdt.wMonth  ;
-   long year = sdt.wYear   ;
+   // FILETIME lft;
+   // FileTimeToLocalFileTime (&(fptr->ft), &lft);
+   // SYSTEMTIME sdt ;
+   // FileTimeToSystemTime(&lft, &sdt) ;
+   // int secs  = sdt.wSecond ;
+   // int mins  = sdt.wMinute ;
+   // int hour  = sdt.wHour   ;
+   // int day   = sdt.wDay    ;
+   // int month = sdt.wMonth  ;
+   // long year = sdt.wYear   ;
 
-
-   mlstr[0] = 0 ;
    show_normal_info = 1 ;
    //  display directory entry
    if (fptr->dirflag) {
-      printf ("%14s ", "");
-      //sprintf(tempstr, "%02d-%02d-%04lu ", month, day, year);
-      printf ("%3s %02d, %04lu ", monthstr[month - 1], day, year);
-      printf ("%02d:%02d:%02d ", hour, mins, secs);
-      printf ("[%s]", fptr->filename);
+      printf("%14s  ", "");
+      // printf("%3s %02d, %04lu ", monthstr[month - 1], day, year);
+      // printf("%02d:%02d:%02d ", hour, mins, secs);
+      printf("%30s", " ");
+      printf("[%s]\n", fptr->filename);
    }
 
    //  display file entry
@@ -111,21 +98,21 @@ int print_media_info(ffdata const * const fptr)
       }
 
       //  show file size
-      printf ("%14s ", convert_to_commas(fptr->fsize, NULL));
+      printf("%14s  ", convert_to_commas(fptr->fsize, NULL));
 
       //  process multimedia display
       if (!show_normal_info) {
-         printf ("%-30s", mlstr);
+         printf("%-30s", mlstr);
       } 
       //  display normal file listing
       else {
          printf("%30s", " ");
-         // printf ("%3s %02d, %04lu ", monthstr[month - 1], day, year);
-         // printf ("%02d:%02d:%02d ", hour, mins, secs);
+         // printf("%3s %02d, %04lu ", monthstr[month - 1], day, year);
+         // printf("%02d:%02d:%02d ", hour, mins, secs);
       }
 
       //  format filename as required
-      printf ("%s\n", fptr->filename);
+      printf("%s\n", fptr->filename);
    }
    return 0 ;
 }

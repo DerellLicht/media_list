@@ -219,7 +219,7 @@ int main(int argc, char **argv)
       printf("filespec: %s, %s\n", file_spec, strerror(-result));
    }
    else {
-      printf("filespec: %s, %u found\n", file_spec, filecount);
+      printf("filespec: %s\n", file_spec);
       if (filecount > 0) {
          puts("");
          for (ffdata *ftemp = ftop; ftemp != NULL; ftemp = ftemp->next) {
@@ -238,6 +238,7 @@ int main(int argc, char **argv)
             total_ptime /= 60.0 ;
             sprintf(mlstr, "%.2f minutes     ", total_ptime) ;
          }
+         puts("");
          printf("total playing time: %s\n", mlstr) ;
       }
    }
