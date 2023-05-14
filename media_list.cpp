@@ -11,6 +11,7 @@
 #include <stdlib.h>  //  PATH_MAX
 
 #include "media_list.h"
+#include "qualify.h"
 
 WIN32_FIND_DATA fdata ; //  long-filename file struct
 
@@ -184,7 +185,7 @@ char file_spec[PATH_MAX+1] = "" ;
 
 int main(int argc, char **argv)
 {
-   int idx ;
+   int idx, result ;
    for (idx=1; idx<argc; idx++) {
       char *p = argv[idx] ;
       strncpy(file_spec, p, PATH_MAX);
@@ -192,10 +193,16 @@ int main(int argc, char **argv)
    }
 
    if (file_spec[0] == 0) {
-      puts("Usage: media_list <filespec>");
-      return -1;
+      strcpy(file_spec, ".\\*");
    }
 
+   result = qualify(file_spec) ;
+   if (result == QUAL_INV_DRIVE) {
+      printf("%s: %d\n", file_spec, result);
+      return 1 ;
+   }
+   // printf("file spec: %s\n", file_spec);
+   
    //  Extract base path from first filespec,
    //  and strip off filename
    strcpy(base_path, file_spec) ;
@@ -207,7 +214,7 @@ int main(int argc, char **argv)
    base_len = strlen(base_path) ;
    // printf("base path: %s\n", base_path);
    
-   int result = read_files(file_spec);
+   result = read_files(file_spec);
    if (result < 0) {
       printf("filespec: %s, %s\n", file_spec, strerror(-result));
    }
