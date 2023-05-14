@@ -41,6 +41,10 @@ static mm_lookup_t const mm_lookup[] = {
 { "sid", get_sid_info },
 { "webp", get_webp_info },
 { "ogg", get_zplay_info },
+{ "flac", get_zplay_info },
+{ "ac3", get_zplay_info },
+{ "aac", get_zplay_info },
+{ "pcm", get_zplay_info },
 { "", 0 }} ;
 
 static char const monthstr[12][4] = { "Jan", "Feb", "Mar", "Apr", "May", "Jun",
@@ -110,11 +114,11 @@ int print_media_info(ffdata const * const fptr)
 
       //  process multimedia display
       if (!show_normal_info) {
-         printf ("%s", mlstr);
+         printf ("%-30s", mlstr);
       } 
       //  display normal file listing
       else {
-         printf("%28s", " ");
+         printf("%30s", " ");
          // printf ("%3s %02d, %04lu ", monthstr[month - 1], day, year);
          // printf ("%02d:%02d:%02d ", hour, mins, secs);
       }

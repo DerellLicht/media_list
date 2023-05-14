@@ -624,7 +624,7 @@ int get_mp3_info(char *fname, char *mlstr)
 
    result = read_mp3_file(fpath);
    if (result < 0) {
-      sprintf(mlstr, "%-28s", "cannot parse file") ;
+      sprintf(mlstr, "%-30s", "cannot parse file") ;
       return 0;
    }
 
@@ -643,21 +643,21 @@ int get_mp3_info(char *fname, char *mlstr)
    total_ptime += play_secs ; //  total play time of *all* measured files
    unsigned uplay_secs = (unsigned) play_secs ;
    unsigned uplay_mins = uplay_secs / 60 ;
-   uplay_secs = uplay_secs % 60 ;
+   // uplay_secs = uplay_secs % 60 ;
    double dplay_secs = play_secs - (double) (uplay_mins * 60.0) ;
    if (vbr) {
-      if (uplay_mins == 0) {
-         sprintf(mlstr, "var Kbps,                 %5.2f sec    ", dplay_secs) ;
+      if (uplay_mins <= 1) {
+         sprintf(mlstr, "var Kbps,       %5.2f secs    ", dplay_secs) ;
       }
       else {
-         sprintf(mlstr, "var Kbps, %3u:%02u minutes [%5.2f sec]   ", uplay_mins, uplay_secs, dplay_secs) ;
+         sprintf(mlstr, "var Kbps, %3u:%5.2f mins", uplay_mins, dplay_secs) ;
       }
    } else {
-      if (uplay_mins == 0) {
-         sprintf(mlstr, "%3u Kbps,                 %5.2f sec    ", bitrate, dplay_secs) ;
+      if (uplay_mins <= 1) {
+         sprintf(mlstr, "%3u Kbps,       %5.2f secs    ", bitrate, dplay_secs) ;
       } 
       else {
-         sprintf(mlstr, "%3u Kbps, %3u:%02u minutes [%5.2f sec]   ", bitrate, uplay_mins, uplay_secs, dplay_secs) ;
+         sprintf(mlstr, "%3u Kbps, %3u:%05.2f mins", bitrate, uplay_mins, dplay_secs) ;
       }
    }
    return 0;

@@ -36,11 +36,16 @@ static TStreamInfo pInfo;
 //***************************************************************************
 //  play mp3 (and other) file via zplay library
 //***************************************************************************
-int zplay_audio_file(char const * const mp3_file)
+int zplay_audio_file(char const * mp3_file)
 {
    if(mp3_file == NULL) {
       return 1 ;
    }
+#ifndef  STAND_ALONE
+   char fpath[260] ;
+   sprintf(fpath, "%s\\%s", base_path, mp3_file) ;
+   mp3_file = fpath ;
+#endif   
    // create class instance
    ZPlay *player = CreateZPlay();
 
@@ -180,12 +185,17 @@ int get_zplay_info(char *fname, char *mlstr)
       sprintf(mlstr, "%s: Error %d\n", fname, result);
    }
    else {
+      uint play_msecs = pInfo.Length.hms.minute * 60 ;
+      uint play_hsecs = pInfo.Length.hms.hour * 60 * 60 ;
+      uint play_secs  = pInfo.Length.hms.second + play_msecs + play_hsecs ;
+      total_ptime += play_secs ; //  total play time of *all* measured files
+   
       if (pInfo.Length.hms.hour > 0) {
          if (pInfo.Length.hms.second > 30) {
             pInfo.Length.hms.minute++ ;
          }
-         sprintf(tempstr, "%u Kbps %s, %03u:%02u hours", 
-            pInfo.Bitrate,
+         sprintf(tempstr, "%u Kbps %s, %3u:%02u hours", 
+            (unsigned) pInfo.Bitrate,
            (pInfo.VBR != 0) ? "VBR" : "CBR",
             pInfo.Length.hms.hour,
             pInfo.Length.hms.minute) ;
@@ -194,22 +204,22 @@ int get_zplay_info(char *fname, char *mlstr)
          if (pInfo.Length.hms.millisecond > 30) {
             pInfo.Length.hms.second++ ;
          }
-         sprintf(tempstr, "%u Kbps %s, %03u:%02u minutes", 
-            pInfo.Bitrate,
+         sprintf(tempstr, "%u Kbps %s, %3u:%02u mins", 
+            (unsigned) pInfo.Bitrate,
            (pInfo.VBR != 0) ? "VBR" : "CBR",
             pInfo.Length.hms.minute,
             pInfo.Length.hms.second) ;
       }
       else {
-         sprintf(tempstr, "%u Kbps %s, %03u:%02u seconds", 
-            pInfo.Bitrate,
+         sprintf(tempstr, "%u Kbps %s, %3u.%02u secs", 
+            (unsigned) pInfo.Bitrate,
            (pInfo.VBR != 0) ? "VBR" : "CBR",
             pInfo.Length.hms.second,
             pInfo.Length.hms.millisecond) ;
          
       }
       // sprintf(tempstr, "%4u x %4u x %u colors", cols, rows, (1U << bpp)) ;
-      sprintf(mlstr, "%-28s", tempstr) ;
+      sprintf(mlstr, "%-30s", tempstr) ;
    }
    return 0 ;
 }

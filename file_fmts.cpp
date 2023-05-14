@@ -18,6 +18,9 @@
 
 char tempstr[MAXLINE+1] ;
 
+static unsigned char dbuffer[256] ;
+static char fpath[260] ;
+
 //*********************************************************************
 static unsigned short get2bytes(unsigned char const * p)
 {
@@ -41,9 +44,6 @@ static unsigned get4bytes(unsigned char const * p)
 }
 
 //************************************************************************
-static unsigned char dbuffer[256] ;
-static char fpath[260] ;
-
 static int read_into_dbuffer(char *fname)
 {
    int hdl, rbytes ;
@@ -85,25 +85,25 @@ static int get_ico_cur_info(char *fname, char *mlstr, u8 decider)
 {
    int result = read_into_dbuffer(fname) ;
    if (result != 0) {
-      sprintf(mlstr, "%-28s", "unreadable GIF") ;
+      sprintf(mlstr, "%-30s", "unreadable GIF") ;
    } else {
       u16 *uptr = (u16 *) dbuffer ;
       if (*uptr != 0) {
          sprintf(tempstr, "offset 0 bad: 0x%04X", *uptr) ;
-         sprintf(mlstr, "%-28s", tempstr) ;
+         sprintf(mlstr, "%-30s", tempstr) ;
          return 0;
       }
       uptr++ ;
       if (*uptr != decider) {
          sprintf(tempstr, "offset 2 bad: 0x%04X", *uptr) ;
-         sprintf(mlstr, "%-28s", tempstr) ;
+         sprintf(mlstr, "%-30s", tempstr) ;
          return 0;
       }
       uptr++ ;
       u16 NumIcons = *uptr++ ;
       if (NumIcons == 0) {
          sprintf(tempstr, "No icons in file") ;
-         sprintf(mlstr, "%-28s", tempstr) ;
+         sprintf(mlstr, "%-30s", tempstr) ;
          return 0;
       }
       u16 idx ;
@@ -128,7 +128,7 @@ static int get_ico_cur_info(char *fname, char *mlstr, u8 decider)
                colors = 256 ;
             // printf("  %u: %u x %u, %u colors\n", idx, iptr->Width, iptr->Height, colors) ;
             sprintf(tempstr, "%4u x %4u x %u colors", iptr->Width, iptr->Height, colors) ;
-            sprintf(mlstr, "%-28s", tempstr) ;
+            sprintf(mlstr, "%-30s", tempstr) ;
          }
          iptr++ ;
       }
@@ -276,7 +276,7 @@ int get_jpeg_info(char *fname, char *mlstr)
    return 0 ;
 
 jpeg_unreadable:
-   sprintf(mlstr, "%-28s", "unreadable jpg ") ;
+   sprintf(mlstr, "%-30s", "unreadable jpg ") ;
    return 0 ;
 }
 
@@ -307,19 +307,19 @@ int get_wave_info(char *fname, char *mlstr)
    //  get file size
    result = stat(fpath, &st) ;
    if (result < 0) {
-      sprintf(mlstr, "%-28s", "cannot stat Wave file") ;
+      sprintf(mlstr, "%-30s", "cannot stat Wave file") ;
       return 0;
    }
    fsize = st.st_size ;
 
    result = read_into_dbuffer(fname) ;
    if (result != 0) {
-      sprintf(mlstr, "%-28s", "unreadable Wave") ;
+      sprintf(mlstr, "%-30s", "unreadable Wave") ;
    } 
       //  first, search for the "fmt" string
    else if (strncmp((char *)  dbuffer,    "RIFF", 4) != 0  ||
             strncmp((char *) &dbuffer[8], "WAVE", 4) != 0) {
-      sprintf(mlstr, "%-28s", "unknown wave format") ;
+      sprintf(mlstr, "%-30s", "unknown wave format") ;
    }
    else {
       hd = (char *) &dbuffer[12] ;
@@ -333,7 +333,7 @@ int get_wave_info(char *fname, char *mlstr)
          //  make sure we stop before search string overruns buffer
          if (++rbytes == (sizeof(dbuffer) - 4)) {
             // return EILSEQ;
-            sprintf(mlstr, "%-28s", "no fmt in Wave file") ;
+            sprintf(mlstr, "%-30s", "no fmt in Wave file") ;
             return 0;
          }
       }
@@ -418,12 +418,12 @@ int get_webp_info(char *fname, char *mlstr)
    sprintf(fpath, "%s\\%s", base_path, fname) ;
    int result = read_into_dbuffer(fname) ;
    if (result != 0) {
-      sprintf(mlstr, "%-28s", "unreadable WebP") ;
+      sprintf(mlstr, "%-30s", "unreadable WebP") ;
    } 
       //  first, search for the "fmt" string
    else if (strncmp((char *)  dbuffer,    "RIFF", 4) != 0  ||
             strncmp((char *) &dbuffer[8], "WEBP", 4) != 0) {
-      sprintf(mlstr, "%-28s", "unknown webp format") ;
+      sprintf(mlstr, "%-30s", "unknown webp format") ;
    }
    else {
       ul2uc_t uconv ;
@@ -540,9 +540,9 @@ int get_sid_info(char *fname, char *mlstr)
 
    int result = read_into_dbuffer(fname) ;
    if (result != 0) {
-      sprintf(mlstr, "%-28s", "unreadable SID") ;
+      sprintf(mlstr, "%-30s", "unreadable SID") ;
    } else if (strnicmp((char *) dbuffer, "msid", 4) != 0) {
-      sprintf(mlstr, "%-28s", "unknown SID format") ;
+      sprintf(mlstr, "%-30s", "unknown SID format") ;
    } else {
       sid_info = (sid_info_p) &dbuffer[0] ;
       cols = swap32(sid_info->width) ;
@@ -550,7 +550,7 @@ int get_sid_info(char *fname, char *mlstr)
       bpp  = sid_info->color_clue1 * 8 ;
 
       sprintf(tempstr, "%4u x %4u x %u bpp", cols, rows, bpp) ;
-      sprintf(mlstr, "%-28s", tempstr) ;
+      sprintf(mlstr, "%-30s", tempstr) ;
    }
    return 0 ;
 }
@@ -580,10 +580,10 @@ int get_gif_info(char *fname, char *mlstr)
 
    result = read_into_dbuffer(fname) ;
    if (result != 0) {
-      sprintf(mlstr, "%-28s", "unreadable GIF") ;
+      sprintf(mlstr, "%-30s", "unreadable GIF") ;
    } else if (strnicmp((char *) dbuffer, "gif87a", 6) != 0   &&
               strnicmp((char *) dbuffer, "gif89a", 6) != 0) {
-      sprintf(mlstr, "%-28s", "unknown GIF format") ;
+      sprintf(mlstr, "%-30s", "unknown GIF format") ;
    } else {
       gif_info = (gif_info_p) &dbuffer[6] ;  //  look past the label
       cols = gif_info->width ;
@@ -591,7 +591,7 @@ int get_gif_info(char *fname, char *mlstr)
       bpp  = gif_info->bpp + 1 ;
 
       sprintf(tempstr, "%4u x %4u x %u colors", cols, rows, (1U << bpp)) ;
-      sprintf(mlstr, "%-28s", tempstr) ;
+      sprintf(mlstr, "%-30s", tempstr) ;
    }
    return 0 ;
 }
@@ -606,7 +606,7 @@ int get_bmp_info(char *fname, char *mlstr)
 
    result = read_into_dbuffer(fname) ;
    if (result != 0) {
-      sprintf(mlstr, "%-28s", "unreadable BMP") ;
+      sprintf(mlstr, "%-30s", "unreadable BMP") ;
    } else {
       //  see what we got
       // bmfh = (BITMAPFILEHEADER *) dbuffer ;
@@ -620,7 +620,7 @@ int get_bmp_info(char *fname, char *mlstr)
          sprintf(mlstr, "%4u x %4u x %2u bpp        ", cols, rows, bpp) ;
       } else {
          sprintf(tempstr, "%4u x %4u x %u colors", cols, rows, (1U << bpp)) ;
-         sprintf(mlstr, "%-28s", tempstr) ;
+         sprintf(mlstr, "%-30s", tempstr) ;
       }
    }
    return 0 ;
@@ -654,7 +654,7 @@ int get_png_info(char *fname, char *mlstr)
 
    result = read_into_dbuffer(fname) ;
    if (result != 0) {
-      sprintf(mlstr, "%-28s", "unreadable PNG") ;
+      sprintf(mlstr, "%-30s", "unreadable PNG") ;
    } else {
       //  scan along for the IHDR string
       p = dbuffer ;
@@ -670,7 +670,7 @@ int get_png_info(char *fname, char *mlstr)
          }
       }
       if (p == 0) {
-         sprintf(mlstr, "%-28s", "no IHDR in PNG") ;
+         sprintf(mlstr, "%-30s", "no IHDR in PNG") ;
          return 0;
       }
       
@@ -685,7 +685,7 @@ int get_png_info(char *fname, char *mlstr)
       } else {
          sprintf(tempstr, "%4u x %4u, [%u, %u]",  
             cols, rows, colorType, bitDepth) ;
-         sprintf(mlstr, "%-28s", tempstr) ;
+         sprintf(mlstr, "%-30s", tempstr) ;
       }
    }
    return 0 ;
@@ -751,17 +751,17 @@ int get_avi_info(char *fname, char *mlstr)
       run_time /= 60.0 ;
       sprintf(tempstr, "%4u x %4u, %.2f mins", cols, rows, run_time) ;
    }
-   sprintf(mlstr, "%-28s", tempstr) ;
+   sprintf(mlstr, "%-30s", tempstr) ;
    return 0 ;
 
 avi_unreadable:
-   sprintf(mlstr, "%-28s", "unreadable avi ") ;
+   sprintf(mlstr, "%-30s", "unreadable avi ") ;
    return 0 ;
 avi_unknown:
-   sprintf(mlstr, "%-28s", "unknown avi format") ;
+   sprintf(mlstr, "%-30s", "unknown avi format") ;
    return 0 ;
 avi_no_avih:
-   sprintf(mlstr, "%-28s", "no hdrlavih header found") ;
+   sprintf(mlstr, "%-30s", "no hdrlavih header found") ;
    return 0 ;
 }
 
