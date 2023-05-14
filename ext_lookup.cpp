@@ -20,8 +20,6 @@
 #include "media_list.h"
 #include "file_fmts.h"
 
-extern int get_mp3_info(char *fname, char *mlstr);
-
 //************************************************************************
 //  lookup tables for special-extension display functions
 //************************************************************************
@@ -42,6 +40,7 @@ static mm_lookup_t const mm_lookup[] = {
 { "cur", get_cur_info },
 { "sid", get_sid_info },
 { "webp", get_webp_info },
+{ "ogg", get_zplay_info },
 { "", 0 }} ;
 
 static char const monthstr[12][4] = { "Jan", "Feb", "Mar", "Apr", "May", "Jun",

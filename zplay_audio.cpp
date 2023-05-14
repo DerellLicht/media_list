@@ -14,6 +14,14 @@
 // include libzplay header file
 #include <libzplay.h>
 
+#ifndef  STAND_ALONE
+#include "media_list.h"
+#include "file_fmts.h"
+#endif
+
+// use libZPlay namespace
+using namespace libZPlay;
+
 //lint -esym(534, libZPlay::ZPlay::SetEchoParam, SleepEx, libZPlay::ZPlay::Close)
 //lint -esym(526, CreateZPlay)  Symbol not defined
 //lint -e755   global macro not referenced
@@ -23,8 +31,7 @@
 //lint -e769   global enumeration constant not referenced
 //lint -e1716  Virtual member function not referenced
 
-// use libZPlay namespace
-using namespace libZPlay;
+static TStreamInfo pInfo;
 
 //***************************************************************************
 //  play mp3 (and other) file via zplay library
@@ -89,15 +96,15 @@ int zplay_audio_file(char const * const mp3_file)
    player->SetEchoParam(effect, 2);
       
    // get stream info
-   TStreamInfo pInfo;
    player->GetStreamInfo(&pInfo);
 
    // display stream info
 #ifdef  STAND_ALONE
-   printf("\r\n%s %i Hz %s, bitrate: %u  Channel: %i  Length: %02u:%02u:%02u:%02u\r\n\r\n",
+   printf("\r\n%s %i Hz %s [%d], bitrate: %u, Channels: %i, Length: %02u:%02u:%02u:%02u\r\n\r\n",
        pInfo.Description,
        pInfo.SamplingRate,
-       (pInfo.VBR) ? "VBR" : "CBR",
+      (pInfo.VBR != 0) ? "VBR" : "CBR",
+       pInfo.VBR,
        pInfo.Bitrate,
        pInfo.ChannelNumber,
        pInfo.Length.hms.hour,
@@ -151,6 +158,60 @@ int main(int argc, char **argv)
    }
 
    return 0;
+}
+
+#else
+//************************************************************************
+int get_zplay_info(char *fname, char *mlstr)
+{
+   // printf("\r\n%s %i Hz %s, bitrate: %u  Channel: %i  Length: %02u:%02u:%02u:%02u\r\n\r\n",
+   //     pInfo.Description,
+   //     pInfo.SamplingRate,
+   //    (pInfo.VBR != 0) ? "VBR" : "CBR",
+   //     pInfo.Bitrate,
+   //     pInfo.ChannelNumber,
+   //     pInfo.Length.hms.hour,
+   //     pInfo.Length.hms.minute,
+   //     pInfo.Length.hms.second,
+   //     pInfo.Length.hms.millisecond);
+   
+   int result = zplay_audio_file(fname);
+   if (result != 0) {
+      sprintf(mlstr, "%s: Error %d\n", fname, result);
+   }
+   else {
+      if (pInfo.Length.hms.hour > 0) {
+         if (pInfo.Length.hms.second > 30) {
+            pInfo.Length.hms.minute++ ;
+         }
+         sprintf(tempstr, "%u Kbps %s, %03u:%02u hours", 
+            pInfo.Bitrate,
+           (pInfo.VBR != 0) ? "VBR" : "CBR",
+            pInfo.Length.hms.hour,
+            pInfo.Length.hms.minute) ;
+      }
+      else if (pInfo.Length.hms.minute > 0) {
+         if (pInfo.Length.hms.millisecond > 30) {
+            pInfo.Length.hms.second++ ;
+         }
+         sprintf(tempstr, "%u Kbps %s, %03u:%02u minutes", 
+            pInfo.Bitrate,
+           (pInfo.VBR != 0) ? "VBR" : "CBR",
+            pInfo.Length.hms.minute,
+            pInfo.Length.hms.second) ;
+      }
+      else {
+         sprintf(tempstr, "%u Kbps %s, %03u:%02u seconds", 
+            pInfo.Bitrate,
+           (pInfo.VBR != 0) ? "VBR" : "CBR",
+            pInfo.Length.hms.second,
+            pInfo.Length.hms.millisecond) ;
+         
+      }
+      // sprintf(tempstr, "%4u x %4u x %u colors", cols, rows, (1U << bpp)) ;
+      sprintf(mlstr, "%-28s", tempstr) ;
+   }
+   return 0 ;
 }
 
 #endif

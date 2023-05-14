@@ -85,6 +85,7 @@ $(BIN): $(OBJS)
 # DO NOT DELETE
 
 media_list.o: media_list.h
+zplay_audio.o: media_list.h file_fmts.h
 ext_lookup.o: media_list.h file_fmts.h
 file_fmts.o: media_list.h file_fmts.h
 mp3.parser.o: media_list.h

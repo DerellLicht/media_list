@@ -1,8 +1,7 @@
-//*****************************************************************
-//  Copyright (c) 1998-2006 Daniel D. Miller                       
-//  file_fmts.cpp - file-format parsers for 
-//  multimedia (/mm) display.
-//*****************************************************************
+//*************************************************************************
+//  Copyright (c) 1998-2023 Daniel D. Miller                       
+//  file_fmts.cpp - file-format parsers for multimedia info display.
+//*************************************************************************
 
 // #undef __STRICT_ANSI__
 #include <windows.h>
@@ -17,7 +16,7 @@
 #include "media_list.h"
 #include "file_fmts.h"
 
-char tempstr[MAXLINE] ;
+char tempstr[MAXLINE+1] ;
 
 //*********************************************************************
 static unsigned short get2bytes(unsigned char const * p)
