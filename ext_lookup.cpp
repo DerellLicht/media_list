@@ -108,20 +108,6 @@ int print_media_info(ffdata const * const fptr)
 
       //  show file size
       printf ("%14s ", convert_to_commas(fptr->fsize, NULL));
-      // switch (n.size_display) {
-      // case 2:
-      //    // fsize.convert(fptr->fsize / 1000000) ;
-      //    printf ("%13sM ", convert_to_commas(fptr->fsize / 1000000, NULL));
-      //    break;
-      // case 1:
-      //    // fsize.convert(fptr->fsize / 1000) ;
-      //    printf ("%13sK ", convert_to_commas(fptr->fsize / 1000, NULL));
-      //    break;
-      // default:
-      //    // fsize.convert(fptr->fsize) ;
-      //    printf ("%14s ", convert_to_commas(fptr->fsize, NULL));
-      //    break;
-      // }
 
       //  process multimedia display
       if (!show_normal_info) {
