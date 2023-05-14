@@ -115,8 +115,9 @@ int print_media_info(ffdata const * const fptr)
       } 
       //  display normal file listing
       else {
-         printf ("%3s %02d, %04lu ", monthstr[month - 1], day, year);
-         printf ("%02d:%02d:%02d ", hour, mins, secs);
+         printf("%28s", " ");
+         // printf ("%3s %02d, %04lu ", monthstr[month - 1], day, year);
+         // printf ("%02d:%02d:%02d ", hour, mins, secs);
       }
 
       //  format filename as required
