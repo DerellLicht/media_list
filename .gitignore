@@ -4,3 +4,4 @@
 files/
 _lint.tmp
 *.zip
+*.out
