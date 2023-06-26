@@ -692,6 +692,10 @@ int get_png_info(char *fname, char *mlstr)
 }
 
 //************************************************************************
+//  NOTE: this code is no longer used; I am using the MediaInfo DLL
+//        to handle all video formats, including AVI.
+//        This code is retained here merely for reference.
+//************************************************************************
 typedef struct {
     DWORD  dwMicroSecPerFrame;
     DWORD  dwMaxBytesPerSec;
