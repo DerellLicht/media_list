@@ -34,7 +34,7 @@ static mm_lookup_t const mm_lookup[] = {
 { "wav",  get_wave_info },
 { "mp3",  get_mp3_info },
 { "bmp",  get_bmp_info },
-{ "avi",  get_avi_info },
+// { "avi",  get_avi_info },
 { "png",  get_png_info },
 { "ico",  get_ico_info },
 { "cur",  get_cur_info },
@@ -45,11 +45,20 @@ static mm_lookup_t const mm_lookup[] = {
 { "ac3",  get_zplay_info },
 { "aac",  get_zplay_info },
 { "pcm",  get_zplay_info },
+{ "mp4",  get_mi_info },
+{ "mkv",  get_mi_info },
+{ "avi",  get_mi_info },
+{ "mov",  get_mi_info },
+{ "mpg",  get_mi_info },
+{ "mpeg", get_mi_info },
+{ "wmv",  get_mi_info },
+{ "flv",  get_mi_info },
+{ "webm", get_mi_info },
 { "", 0 }} ;
 
-static char const monthstr[12][4] = { "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-   "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-};
+// static char const monthstr[12][4] = { "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+//    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+// };
 
 //************************************************************************
 int print_media_info(ffdata const * const fptr)

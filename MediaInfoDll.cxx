@@ -3,14 +3,10 @@
  *  Use of this source code is governed by a BSD-style license that can
  *  be found in the License.html file in the root of the source tree.
  */
-//  build:  g++ -Wall -O3 MediaInfoDll.cpp -o test.exe
- 
-#include <stdio.h>
-#include <errno.h>
-#include <io.h>   // _lseeki64
-#include <sys/stat.h>   // _open
-#include <fcntl.h>   // _open
+//  build:  g++ -Wall -O3 -DSTAND_ALONE MediaInfoDll.cxx -o test.exe
 
+// #define  STAND_ALONE 1
+ 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //
 // Example for MediaInfoLib
@@ -37,7 +33,23 @@ using namespace MediaInfoNameSpace;
     #endif //_UNICODE
 #endif //__MINGW32
 
+// #include <windows.h>
+#include <stdio.h>
+#include <errno.h>
+#include <io.h>   // _lseeki64
+#include <sys/stat.h>   // _open
+#include <fcntl.h>   // _open
+
+#ifndef  STAND_ALONE
+#include "media_list.h"
+#include "file_fmts.h"
+
+#else
+typedef  unsigned int  uint ;
+#endif
+
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#ifdef  STAND_ALONE
 static void cstrprn(String sbuff, bool end_newline)
 {
    const char *stemp = sbuff.c_str() ;
@@ -48,22 +60,53 @@ static void cstrprn(String sbuff, bool end_newline)
       printf("%s", stemp);
    }
 }
+#endif
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+static uint cstruint(String sbuff)
+{
+   // const char *stemp = sbuff.c_str() ;
+   return (uint) strtoul(sbuff.c_str(), NULL, 10);
+}
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-// int main (int argc, char **argv)
-int parse_media_file(char *inpname)
+#ifdef  STAND_ALONE
+static __int64 cstrull(String sbuff)
+{
+   // const char *stemp = sbuff.c_str() ;
+   return (__int64) strtoull(sbuff.c_str(), NULL, 10);
+}
+#endif
+/*
+String Get(stream_t StreamKind, size_t StreamNumber, size_t Parameter, info_t InfoKind = Info_Text)  
+{
+   MEDIAINFO_TEST_STRING; 
+   return MediaInfo_GetI(Handle, (MediaInfo_stream_C) StreamKind, StreamNumber, Parameter, 
+   (MediaInfo_info_C) InfoKind);
+};
+   
+String Get(stream_t StreamKind, size_t StreamNumber, const String &Parameter, 
+           info_t InfoKind = Info_Text, info_t SearchKind = Info_Name)  
+{
+   MEDIAINFO_TEST_STRING; 
+   return MediaInfo_Get(Handle, (MediaInfo_stream_C)StreamKind, StreamNumber, 
+      Parameter.c_str(), (MediaInfo_info_C) InfoKind, (MediaInfo_info_C) SearchKind);
+};
+*/
+
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+static int parse_media_file(char *inpname, char *mlstr)
 {
    MediaInfo MI;
 
-   //From: preparing an example file for reading
-   // FILE* F=fopen(inpname, "rb"); //You can use something else than a file
-   // if (F==0) {
-   //    printf("fopen failed: %u\n", errno);
-   //     return 1;
-   // }
+#ifndef  STAND_ALONE
+static char fpath[260] ;
+   sprintf(fpath, "%s\\%s", base_path, inpname) ;
+   int hdl = _open(fpath, _O_BINARY | _O_RDONLY) ;
+#else
    int hdl = _open(inpname, _O_BINARY | _O_RDONLY) ;
+#endif   
    if (hdl == -1) {
-      printf("%s: %s\n", inpname, strerror(NULL));
+      printf("[%d] %s: %s\n", hdl, inpname, strerror(NULL));
       return 1;
    }
 
@@ -72,10 +115,6 @@ int parse_media_file(char *inpname)
    size_t From_Buffer_Size; //The size of the read file buffer
 
    //From: retrieving file size
-   //  DDM Note: fseek/ftell won't work for files > 31 bits (2,147,483,647 bytes)
-   // fseek(F, 0, SEEK_END);
-   // long F_Size = ftell(F);
-   // fseek(F, 0, SEEK_SET);
    _lseeki64(hdl, 0, SEEK_END);
    __int64 F_Size = _telli64(hdl);
    _lseeki64(hdl, 0, SEEK_SET);
@@ -84,10 +123,14 @@ int parse_media_file(char *inpname)
 
    //Preparing to fill MediaInfo with a buffer
    if (F_Size == 0) {
+#ifdef  STAND_ALONE
       printf("ERROR: file too large (> 31 bits)\n");
+#endif      
       return 1 ;
    }
+#ifdef  STAND_ALONE
    printf("F_Size: %I64d\n", F_Size);
+#endif      
    MI.Open_Buffer_Init(F_Size, 0);
 
    //The parsing loop
@@ -112,43 +155,38 @@ int parse_media_file(char *inpname)
        }
    }
    while (From_Buffer_Size>0);
+   _close(hdl);
 
    //Finalizing
    MI.Open_Buffer_Finalize(); //This is the end of the stream, MediaInfo must finnish some work
 
+#ifdef  STAND_ALONE
    //Get() example
-   // To_Display=MI.Get(Stream_General, 0, __T("Format"));
-   // cstrprn(MI.Get(Stream_General, 0, __T("Format")), true);
-   // String sbuff ;
-
-   // To_Display += __T("\r\n\r\nInfo_Parameters\r\n");
-   // To_Display += MI.Option(__T("Info_Parameters"));
-   
-   //  To_Display += __T("\r\n\r\nInfo_Codecs\r\n");
-   //  To_Display += MI.Option(__T("Info_Codecs"));
-    
-    // sbuff += __T("Inform with Complete=false\n");
-    // cstrprn(sbuff);
-    cstrprn(__T("Inform with Complete=false"), true);
-    // stemp = sbuff.c_str() ;
-    // printf("%s", stemp);
+    puts("");
+    puts("Inform with Complete=false");
     MI.Option(__T("Complete"));
-    // To_Display += MI.Inform();
     cstrprn(MI.Inform(), true);
 
     // To_Display += __T("Inform with Complete=true\n");
-    cstrprn(__T("Inform with Complete=true"), true);
-    MI.Option(__T("Complete"), __T("1"));
-    // To_Display += MI.Inform();
-    cstrprn(MI.Inform(), true);
+    // puts("");
+    // puts("Inform with Complete=true");
+    // MI.Option(__T("Complete"), __T("1"));
+    // cstrprn(MI.Inform(), true);
 
-    cstrprn(__T("Custom Inform"), true);
+    puts("");
+    puts("Custom Inform");
     MI.Option(__T("Inform"), __T("General;Example : FileSize=%FileSize%"));
-    // To_Display += MI.Inform();
     cstrprn(MI.Inform(), true);
 
-    cstrprn(__T("Get with Stream=General and Parameter=\"FileSize\""), true);
-    cstrprn(MI.Get(Stream_General, 0, __T("FileSize"), Info_Text, Info_Name), true);
+    printf("Get with Stream=General and Parameter=\"FileSize\"\n");
+    __int64 file_size = cstrull(MI.Get(Stream_General, 0, __T("FileSize"), Info_Text, Info_Name));
+    printf("file size: %I64u bytes\n", file_size);
+#endif    
+    uint video_width = cstruint(MI.Get(Stream_Video, 0, __T("Width"), Info_Text, Info_Name));
+    uint video_height = cstruint(MI.Get(Stream_Video, 0, __T("Height"), Info_Text, Info_Name));
+    uint video_duration = cstruint(MI.Get(Stream_Video, 0, __T("Duration"), Info_Text, Info_Name));
+#ifdef  STAND_ALONE
+    printf("video size: %ux%u, %u msec\n", video_width, video_height, video_duration);
 
     cstrprn(__T("GetI with Stream=General and Parameter=46"), true);
     // To_Display += MI.Get(Stream_General, 0, 46, Info_Text);
@@ -157,7 +195,7 @@ int parse_media_file(char *inpname)
     cstrprn(__T("Count_Get with StreamKind=Stream_Audio"), true);
     String To_Display ;
     #ifdef __MINGW32__
-        Char* C1=new Char[33];
+        Char* C1 = new Char[33];
         _itot (MI.Count_Get(Stream_Audio), C1, 10);
         To_Display +=C1;
         delete[] C1;
@@ -173,16 +211,26 @@ int parse_media_file(char *inpname)
 
     cstrprn(__T("Get with Stream=Audio and Parameter=\"StreamCount\""), true);
     cstrprn(MI.Get(Stream_Audio, 0, __T("StreamCount"), Info_Text, Info_Name), true);
-
+    
     MI.Close();   //  ??
-    // #ifdef _UNICODE
-    //     std::wcout << To_Display;
-    // #else
-    //     std::cout  << To_Display;
-    // #endif
     return 0;
+#else
+   MI.Close();   //  ??
+   double run_time = (double) video_duration / 1000.0 ;
+   if (run_time < 60.0) {
+      sprintf(tempstr, "%4u x %4u, %6.2f secs", video_width, video_height, run_time) ;
+   } else {
+      run_time /= 60.0 ;
+      sprintf(tempstr, "%4u x %4u, %6.2f mins", video_width, video_height, run_time) ;
+   }
+   sprintf(mlstr, "%-30s", tempstr) ;
+    
+   return 0;
+#endif
+
 }
 
+#ifdef  STAND_ALONE
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 int main (int argc, char **argv)
 {
@@ -199,6 +247,14 @@ int main (int argc, char **argv)
    }
    
    printf("parsing: %s\n", infname);
-   parse_media_file(infname);
+   parse_media_file(infname, NULL);
    return 0 ;
 }
+
+#else
+int get_mi_info(char *fname, char *mlstr)
+{
+   return parse_media_file(fname, mlstr);
+}
+
+#endif

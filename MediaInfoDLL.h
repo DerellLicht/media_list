@@ -247,7 +247,7 @@ extern "C"
         #include <CoreFoundation/CFBundle.h>
     #endif
 
-    #include <dlfcn.h>
+//    #include <dlfcn.h>
     static void* MediaInfo_Module = NULL;
 #endif
     static size_t Module_Count = 0;

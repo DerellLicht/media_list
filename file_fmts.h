@@ -19,4 +19,5 @@ int get_cur_info(char *fname, char *mlstr);
 int get_sid_info(char *fname, char *mlstr);
 int get_webp_info(char *fname, char *mlstr);
 int get_zplay_info(char *fname, char *mlstr);
+int get_mi_info(char *fname, char *mlstr);
 

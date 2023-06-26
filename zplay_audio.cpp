@@ -167,6 +167,7 @@ int main(int argc, char **argv)
 
 #else
 //************************************************************************
+//lint -esym(818, fname)  // Pointer parameter could be declared as pointing to const
 int get_zplay_info(char *fname, char *mlstr)
 {
    // printf("\r\n%s %i Hz %s, bitrate: %u  Channel: %i  Length: %02u:%02u:%02u:%02u\r\n\r\n",
