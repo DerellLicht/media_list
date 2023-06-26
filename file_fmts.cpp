@@ -709,6 +709,7 @@ typedef struct {
     DWORD  dwLength;
 } MainAVIHeader;
 
+//lint -esym(759, get_avi_info)
 int get_avi_info(char *fname, char *mlstr)
 {
    int result ;
