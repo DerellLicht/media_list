@@ -30,23 +30,23 @@ typedef struct mm_lookup_s {
 
 static mm_lookup_t const mm_lookup[] = {
 //  image formats
-{ "jpg",  get_jpeg_info },
-{ "gif",  get_gif_info },
-{ "bmp",  get_bmp_info },
-{ "png",  get_png_info },
-{ "ico",  get_ico_info },
-{ "cur",  get_cur_info },
 // { "ani",  get_ani_info },
+{ "bmp",  get_bmp_info },
+{ "cur",  get_cur_info },
+{ "gif",  get_gif_info },
+{ "ico",  get_ico_info },
+{ "jpg",  get_jpeg_info },
+{ "png",  get_png_info },
 { "sid",  get_sid_info },
-//  audio formats
-{ "wav",  get_wave_info },
-{ "mp3",  get_mp3_info },
 { "webp", get_webp_info },
-{ "ogg",  get_zplay_info },
-{ "flac", get_zplay_info },
-{ "ac3",  get_zplay_info },
+//  audio formats
 { "aac",  get_zplay_info },
+{ "ac3",  get_zplay_info },
+{ "flac", get_zplay_info },
+{ "mp3",  get_mp3_info },
+{ "ogg",  get_zplay_info },
 { "pcm",  get_zplay_info },
+{ "wav",  get_wave_info },
 //  video formats
 { "mp4",  get_mi_info },
 { "mkv",  get_mi_info },
