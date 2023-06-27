@@ -2,7 +2,9 @@
 *.exe
 *.bak
 files/
-bsh_icons/
+audio/
+images/
+video/
 _lint.tmp
 *.zip
 *.out

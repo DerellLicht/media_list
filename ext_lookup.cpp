@@ -48,15 +48,15 @@ static mm_lookup_t const mm_lookup[] = {
 { "pcm",  get_zplay_info },
 { "wav",  get_wave_info },
 //  video formats
-{ "mp4",  get_mi_info },
-{ "mkv",  get_mi_info },
 { "avi",  get_mi_info },
-{ "mov",  get_mi_info },
-{ "mpg",  get_mi_info },
-{ "mpeg", get_mi_info },
-{ "wmv",  get_mi_info },
 { "flv",  get_mi_info },
+{ "mkv",  get_mi_info },
+{ "mov",  get_mi_info },
+{ "mp4",  get_mi_info },
+{ "mpeg", get_mi_info },
+{ "mpg",  get_mi_info },
 { "webm", get_mi_info },
+{ "wmv",  get_mi_info },
 { "", 0 }} ;
 
 // static char const monthstr[12][4] = { "Jan", "Feb", "Mar", "Apr", "May", "Jun",
