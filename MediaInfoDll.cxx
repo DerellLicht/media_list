@@ -3,9 +3,22 @@
  *  Use of this source code is governed by a BSD-style license that can
  *  be found in the License.html file in the root of the source tree.
  */
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//  DDM Notes:    
 //  https://mediaarea.net/en/MediaInfo/Download/Windows 
 //  I downloaded the 32bit version in .zip format
 //  build:  g++ -Wall -O3 -DSTAND_ALONE MediaInfoDll.cxx -o test.exe
+//  
+//  The reason for renaming this file from .cpp to .cxx is so
+//  I could specify different build rules for it.
+//  The main goal was to eliminate warning messages that I get from gcc,
+//  due to use of the -Weffc++ compiler flag, which implements additional
+//  warnings related to the book Effective C++ .
+//  This also allows me to skip this file when running Lint,
+//  which also flags many issues in the MediaInfoDLL package.
+//  The main goal, overall, is to avoid making modifications to that
+//  library, which I have no control over.
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 // #define  STAND_ALONE 1
  
