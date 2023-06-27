@@ -7,15 +7,15 @@ for any purpose that you wish, without contacting me further.
 This console (i.e., command line) utility will list useful data about various media files.  
 This replaces the /mm functionality in my ndir utility.
 
-# File formats supported:
+## File formats supported:
 
-- image formats
+- image formats  
 jpg, gif, bmp, png, ico, cur, sid
 
-- audio formats
+- audio formats  
 wav, mp3, webp, ogg, flac, ac3, aac, pcm
 
-- video formats
+- video formats  
 mp4, mkv, avi, mov, mpg, mpeg, wmv, flv, webm
 
 Download [executable](http://derelllicht.com/files/media_list.zip) here
