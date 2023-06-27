@@ -7,7 +7,7 @@ for any purpose that you wish, without contacting me further.
 This console (i.e., command line) utility will list useful data about various media files.  
 This replaces the /mm functionality in my ndir utility.
 
-## File formats supported:
+### File formats supported:
 
 - image formats  
 jpg, gif, bmp, png, ico, cur, sid
