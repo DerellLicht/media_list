@@ -37,7 +37,7 @@ static mm_lookup_t const mm_lookup[] = {
 { "png",  get_png_info },
 { "ico",  get_ico_info },
 { "cur",  get_cur_info },
-{ "ani",  get_ani_info },
+// { "ani",  get_ani_info },
 { "sid",  get_sid_info },
 //  audio formats
 { "mp3",  get_mp3_info },

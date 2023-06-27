@@ -96,35 +96,23 @@ typedef struct anih_header_s {
 } anih_header_t, *anih_header_p ;
 
 //**********************************************************************
-//  y1.ani
-// 00000:  52 49 46 46 18 7B 00 00 41 43 4F 4E 61 6E 69 68  | RIFF.{..ACONanih |
-// 00010:  24 00 00 00 24 00 00 00 0E 00 00 00 0E 00 00 00  | $...$........... |
-// 00020:  00 00 00 00 00 00 00 00 04 00 00 00 01 00 00 00  | ................ |
-// 00030:  0A 00 00 00 01 00 00 00 4C 49 53 54 D8 7A 00 00  | ........LIST?z.. |
-// 00040:  66 72 61 6D 69 63 6F 6E BE 08 00 00 00 00 02 00  | framicon?....... |
-// 00050:  01 00 20 20 00 00 00 00 00 00 A8 08 00 00 16 00  | ..  ......?..... |
-// 00060:  00 00 28 00 00 00 20 00 00 00 40 00 00 00 01 00  | ..(... ...@..... |
-// 00070:  08 00 00 00 00 00 80 04 00 00 00 00 00 00 00 00  | ......?......... |
-
-// strings files\256swobusy.ani | grep icon | wc -l
-// 13
-// 
-// strings files\Ecliptic.ani | grep icon | wc -l
-// 16
-// 
-// strings files\flames.ani | grep icon | wc -l
-// 7
-// 
-// strings files\scroll.ani | grep icon | wc -l
-// 7
-// 
-// strings files\y1.ani | grep icon | wc -l
-// 14
-// 
-// strings files\zorak.ani | grep icon | wc -l
-// 16
-
-//  LIST u32 count of length following LIST-count field
+//  DDM 06/27/23
+//  I've decided to abandon implementation of the ani handler,
+//  as it is a great deal of work with relatively little benefit.
+//  This code had gotten as far as locating the first ICON frame.
+//  
+//  I found the following comment on Daubnet:
+//  I haven't seen any implementation of ANI software on other systems 
+//  than MS-Windows95 and NT. But there is no reason why it can't be done, 
+//  although it is questionable, why someone would want to do that. 
+//  A full implementation would have to decode BMP, CUR and ICO structures. 
+//  It doesn't have to include a full-sized RIFF decoder, since the structure 
+//  of ANIs is fixed. See the RIFF, BMP, ICO and CUR page for additional information.          
+//**********************************************************************
+//lint -esym(438, list_len)
+//lint -esym(550, list_len)
+//lint -esym(751, anih_header_t)
+//lint -esym(759, get_ani_info)
 int get_ani_info(char *fname, char *mlstr)
 {
    uint *u32ptr ;
@@ -223,6 +211,9 @@ int get_ani_info(char *fname, char *mlstr)
             break ;
          }
       }
+      
+      //  we have found first ICON block
+      
    }
    return 0 ;
 }
