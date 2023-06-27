@@ -18,7 +18,8 @@
 
 char tempstr[MAXLINE+1] ;
 
-static unsigned char dbuffer[256] ;
+#define  DBUFFER_LEN    1024
+static unsigned char dbuffer[DBUFFER_LEN] ;
 static char fpath[260] ;
 
 //*********************************************************************
@@ -66,7 +67,6 @@ static int read_into_dbuffer(char *fname)
 //***************************************************************************
 //  buffers/functions for compiling size subtotals
 //***************************************************************************
-
 //**********************************************************************
 //lint -esym(751, icon_entry_t)  variable not referenced
 typedef struct icon_entry_s {
@@ -80,12 +80,159 @@ typedef struct icon_entry_s {
    u32 FileOffset ;  //  FilePos, where InfoHeader starts
 } icon_entry_t, *icon_entry_p ;
 
+//  NO docs mention the duplicate HeaderSize entry,
+//  but all .ani appear to have it
+typedef struct anih_header_s {
+   uint HeaderSize ;
+   uint HeaderSize2 ;
+   uint NumFrames ;
+   uint NumSteps ;
+   uint Width ;   //  always 0
+   uint Height ;  //  always 0
+   uint BitCount ;   //  number of bits/pixel ColorDepth = 2BitCount
+   uint NumPlanes ;  //  always 1
+   uint DisplayRate ;
+   uint Flags ;   //  bit0: T:frames are icon/cursor data, F:frames are raw data
+} anih_header_t, *anih_header_p ;
+
+//**********************************************************************
+//  y1.ani
+// 00000:  52 49 46 46 18 7B 00 00 41 43 4F 4E 61 6E 69 68  | RIFF.{..ACONanih |
+// 00010:  24 00 00 00 24 00 00 00 0E 00 00 00 0E 00 00 00  | $...$........... |
+// 00020:  00 00 00 00 00 00 00 00 04 00 00 00 01 00 00 00  | ................ |
+// 00030:  0A 00 00 00 01 00 00 00 4C 49 53 54 D8 7A 00 00  | ........LIST?z.. |
+// 00040:  66 72 61 6D 69 63 6F 6E BE 08 00 00 00 00 02 00  | framicon?....... |
+// 00050:  01 00 20 20 00 00 00 00 00 00 A8 08 00 00 16 00  | ..  ......?..... |
+// 00060:  00 00 28 00 00 00 20 00 00 00 40 00 00 00 01 00  | ..(... ...@..... |
+// 00070:  08 00 00 00 00 00 80 04 00 00 00 00 00 00 00 00  | ......?......... |
+
+// strings files\256swobusy.ani | grep icon | wc -l
+// 13
+// 
+// strings files\Ecliptic.ani | grep icon | wc -l
+// 16
+// 
+// strings files\flames.ani | grep icon | wc -l
+// 7
+// 
+// strings files\scroll.ani | grep icon | wc -l
+// 7
+// 
+// strings files\y1.ani | grep icon | wc -l
+// 14
+// 
+// strings files\zorak.ani | grep icon | wc -l
+// 16
+
+//  LIST u32 count of length following LIST-count field
+int get_ani_info(char *fname, char *mlstr)
+{
+   uint *u32ptr ;
+   uint data_len ;
+   int result = read_into_dbuffer(fname) ;
+   if (result != 0) {
+      sprintf(mlstr, "%-30s", "unreadable file") ;
+   } else {
+      u8 *uptr = (u8 *) dbuffer ;
+      if (_strnicmp((const char *)uptr, "RIFF", 4) != 0) {
+         sprintf(tempstr, "No RIFF") ;
+         sprintf(mlstr, "%-30s", tempstr) ;
+         return 0;
+      }
+      uptr+=4 ;   //  point to data length
+      // uint *u32ptr = (uint *) uptr ;
+      // uint data_len = *u32ptr ;
+      // sprintf(tempstr, "data len: %u", data_len) ;
+      // sprintf(mlstr, "%-30s", tempstr) ;
+      // return 0;
+      uptr+=4 ;
+      if (_strnicmp((const char *)uptr, "ACON", 4) != 0) {
+         sprintf(tempstr, "No ACON") ;
+         sprintf(mlstr, "%-30s", tempstr) ;
+         return 0;
+      }
+      uptr+=4 ;
+      //  we actually need to scan for 'anih', and it may not 
+      //  be on a u32 boundary, at least for Blue Sky Heart files.
+      //  limit search to DBUFFER_LEN, though...
+      uint ulen = (uint) uptr - (uint) &dbuffer[0] ;
+      while (LOOP_FOREVER) {
+         if (_strnicmp((const char *)uptr, "anih", 4) == 0) {
+            break ;
+         }
+         uptr++ ;
+         ulen++ ;
+         if (ulen >= DBUFFER_LEN) {
+            sprintf(tempstr, "No anih") ;
+            sprintf(mlstr, "%-30s", tempstr) ;
+            return 0;
+         }
+      }
+      uptr+=4 ;
+      anih_header_p anih_header = (anih_header_p) uptr;
+      
+      //  search for 'list', then for first 'icon' 
+      uptr += anih_header->HeaderSize + 4 ;
+      //   29,326  frm/stp: 13, 13, rate         256swobusy.ani
+      //   36,076  frm/stp: 16, 16, rate         Ecliptic.ani
+      //   15,790  frm/stp: 07, 07, LIST         Flames.ani
+      //   15,846  frm/stp: 07, 12, seq          Scroll.ani
+      //   31,512  frm/stp: 14, 14, LIST         y1.ani
+      //   12,552  frm/stp: 16, 23, seq          zorak.ani
+      // sprintf(tempstr, "frm/stp: %02u, %02u, %c%c%c%c", 
+      //    anih_header->NumFrames, anih_header->NumSteps,
+      //    *(uptr), *(uptr+1), *(uptr+2), *(uptr+3)) ;
+      // sprintf(mlstr, "%-30s", tempstr) ;
+      uint list_len = 0 ;
+      // uint max_len = 0 ;
+      while (LOOP_FOREVER) {
+         if (_strnicmp((const char *)uptr, "LIST", 4) == 0) {
+            uptr += 4 ;
+            u32ptr = (uint *) uptr ;
+            list_len = *u32ptr ;
+            uptr += 4 ;
+            // printf("LIST: %u ", list_len);
+         }
+         else if (_strnicmp((const char *)uptr, "rate", 4) == 0) {
+            uptr += 4 ;
+            u32ptr = (uint *) uptr ;
+            data_len = *u32ptr ;
+            uptr += data_len + 4 ;
+            // printf("rate: %u ", data_len);
+         }
+         else if (_strnicmp((const char *)uptr, "fram", 4) == 0) {
+            uptr += 4 ;
+         }
+         else if (_strnicmp((const char *)uptr, "seq ", 4) == 0) {
+            uptr += 4 ;
+            u32ptr = (uint *) uptr ;
+            data_len = *u32ptr ;
+            uptr += data_len + 4 ;
+            // printf("seq: %u ", data_len);
+         }
+         else if (_strnicmp((const char *)uptr, "icon", 4) == 0) {
+            sprintf(tempstr, "icon: break");
+            sprintf(mlstr, "%-30s", tempstr) ;
+            break ;
+         }
+         else {
+            sprintf(tempstr, "frm/stp: %02u, %02u, %c%c%c%c", 
+               anih_header->NumFrames, anih_header->NumSteps,
+               *(uptr), *(uptr+1), *(uptr+2), *(uptr+3)) ;
+            sprintf(mlstr, "%-30s", tempstr) ;
+            break ;
+         }
+      }
+   }
+   return 0 ;
+}
+
 //**********************************************************************
 static int get_ico_cur_info(char *fname, char *mlstr, u8 decider)
 {
    int result = read_into_dbuffer(fname) ;
    if (result != 0) {
-      sprintf(mlstr, "%-30s", "unreadable GIF") ;
+      sprintf(mlstr, "%-30s", "unreadable file") ;
    } else {
       u16 *uptr = (u16 *) dbuffer ;
       if (*uptr != 0) {
