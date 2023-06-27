@@ -32,7 +32,6 @@ static mm_lookup_t const mm_lookup[] = {
 //  image formats
 { "jpg",  get_jpeg_info },
 { "gif",  get_gif_info },
-{ "wav",  get_wave_info },
 { "bmp",  get_bmp_info },
 { "png",  get_png_info },
 { "ico",  get_ico_info },
@@ -40,6 +39,7 @@ static mm_lookup_t const mm_lookup[] = {
 // { "ani",  get_ani_info },
 { "sid",  get_sid_info },
 //  audio formats
+{ "wav",  get_wave_info },
 { "mp3",  get_mp3_info },
 { "webp", get_webp_info },
 { "ogg",  get_zplay_info },
