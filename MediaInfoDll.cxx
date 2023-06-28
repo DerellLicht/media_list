@@ -174,18 +174,11 @@ static char fpath[1024] ;
    printf("file size: %I64u bytes\n", file_size);
 #endif    
 
-   uint video_duration = 0;
    uint audio_bitrate = 0 ;
-   // uint audio_brate_mode = 0 ;  //  0: CBR, 1: VBR, 2: UNKNOWN
    char audio_brate_mode[4] = "" ;
-   bool file_is_video = true ;
-   sptr = MediaInfo_Get(Handle, (MediaInfo_stream_C)Stream_Video, 0, "Width", 
-                       (MediaInfo_info_C) Info_Text, (MediaInfo_info_C) Info_Name);
-   uint video_width = (uint) atoi(sptr);
-   sptr = MediaInfo_Get(Handle, (MediaInfo_stream_C)Stream_Video, 0, "Height", 
-                       (MediaInfo_info_C) Info_Text, (MediaInfo_info_C) Info_Name);
-   uint video_height = (uint) atoi(sptr);
-   
+
+   //  first, get file duration from General section
+   uint video_duration = 0;
    sptr = MediaInfo_Get(Handle, (MediaInfo_stream_C)Stream_General, 0, "Duration", 
                        (MediaInfo_info_C) Info_Text, (MediaInfo_info_C) Info_Name);
    video_duration = (uint) atoi(sptr);
@@ -204,11 +197,19 @@ static char fpath[1024] ;
       }
    }
       
+   //  next, start with assuming video format, get width/height
+   bool file_is_video = true ;
+   sptr = MediaInfo_Get(Handle, (MediaInfo_stream_C)Stream_Video, 0, "Width", 
+                       (MediaInfo_info_C) Info_Text, (MediaInfo_info_C) Info_Name);
+   uint video_width = (uint) atoi(sptr);
+   sptr = MediaInfo_Get(Handle, (MediaInfo_stream_C)Stream_Video, 0, "Height", 
+                       (MediaInfo_info_C) Info_Text, (MediaInfo_info_C) Info_Name);
+   uint video_height = (uint) atoi(sptr);
+   
    if (video_width == 0  ||  video_height == 0) {
       file_is_video = false ;
-   }
-   
-   if (!file_is_video) {   //  pull audio params
+      
+      //  pull audio params
       sptr = MediaInfo_Get(Handle, (MediaInfo_stream_C)Stream_Audio, 0, "BitRate", 
                           (MediaInfo_info_C) Info_Text, (MediaInfo_info_C) Info_Name);
       audio_bitrate = (uint) atoi(sptr);
@@ -218,7 +219,7 @@ static char fpath[1024] ;
       strncpy(audio_brate_mode, sptr, 3);
       audio_brate_mode[3] = 0 ;
    }
-
+   
 #ifdef  STAND_ALONE
    if (file_is_video) {
       printf("video size: %ux%u, %u msec\n", video_width, video_height, video_duration);
@@ -228,10 +229,11 @@ static char fpath[1024] ;
          audio_bitrate, audio_brate_mode, video_duration);
    }
 
+   //  This one doesn't work; passing int to Get() is not valid.
+   //  Fortunately, not generally needed...
    // printf("GetI with Stream=General and Parameter=46\n");
    // // String To_Display = MI.Get(Stream_General, 0, 46, Info_Text);
    // // sptr = To_Display.c_str() ;
-   //  This one doesn't work; passing int to Get() is not valid
    // sptr = MediaInfo_Get(Handle, (MediaInfo_stream_C)Stream_General, 0, 46, 
    //                     (MediaInfo_info_C) Info_Text, (MediaInfo_info_C) Info_Name);
    // printf("Param 46: %s\n", sptr)                    ;
