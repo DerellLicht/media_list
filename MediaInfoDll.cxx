@@ -263,6 +263,8 @@ static char fpath[1024] ;
    return 0;
 #else
    MI.Close();   //  ??
+   MediaInfo_Close(Handle);
+   
    double run_time = (double) video_duration / 1000.0 ;
    if (file_is_video) {
       if (run_time < 60.0) {
@@ -288,9 +290,6 @@ static char fpath[1024] ;
    }
    sprintf(mlstr, "%-30s", tempstr) ;
    total_ptime += (double) (video_duration / 1000.0) ;
-    
-   MediaInfo_Close(Handle);
-   MI.Close();   //  ??
    return 0;
 #endif
 
