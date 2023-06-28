@@ -4,8 +4,8 @@
 //*****************************************************************
 
 int get_jpeg_info(char *fname, char *mlstr);
-int get_gif_info(char *fname, char *mlstr);
-int get_bmp_info(char *fname, char *mlstr);
+// int get_gif_info(char *fname, char *mlstr);
+// int get_bmp_info(char *fname, char *mlstr);
 int get_png_info(char *fname, char *mlstr);
 int get_ico_info(char *fname, char *mlstr);
 int get_cur_info(char *fname, char *mlstr);

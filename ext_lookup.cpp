@@ -34,11 +34,13 @@ static mm_lookup_t const mm_lookup[] = {
 // { "bmp",  get_bmp_info },
 { "bmp",  get_devil_info },
 { "cur",  get_cur_info },
-{ "gif",  get_devil_info },
 { "ico",  get_ico_info },
+// { "cur",  get_devil_info },   //  wrong color depth
+// { "ico",  get_devil_info },   //  wrong color depth
+{ "gif",  get_devil_info },
 { "jpg",  get_jpeg_info },
 { "png",  get_png_info },
-// { "png",  get_devil_info },   //  DevIL has wrong color depth info
+// { "png",  get_devil_info },   //  wrong color depth
 { "sid",  get_sid_info },
 { "tif",  get_devil_info },
 { "tif",  get_devil_info },

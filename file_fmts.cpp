@@ -697,6 +697,7 @@ int get_sid_info(char *fname, char *mlstr)
    return 0 ;
 }
 
+#ifndef  OBSOLETE_PROTOCOLS
 //************************************************************************
 //lint -esym(751, gif_info_t)  variable not referenced
 typedef struct gif_info_s {
@@ -737,7 +738,9 @@ int get_gif_info(char *fname, char *mlstr)
    }
    return 0 ;
 }
+#endif
 
+#ifndef  OBSOLETE_PROTOCOLS
 //************************************************************************
 int get_bmp_info(char *fname, char *mlstr)
 {
@@ -767,6 +770,7 @@ int get_bmp_info(char *fname, char *mlstr)
    }
    return 0 ;
 }
+#endif
 
 //************************************************************************
 // The IHDR chunk must appear FIRST. It contains:
@@ -823,12 +827,12 @@ int get_png_info(char *fname, char *mlstr)
       colorType = *p++ ;
 
       if (bitDepth == 8  &&  colorType == 2) {
-         sprintf(mlstr, "%4u x %4u x 24 bpp        ", cols, rows) ;
+         sprintf(tempstr, "%4u x %4u, 24 bpp", cols, rows) ;
       } else {
          sprintf(tempstr, "%4u x %4u, [%u, %u]",  
             cols, rows, colorType, bitDepth) ;
-         sprintf(mlstr, "%-30s", tempstr) ;
       }
+      sprintf(mlstr, "%-30s", tempstr) ;
    }
    return 0 ;
 }

@@ -24,10 +24,9 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H */
 
-#include <IL/il.h>
+#ifdef  STAND_ALONE
 #include <stdio.h>
 
-#ifdef  STAND_ALONE
 typedef  unsigned int  uint ;
 
 #else
@@ -36,6 +35,8 @@ typedef  unsigned int  uint ;
 
 static char tempstr[MAXLINE+1] ;
 #endif
+
+#include <IL/il.h>
 
 /* We would need ILU just because of iluErrorString() function... */
 /* So make it possible for both with and without ILU!  */
@@ -50,7 +51,6 @@ static char tempstr[MAXLINE+1] ;
 int use_DevIL_lib(char *fname, char *mlstr)
 {
    ILuint   ImgId;
-   ILenum   Error;
    char* image_name ;
    
 #ifdef  STAND_ALONE
@@ -96,13 +96,17 @@ static char fpath[1024] ;
       return 3;
    }
 
-   uint width  = ilGetInteger(IL_IMAGE_WIDTH);
-   uint height = ilGetInteger(IL_IMAGE_HEIGHT);
-   uint depth  = ilGetInteger(IL_IMAGE_DEPTH);
-   uint bpp    = ilGetInteger(IL_IMAGE_BITS_PER_PIXEL);
+   uint width  = (uint) ilGetInteger(IL_IMAGE_WIDTH);
+   uint height = (uint) ilGetInteger(IL_IMAGE_HEIGHT);
+   uint depth  = (uint) ilGetInteger(IL_IMAGE_DEPTH);
+   uint bpp    = (uint) ilGetInteger(IL_IMAGE_BITS_PER_PIXEL);
+   
 #ifdef  STAND_ALONE
+   //  trying to differentiate betwee IL_JFIF / IL_EXIF in jpg files
+   // uint itype  = (uint) ilGetInteger(IL_IMAGE_TYPE);
+   
    // Display the image's dimensions to the end user.
-   printf("Width: %u  Height: %u  Depth: %u  Bpp: %u\n", width, height, depth, bpp);
+   printf("isize: %ux%u, Depth: %u  Bpp: %u\n", width, height, depth, bpp);
 #else
    if (depth == 1) {
       sprintf(tempstr, "%4u x %4u, %u bpp", width, height, bpp);
@@ -116,9 +120,13 @@ static char fpath[1024] ;
    // We're done with the image, so let's delete it.
    ilDeleteImages(1, &ImgId);
 
+   {
+   ILenum   Error;
    // Simple Error detection loop that displays the Error to the user in a human-readable form.
-   while ((Error = ilGetError())) {
+   // I don't want to do this in an actual application, due to potential for infinite loop.
+   if ((Error = ilGetError()) != IL_NO_ERROR) {
       PRINT_ERROR_MACRO;
+   }
    }
 
    return 0 ;   
@@ -150,3 +158,4 @@ int get_devil_info(char *fname, char *mlstr)
 }
 
 #endif
+
