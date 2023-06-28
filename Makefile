@@ -53,7 +53,7 @@ clean:
 
 dist:
 	rm -f media_list.zip
-	zip media_list.zip media_list.exe Readme.md MediaInfo.dll
+	zip media_list.zip media_list.exe Readme.md MediaInfo.dll DevIL.dll
 
 wc:
 	wc -l *.cpp
