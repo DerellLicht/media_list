@@ -186,11 +186,13 @@ static char fpath[1024] ;
                        (MediaInfo_info_C) Info_Text, (MediaInfo_info_C) Info_Name);
    uint video_height = (uint) atoi(sptr);
    
-   if (video_width == 0  ||  video_height == 0) {
-      file_is_video = false ;
-   }
-   
-   if (file_is_video) {
+   sptr = MediaInfo_Get(Handle, (MediaInfo_stream_C)Stream_General, 0, "Duration", 
+                       (MediaInfo_info_C) Info_Text, (MediaInfo_info_C) Info_Name);
+   video_duration = (uint) atoi(sptr);
+   if (video_duration == 0) {
+#ifdef  STAND_ALONE
+      printf("General:Duration not available\n");
+#endif      
       sptr = MediaInfo_Get(Handle, (MediaInfo_stream_C)Stream_Video, 0, "Duration", 
                           (MediaInfo_info_C) Info_Text, (MediaInfo_info_C) Info_Name);
       video_duration = (uint) atoi(sptr);
@@ -201,10 +203,12 @@ static char fpath[1024] ;
          video_duration = (uint) atoi(sptr);
       }
    }
-   else {   //  pull audio params
-      sptr = MediaInfo_Get(Handle, (MediaInfo_stream_C)Stream_Audio, 0, "Duration", 
-                          (MediaInfo_info_C) Info_Text, (MediaInfo_info_C) Info_Name);
-      video_duration = (uint) atoi(sptr);
+      
+   if (video_width == 0  ||  video_height == 0) {
+      file_is_video = false ;
+   }
+   
+   if (!file_is_video) {   //  pull audio params
       sptr = MediaInfo_Get(Handle, (MediaInfo_stream_C)Stream_Audio, 0, "BitRate", 
                           (MediaInfo_info_C) Info_Text, (MediaInfo_info_C) Info_Name);
       audio_bitrate = (uint) atoi(sptr);
