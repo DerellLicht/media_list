@@ -13,10 +13,10 @@ This replaces the /mm functionality in my ndir utility.
 jpg, gif, bmp, png, ico, cur, sid, webp
 
 - audio formats  
-wav, mp3, ogg, flac, ac3, aac, pcm
+flac, ogg, mp3, wav, wma
 
 - video formats  
-mp4, mkv, avi, mov, mpg, mpeg, wmv, flv, webm
+avi, flv, mkv, mov, mp4, mpg, mpeg, wmv, webm
 
 Download [executable](http://derelllicht.com/files/media_list.zip) here
 
