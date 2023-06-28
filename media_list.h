@@ -42,6 +42,7 @@ union u64toul {
 extern char base_path[PATH_MAX] ;
 extern unsigned base_len ;  //  length of base_path
 
+//lint -esym(759, total_ptime)  header declaration for symbol could be moved from header to module
 extern double total_ptime ;
 
 //************************************************************

@@ -25,11 +25,11 @@ CFLAGS += -DUSE_64BIT
 CxxFLAGS += -DUSE_64BIT
 endif
 
-CPPSRC=media_list.cpp qualify.cpp zplay_audio.cpp ext_lookup.cpp file_fmts.cpp mp3.parser.cpp
+CPPSRC=media_list.cpp qualify.cpp ext_lookup.cpp file_fmts.cpp
 
 CXXSRC=MediaInfoDll.cxx
 
-LIBS=-lzplay -lshlwapi
+LIBS=-lshlwapi
 
 OBJS = $(CSRC:.c=.o) $(CPPSRC:.cpp=.o)  $(CXXSRC:.cxx=.o) 
 
@@ -53,7 +53,7 @@ clean:
 
 dist:
 	rm -f media_list.zip
-	zip media_list.zip media_list.exe Readme.md libzplay.dll MediaInfo.dll
+	zip media_list.zip media_list.exe Readme.md MediaInfo.dll
 
 wc:
 	wc -l *.cpp

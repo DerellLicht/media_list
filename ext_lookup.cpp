@@ -40,13 +40,10 @@ static mm_lookup_t const mm_lookup[] = {
 { "sid",  get_sid_info },
 { "webp", get_webp_info },
 //  audio formats
-{ "aac",  get_zplay_info },
-{ "ac3",  get_zplay_info },
-{ "flac", get_zplay_info },
-{ "mp3",  get_mp3_info },
-{ "ogg",  get_zplay_info },
-{ "pcm",  get_zplay_info },
-{ "wav",  get_wave_info },
+{ "flac", get_mi_info },
+{ "mp3",  get_mi_info },
+{ "ogg",  get_mi_info },
+{ "wav",  get_mi_info },
 //  video formats
 { "avi",  get_mi_info },
 { "flv",  get_mi_info },

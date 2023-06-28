@@ -15,6 +15,8 @@
 /*                                                                */
 /******************************************************************/
 
+//lint -esym(755, QUAL_NO_PATH)  global macro not referenced
+
 /***********************  qualify() constants  ************************/
 #define  QUAL_WILDCARDS    0x01
 #define  QUAL_NO_PATH      0x02

@@ -3,6 +3,8 @@
 //  file_fmts.cpp - file-format parsers for multimedia info display.
 //*************************************************************************
 
+#define  OBSOLETE_PROTOCOLS
+
 // #undef __STRICT_ANSI__
 #include <windows.h>
 #include <stdio.h>
@@ -16,7 +18,7 @@
 #include "media_list.h"
 #include "file_fmts.h"
 
-char tempstr[MAXLINE+1] ;
+static char tempstr[MAXLINE+1] ;
 
 #define  DBUFFER_LEN    1024
 static unsigned char dbuffer[DBUFFER_LEN] ;
@@ -419,6 +421,7 @@ jpeg_unreadable:
 }
 
 //*********************************************************
+#ifndef  OBSOLETE_PROTOCOLS
 typedef struct {
    long           chunkSize;
    short          wFormatTag;
@@ -492,6 +495,7 @@ int get_wave_info(char *fname, char *mlstr)
    }
    return 0;
 }
+#endif
 
 //*********************************************************
 // WebP file header:
@@ -829,6 +833,7 @@ int get_png_info(char *fname, char *mlstr)
    return 0 ;
 }
 
+#ifndef  OBSOLETE_PROTOCOLS
 //************************************************************************
 //  NOTE: this code is no longer used; I am using the MediaInfo DLL
 //        to handle all video formats, including AVI.
@@ -907,4 +912,4 @@ avi_no_avih:
    sprintf(mlstr, "%-30s", "no hdrlavih header found") ;
    return 0 ;
 }
-
+#endif

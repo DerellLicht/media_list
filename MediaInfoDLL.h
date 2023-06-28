@@ -305,7 +305,8 @@ extern "C"
     static MEDIAINFO_Inform MediaInfo_Inform;
     typedef const MediaInfo_Char* (__stdcall *MEDIAINFOLIST_Inform)(void*, size_t, size_t Reserved);
     static MEDIAINFOLIST_Inform MediaInfoList_Inform;
-    typedef const MediaInfo_Char* (__stdcall *MEDIAINFO_GetI)(void*, MediaInfo_stream_C StreamKind, size_t StreamNumber, size_t Parameter, MediaInfo_info_C KindOfInfo);
+    typedef const MediaInfo_Char* (__stdcall *MEDIAINFO_GetI)(void*, MediaInfo_stream_C StreamKind, 
+      size_t StreamNumber, size_t Parameter, MediaInfo_info_C KindOfInfo);
     static MEDIAINFO_GetI MediaInfo_GetI;
     typedef const MediaInfo_Char* (__stdcall *MEDIAINFOLIST_GetI)(void*, size_t, MediaInfo_stream_C StreamKind, size_t StreamNumber, size_t Parameter, MediaInfo_info_C KindOfInfo);
     static MEDIAINFOLIST_GetI MediaInfoList_GetI;
