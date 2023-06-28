@@ -31,14 +31,17 @@ typedef struct mm_lookup_s {
 static mm_lookup_t const mm_lookup[] = {
 //  image formats
 // { "ani",  get_ani_info },
-{ "bmp",  get_bmp_info },
+// { "bmp",  get_bmp_info },
+{ "bmp",  get_devil_info },
 { "cur",  get_cur_info },
-{ "gif",  get_gif_info },
+{ "gif",  get_devil_info },
 { "ico",  get_ico_info },
 { "jpg",  get_jpeg_info },
 { "png",  get_png_info },
+// { "png",  get_devil_info },   //  DevIL has wrong color depth info
 { "sid",  get_sid_info },
-// { "tif",  get_sid_info },
+{ "tif",  get_devil_info },
+{ "tif",  get_devil_info },
 { "webp", get_webp_info },
 //  audio formats
 { "flac", get_mi_info },

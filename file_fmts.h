@@ -13,4 +13,5 @@ int get_ani_info(char *fname, char *mlstr);
 int get_sid_info(char *fname, char *mlstr);
 int get_webp_info(char *fname, char *mlstr);
 int get_mi_info(char *fname, char *mlstr);
+int get_devil_info(char *fname, char *mlstr);
 
