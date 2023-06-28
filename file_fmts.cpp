@@ -328,6 +328,7 @@ int get_jpeg_info(char *fname, char *mlstr)
    // union ul2uc uconv ;
    // unsigned char utemp ;
    unsigned format = 0, rows, cols ;
+   u8 density_units = 0xFF ;
    // unsigned short *usptr ;
    unsigned foffset = 0 ;  //  offset into file
    unsigned seglen ;
@@ -371,6 +372,7 @@ int get_jpeg_info(char *fname, char *mlstr)
          lseek(hdl, foffset, SEEK_SET) ;  // seek new file position
 
          //  extract the data that I want
+         density_units = dbuffer[4] ;
          cols = get2bytes(&dbuffer[5]) ;
          rows = get2bytes(&dbuffer[7]) ;
          break;
@@ -410,8 +412,9 @@ int get_jpeg_info(char *fname, char *mlstr)
    if (rows == 0  &&  cols == 0) {
       sprintf(mlstr, "%4s - no SOF0 segment      ", jpeg_fmt[format]) ;
    } else {     //                             "
-      sprintf(mlstr, "%4u x %4u, %4s           ", 
-         rows, cols, jpeg_fmt[format]) ;
+//    sprintf(mlstr, "%4u x %4u, %4s           ", 
+      sprintf(mlstr, "%4u x %4u, %4s %u bpp      ", 
+         rows, cols, jpeg_fmt[format], density_units*3) ;
    }
    return 0 ;
 
