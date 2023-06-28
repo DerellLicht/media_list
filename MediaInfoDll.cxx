@@ -287,6 +287,7 @@ static char fpath[1024] ;
       }
    }
    sprintf(mlstr, "%-30s", tempstr) ;
+   total_ptime += (double) (video_duration / 1000.0) ;
     
    MediaInfo_Close(Handle);
    MI.Close();   //  ??

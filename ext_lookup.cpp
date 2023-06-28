@@ -38,6 +38,7 @@ static mm_lookup_t const mm_lookup[] = {
 { "jpg",  get_jpeg_info },
 { "png",  get_png_info },
 { "sid",  get_sid_info },
+// { "tif",  get_sid_info },
 { "webp", get_webp_info },
 //  audio formats
 { "flac", get_mi_info },
