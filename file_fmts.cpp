@@ -267,7 +267,7 @@ static int get_ico_cur_info(char *fname, char *mlstr, u8 decider)
             if (colors == 0)
                colors = 256 ;
             // printf("  %u: %u x %u, %u colors\n", idx, iptr->Width, iptr->Height, colors) ;
-            sprintf(tempstr, "%4u x %4u x %u colors", iptr->Width, iptr->Height, colors) ;
+            sprintf(tempstr, "%4u x %4u, %u colors", iptr->Width, iptr->Height, colors) ;
             sprintf(mlstr, "%-30s", tempstr) ;
          }
          iptr++ ;
@@ -409,8 +409,8 @@ int get_jpeg_info(char *fname, char *mlstr)
    //  build the return string
    if (rows == 0  &&  cols == 0) {
       sprintf(mlstr, "%4s - no SOF0 segment      ", jpeg_fmt[format]) ;
-   } else {
-      sprintf(mlstr, "%4u x %4u  %4s           ", 
+   } else {     //                             "
+      sprintf(mlstr, "%4u x %4u, %4s           ", 
          rows, cols, jpeg_fmt[format]) ;
    }
    return 0 ;
@@ -583,7 +583,7 @@ int get_webp_info(char *fname, char *mlstr)
          uconv.uc[0] = *hd++ ;
          uconv.uc[1] = *hd++ ;
          height = uconv.ul + 1;
-         sprintf(mlstr, "%4u x %4u  VP8X format    ", width, height) ;
+         sprintf(mlstr, "%4u x %4u, VP8X format    ", width, height) ;
          break ;
          
       case ' ':
@@ -599,7 +599,7 @@ int get_webp_info(char *fname, char *mlstr)
             uconv.uc[0] = *hd++ ;
             uconv.uc[1] = *hd++ ;
             height = uconv.ul ;
-            sprintf(mlstr, "%4u x %4u  VP8 format     ", width, height) ;
+            sprintf(mlstr, "%4u x %4u, VP8 format     ", width, height) ;
          } else {
             sprintf(mlstr, "VP8X bad sync code    ") ;
          }
@@ -691,7 +691,7 @@ int get_sid_info(char *fname, char *mlstr)
       rows = swap32(sid_info->height) ;
       bpp  = sid_info->color_clue1 * 8 ;
 
-      sprintf(tempstr, "%4u x %4u x %u bpp", cols, rows, bpp) ;
+      sprintf(tempstr, "%4u x %4u, %u bpp", cols, rows, bpp) ;
       sprintf(mlstr, "%-30s", tempstr) ;
    }
    return 0 ;
@@ -732,7 +732,7 @@ int get_gif_info(char *fname, char *mlstr)
       rows = gif_info->height ;
       bpp  = gif_info->bpp + 1 ;
 
-      sprintf(tempstr, "%4u x %4u x %u colors", cols, rows, (1U << bpp)) ;
+      sprintf(tempstr, "%4u x %4u, %u colors", cols, rows, (1U << bpp)) ;
       sprintf(mlstr, "%-30s", tempstr) ;
    }
    return 0 ;
@@ -759,9 +759,9 @@ int get_bmp_info(char *fname, char *mlstr)
       bpp  = bmi->bmiHeader.biBitCount ;
 
       if (bpp > 16) {
-         sprintf(mlstr, "%4u x %4u x %2u bpp        ", cols, rows, bpp) ;
+         sprintf(mlstr, "%4u x %4u, %2u bpp        ", cols, rows, bpp) ;
       } else {
-         sprintf(tempstr, "%4u x %4u x %u colors", cols, rows, (1U << bpp)) ;
+         sprintf(tempstr, "%4u x %4u, %u colors", cols, rows, (1U << bpp)) ;
          sprintf(mlstr, "%-30s", tempstr) ;
       }
    }
