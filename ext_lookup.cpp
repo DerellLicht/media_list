@@ -63,33 +63,16 @@ static mm_lookup_t const mm_lookup[] = {
 { "wmv",  get_mi_info },
 { "", 0 }} ;
 
-// static char const monthstr[12][4] = { "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-//    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-// };
-
 //************************************************************************
 int print_media_info(ffdata const * const fptr)
 {
    char mlstr[31] = "";
    int show_normal_info ;
-   // uchar SHRattr = fptr->attrib & 7;
-   // FILETIME lft;
-   // FileTimeToLocalFileTime (&(fptr->ft), &lft);
-   // SYSTEMTIME sdt ;
-   // FileTimeToSystemTime(&lft, &sdt) ;
-   // int secs  = sdt.wSecond ;
-   // int mins  = sdt.wMinute ;
-   // int hour  = sdt.wHour   ;
-   // int day   = sdt.wDay    ;
-   // int month = sdt.wMonth  ;
-   // long year = sdt.wYear   ;
 
    show_normal_info = 1 ;
    //  display directory entry
    if (fptr->dirflag) {
       printf("%14s  ", "");
-      // printf("%3s %02d, %04lu ", monthstr[month - 1], day, year);
-      // printf("%02d:%02d:%02d ", hour, mins, secs);
       printf("%30s", " ");
       printf("[%s]\n", fptr->filename);
    }
