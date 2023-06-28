@@ -44,6 +44,7 @@ static mm_lookup_t const mm_lookup[] = {
 { "mp3",  get_mi_info },
 { "ogg",  get_mi_info },
 { "wav",  get_mi_info },
+{ "wma",  get_mi_info },
 //  video formats
 { "avi",  get_mi_info },
 { "flv",  get_mi_info },

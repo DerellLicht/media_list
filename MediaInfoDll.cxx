@@ -60,12 +60,14 @@ using namespace MediaInfoNameSpace;
 
 #ifdef  STAND_ALONE
 typedef  unsigned int  uint ;
+
 #else
 #include "media_list.h"
 #include "file_fmts.h"
-#endif
 
 static char tempstr[MAXLINE+1] ;
+#endif
+
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 static int parse_media_file(char *inpname, char *mlstr)
 {
@@ -192,6 +194,12 @@ static char fpath[1024] ;
       sptr = MediaInfo_Get(Handle, (MediaInfo_stream_C)Stream_Video, 0, "Duration", 
                           (MediaInfo_info_C) Info_Text, (MediaInfo_info_C) Info_Name);
       video_duration = (uint) atoi(sptr);
+      //  If Video duration is not present, read audio duration.
+      if (video_duration == 0) {
+         sptr = MediaInfo_Get(Handle, (MediaInfo_stream_C)Stream_Audio, 0, "Duration", 
+                             (MediaInfo_info_C) Info_Text, (MediaInfo_info_C) Info_Name);
+         video_duration = (uint) atoi(sptr);
+      }
    }
    else {   //  pull audio params
       sptr = MediaInfo_Get(Handle, (MediaInfo_stream_C)Stream_Audio, 0, "Duration", 
