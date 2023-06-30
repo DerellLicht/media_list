@@ -700,7 +700,6 @@ int get_sid_info(char *fname, char *mlstr)
    return 0 ;
 }
 
-#ifndef  OBSOLETE_PROTOCOLS
 //************************************************************************
 //lint -esym(751, gif_info_t)  variable not referenced
 typedef struct gif_info_s {
@@ -741,9 +740,7 @@ int get_gif_info(char *fname, char *mlstr)
    }
    return 0 ;
 }
-#endif
 
-#ifndef  OBSOLETE_PROTOCOLS
 //************************************************************************
 int get_bmp_info(char *fname, char *mlstr)
 {
@@ -773,7 +770,6 @@ int get_bmp_info(char *fname, char *mlstr)
    }
    return 0 ;
 }
-#endif
 
 //************************************************************************
 // The IHDR chunk must appear FIRST. It contains:
@@ -786,6 +782,37 @@ int get_bmp_info(char *fname, char *mlstr)
 //    Filter method:      1 byte
 //    Interlace method:   1 byte
 //************************************************************************
+// Bit depth is a single-byte integer giving the number of bits per sample or 
+// per palette index (not per pixel). Valid values are 1, 2, 4, 8, and 16, 
+// although not all values are allowed for all color types.
+// 
+// Color type is a single-byte integer that describes the interpretation of the image data. 
+// Color type codes represent sums of the following values: 
+// 1 (palette used), 2 (color used), and 4 (alpha channel used). 
+// Valid values are 0, 2, 3, 4, and 6.
+// 
+// Bit depth restrictions for each color type are imposed to simplify implementations 
+// and to prohibit combinations that do not compress well. 
+// Decoders must support all legal combinations of bit depth and color type. 
+// The allowed combinations are:
+// 
+//    Color    Allowed    Interpretation
+//    Type    Bit Depths
+//    
+//    0       1,2,4,8,16  Each pixel is a grayscale sample.
+//    
+//    2       8,16        Each pixel is an R,G,B triple.
+//                        DDM: so bpp is 3 * bit depth
+//    
+//    3       1,2,4,8     Each pixel is a palette index; a PLTE chunk must appear.
+//    
+//    4       8,16        Each pixel is a grayscale sample,
+//                        followed by an alpha sample.
+//    
+//    6       8,16        Each pixel is an R,G,B triple, followed by an alpha sample.
+//                        DDM: so bpp is 4 * bit depth
+
+//************************************************************************
 // typedef struct png_info_s {
 //    unsigned width ;
 //    unsigned height ;
@@ -796,7 +823,7 @@ int get_bmp_info(char *fname, char *mlstr)
 int get_png_info(char *fname, char *mlstr)
 {
    int result ;
-   unsigned rows, cols ;
+   unsigned rows, cols, bpp ;
    unsigned char bitDepth, colorType ;
    unsigned char *p ;
    unsigned bcount = 0 ;
@@ -829,11 +856,23 @@ int get_png_info(char *fname, char *mlstr)
       bitDepth  = *p++ ;
       colorType = *p++ ;
 
-      if (bitDepth == 8  &&  colorType == 2) {
-         sprintf(tempstr, "%4u x %4u, 24 bpp", cols, rows) ;
-      } else {
-         sprintf(tempstr, "%4u x %4u, [%u, %u]",  
-            cols, rows, colorType, bitDepth) ;
+      switch (colorType) {
+      case 2:
+         bpp = 3 * bitDepth ;
+         sprintf(tempstr, "%4u x %4u, %u bpp", cols, rows, bpp) ;
+         break ;
+         
+      case 6:
+         bpp = 4 * bitDepth ;
+         sprintf(tempstr, "%4u x %4u, %u bpp", cols, rows, bpp) ;
+         break ;
+         
+      // case 0:
+      // case 3:
+      // case 4:
+      default:
+         sprintf(tempstr, "%4u x %4u, [%u, %u]", cols, rows, colorType, bitDepth) ;
+         break ;
       }
       sprintf(mlstr, "%-30s", tempstr) ;
    }

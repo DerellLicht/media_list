@@ -25,7 +25,7 @@ CFLAGS += -DUSE_64BIT
 CxxFLAGS += -DUSE_64BIT
 endif
 
-CPPSRC=media_list.cpp qualify.cpp ext_lookup.cpp file_fmts.cpp DevILlib.cpp
+CPPSRC=media_list.cpp qualify.cpp ext_lookup.cpp file_fmts.cpp
 
 CXXSRC=MediaInfoDll.cxx
 
@@ -53,7 +53,7 @@ clean:
 
 dist:
 	rm -f media_list.zip
-	zip media_list.zip media_list.exe Readme.md MediaInfo.dll DevIL.dll
+	zip media_list.zip media_list.exe Readme.md MediaInfo.dll
 
 wc:
 	wc -l *.cpp
