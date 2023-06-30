@@ -174,6 +174,8 @@ static char fpath[1024] ;
    printf("file size: %I64u bytes\n", file_size);
 #endif    
 
+   uint video_width = 0;
+   uint video_height = 0;
    uint audio_bitrate = 0 ;
    char audio_brate_mode[4] = "" ;
 
@@ -198,8 +200,6 @@ static char fpath[1024] ;
    }
 
    uint video_stream_count = MI.Count_Get(Stream_Video);
-   uint video_width = 0;
-   uint video_height = 0;
    // uint video_stream_count2 = MediaInfo_Count_Get(Handle, (MediaInfo_stream_C)Stream_Video);
    // printf("video stream count: %u\n", video_stream_count);
    bool file_is_video = (video_stream_count == 0 ) ? false : true ;
