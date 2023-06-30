@@ -196,19 +196,24 @@ static char fpath[1024] ;
          video_duration = (uint) atoi(sptr);
       }
    }
+
+   uint video_stream_count = MI.Count_Get(Stream_Video);
+   uint video_width = 0;
+   uint video_height = 0;
+   // uint video_stream_count2 = MediaInfo_Count_Get(Handle, (MediaInfo_stream_C)Stream_Video);
+   // printf("video stream count: %u\n", video_stream_count);
+   bool file_is_video = (video_stream_count == 0 ) ? false : true ;
       
-   //  next, start with assuming video format, get width/height
-   bool file_is_video = true ;
-   sptr = MediaInfo_Get(Handle, (MediaInfo_stream_C)Stream_Video, 0, "Width", 
-                       (MediaInfo_info_C) Info_Text, (MediaInfo_info_C) Info_Name);
-   uint video_width = (uint) atoi(sptr);
-   sptr = MediaInfo_Get(Handle, (MediaInfo_stream_C)Stream_Video, 0, "Height", 
-                       (MediaInfo_info_C) Info_Text, (MediaInfo_info_C) Info_Name);
-   uint video_height = (uint) atoi(sptr);
-   
-   if (video_width == 0  ||  video_height == 0) {
-      file_is_video = false ;
-      
+   if (file_is_video) {
+      //  get width/height
+      sptr = MediaInfo_Get(Handle, (MediaInfo_stream_C)Stream_Video, 0, "Width", 
+                          (MediaInfo_info_C) Info_Text, (MediaInfo_info_C) Info_Name);
+      video_width = (uint) atoi(sptr);
+      sptr = MediaInfo_Get(Handle, (MediaInfo_stream_C)Stream_Video, 0, "Height", 
+                          (MediaInfo_info_C) Info_Text, (MediaInfo_info_C) Info_Name);
+      video_height = (uint) atoi(sptr);
+   }
+   else {
       //  pull audio params
       sptr = MediaInfo_Get(Handle, (MediaInfo_stream_C)Stream_Audio, 0, "BitRate", 
                           (MediaInfo_info_C) Info_Text, (MediaInfo_info_C) Info_Name);
