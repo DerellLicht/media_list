@@ -700,6 +700,7 @@ int get_sid_info(char *fname, char *mlstr)
    return 0 ;
 }
 
+#ifndef  OBSOLETE_PROTOCOLS
 //************************************************************************
 //lint -esym(751, gif_info_t)  variable not referenced
 typedef struct gif_info_s {
@@ -770,6 +771,7 @@ int get_bmp_info(char *fname, char *mlstr)
    }
    return 0 ;
 }
+#endif
 
 //************************************************************************
 // The IHDR chunk must appear FIRST. It contains:
