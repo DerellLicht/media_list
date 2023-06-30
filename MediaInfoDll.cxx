@@ -180,22 +180,22 @@ static char fpath[1024] ;
    char audio_brate_mode[4] = "" ;
 
    //  first, get file duration from General section
-   uint video_duration = 0;
+   uint play_duration = 0;
    sptr = MediaInfo_Get(Handle, (MediaInfo_stream_C)Stream_General, 0, "Duration", 
                        (MediaInfo_info_C) Info_Text, (MediaInfo_info_C) Info_Name);
-   video_duration = (uint) atoi(sptr);
-   if (video_duration == 0) {
+   play_duration = (uint) atoi(sptr);
+   if (play_duration == 0) {
 #ifdef  STAND_ALONE
       printf("General:Duration not available\n");
 #endif      
       sptr = MediaInfo_Get(Handle, (MediaInfo_stream_C)Stream_Video, 0, "Duration", 
                           (MediaInfo_info_C) Info_Text, (MediaInfo_info_C) Info_Name);
-      video_duration = (uint) atoi(sptr);
+      play_duration = (uint) atoi(sptr);
       //  If Video duration is not present, read audio duration.
-      if (video_duration == 0) {
+      if (play_duration == 0) {
          sptr = MediaInfo_Get(Handle, (MediaInfo_stream_C)Stream_Audio, 0, "Duration", 
                              (MediaInfo_info_C) Info_Text, (MediaInfo_info_C) Info_Name);
-         video_duration = (uint) atoi(sptr);
+         play_duration = (uint) atoi(sptr);
       }
    }
 
@@ -220,18 +220,18 @@ static char fpath[1024] ;
       audio_bitrate = (uint) atoi(sptr);
       sptr = MediaInfo_Get(Handle, (MediaInfo_stream_C)Stream_Audio, 0, "BitRate_Mode", 
                           (MediaInfo_info_C) Info_Text, (MediaInfo_info_C) Info_Name);
-      // video_duration = (uint) atoi(sptr);
+      // play_duration = (uint) atoi(sptr);
       strncpy(audio_brate_mode, sptr, 3);
       audio_brate_mode[3] = 0 ;
    }
    
 #ifdef  STAND_ALONE
    if (file_is_video) {
-      printf("video size: %ux%u, %u msec\n", video_width, video_height, video_duration);
+      printf("video size: %ux%u, %u msec\n", video_width, video_height, play_duration);
    }
    else {
       printf("audio info: %u bps %s, %u msec\n", 
-         audio_bitrate, audio_brate_mode, video_duration);
+         audio_bitrate, audio_brate_mode, play_duration);
    }
 
    //  This one doesn't work; passing int to Get() is not valid.
@@ -276,7 +276,7 @@ static char fpath[1024] ;
    MI.Close();   //  ??
    MediaInfo_Close(Handle);
    
-   double run_time = (double) video_duration / 1000.0 ;
+   double run_time = (double) play_duration / 1000.0 ;
    if (file_is_video) {
       if (run_time < 60.0) {
          sprintf(tempstr, "%4u x %4u, %6.2f secs", video_width, video_height, run_time) ;
@@ -287,7 +287,7 @@ static char fpath[1024] ;
    }
    else {
       // printf("audio info: %u bps %s, %u msec\n", 
-      //    audio_bitrate, audio_brate_mode, video_duration);
+      //    audio_bitrate, audio_brate_mode, play_duration);
       uint kbps = audio_bitrate / 1000 ;
       if ((audio_bitrate % 1000) > 50) {
          kbps++ ;
@@ -300,7 +300,7 @@ static char fpath[1024] ;
       }
    }
    sprintf(mlstr, "%-30s", tempstr) ;
-   total_ptime += (double) (video_duration / 1000.0) ;
+   total_ptime += (double) (play_duration / 1000.0) ;
    return 0;
 #endif
 
