@@ -306,11 +306,6 @@ static int get_ico_cur_info(char *fname, char *mlstr, u8 decider)
       //  debug code
       PBITMAPINFOHEADER pmih = (PBITMAPINFOHEADER) &dbuffer[iptr->FileOffset] ;
       if (pmih->biSize == sizeof(BITMAPINFOHEADER)) {
-         // printf("BMP: %4ld x %4ld, Planes: %u, BitCount: %u\n", 
-         //    pmih->biWidth,
-         //    pmih->biHeight,   //  height is 2 * width, for bmp reasons
-         //    pmih->biPlanes,
-         //    pmih->biBitCount);
          sprintf(tempstr, "%4u x %4u, %u bpp", 
             (uint) pmih->biWidth,
             (uint) pmih->biWidth, //  don't use biHeight: height is 2 * width, for bmp reasons
@@ -320,8 +315,6 @@ static int get_ico_cur_info(char *fname, char *mlstr, u8 decider)
          sprintf(tempstr, "data is PNG");
       }
       sprintf(mlstr, "%-30s", tempstr) ;
-      // printf("offset: %08X (%u), sizeof pmih: 0x%02X\n",
-      //    iptr->FileOffset, iptr->FileOffset, sizeof(BITMAPINFOHEADER));
       // hex_dump(&dbuffer[iptr->FileOffset], 64);
    }
    return 0 ;
