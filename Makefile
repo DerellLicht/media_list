@@ -41,7 +41,7 @@ OBJS = $(CSRC:.c=.o) $(CPPSRC:.cpp=.o)  $(CXXSRC:.cxx=.o)
 	$(TOOLS)\g++ $(CxxFLAGS) $<
 
 ifeq ($(USE_64BIT),NO)
-BIN = media_list.exe
+BIN = MediaList.exe
 else
 BIN = media_list64.exe
 endif
@@ -49,11 +49,11 @@ endif
 all: $(BIN)
 
 clean:
-	rm -f *.o ndir*.exe *~ *.zip
+	rm -f *.o *.exe *~ *.zip
 
 dist:
 	rm -f media_list.zip
-	zip media_list.zip media_list.exe Readme.md MediaInfo.dll DevIL.dll
+	zip media_list.zip $(BIN) Readme.md MediaInfo.dll DevIL.dll
 
 wc:
 	wc -l *.cpp

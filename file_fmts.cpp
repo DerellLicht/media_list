@@ -736,7 +736,8 @@ int get_gif_info(char *fname, char *mlstr)
       rows = gif_info->height ;
       bpp  = gif_info->bpp + 1 ;
 
-      sprintf(tempstr, "%4u x %4u, %u colors", cols, rows, (1U << bpp)) ;
+      // sprintf(tempstr, "%4u x %4u, %u colors", cols, rows, (1U << bpp)) ;
+      sprintf(tempstr, "%4u x %4u, %u bpp", cols, rows, bpp) ;
       sprintf(mlstr, "%-30s", tempstr) ;
    }
    return 0 ;
