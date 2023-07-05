@@ -59,6 +59,10 @@ struct ffdata {
 #define FILE_ATTRIBUTE_VOLID  0x00000008
 
 //  media_list.cpp
+//  debug functions
+int hex_dump(u8 *bfr, int bytes, unsigned addr);
+int hex_dump(u8 *bfr, int bytes);
+
 // ULLONG_MAX = 18,446,744,073,709,551,615
 #define  MAX_ULL_COMMA_LEN  26
 char *convert_to_commas(ULONGLONG uli, char *outstr);
