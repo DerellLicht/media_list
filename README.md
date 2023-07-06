@@ -10,7 +10,7 @@ This replaces the /mm functionality in my ndir utility.
 ### File formats supported:
 
 - image formats  
-jpg, gif, bmp, png, ico, cur, sid, webp
+jpg, gif, bmp, png, ico, cur, ani, sid, webp
 
 - audio formats  
 flac, ogg, mp3, wav, wma
