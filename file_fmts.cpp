@@ -314,11 +314,8 @@ int get_ani_info(char *fname, char *mlstr)
          }
          //  ICON data is now available
          else if (_strnicmp((const char *)uptr, "icon", 4) == 0) {
-            uptr += 8 ;
+            uptr += 8 ; // skip ICON header
             get_ico_cur_ani_info(uptr, mlstr);
-            // hex_dump(uptr, 64);
-            // sprintf(tempstr, "icon: break");
-            // sprintf(mlstr, "%-30s", tempstr) ;
             break ;
          }
          else {
