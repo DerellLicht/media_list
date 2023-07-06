@@ -235,13 +235,7 @@ int get_ico_cur_info(char *fname, char *mlstr)
       return 0;
    }
    uptr++ ;
-   //  interesting note... occasionally I find an ico file with cur extension,
-   //  or vise versa... and it really does *not* matter at all!!!
-   // if (*uptr != decider) {
-   //    sprintf(tempstr, "offset 2 bad: 0x%04X", *uptr) ;
-   //    sprintf(mlstr, "%-30s", tempstr) ;
-   //    return 0;
-   // }
+   //  skip unused ico/cur decider; it is sometimes not correct anyway
    uptr++ ;
    u16 NumIcons = *uptr++ ;
    if (NumIcons == 0) {
@@ -249,20 +243,6 @@ int get_ico_cur_info(char *fname, char *mlstr)
       sprintf(mlstr, "%-30s", tempstr) ;
       return 0;
    }
-   
-   // u16 idx ;
-   // u32 MaxWidth = 0 ;
-   // // printf("[%s] number of icons in file = %u\n", fname, NumIcons) ;
-   // iptr = (icon_entry_p) (char *) uptr ;
-   // for (idx=0; idx<NumIcons; idx++) {
-   //    // u32 colors = (u32) iptr->ColorCount ;
-   //    // if (colors == 0)
-   //    //    colors = 256 ;
-   //    // printf("  %u: %u x %u, %u colors\n", idx, iptr->Width, iptr->Height, colors) ;
-   //    if (MaxWidth < iptr->Width) 
-   //        MaxWidth = iptr->Width ;
-   //    iptr++ ;
-   // }
    
    //  get image-specific data
    //  Thoughts on ico/cur with multiple icons included...
