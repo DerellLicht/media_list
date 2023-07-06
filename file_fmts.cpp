@@ -66,6 +66,131 @@ static int read_into_dbuffer(char *fname)
    return 0;
 }
 
+//**********************************************************************
+//lint -esym(751, icon_entry_t)  variable not referenced
+typedef struct icon_entry_s {
+   u8 Width ;        //  Cursor Width (16, 32 or 64)
+   u8 Height ;       //  Cursor Height (16, 32 or 64 , most commonly = Width)
+   u8 ColorCount ;   //  Number of Colors (2,16, 0=256)
+   u8 Reserved   ;   //  =0
+   u16 Planes    ;   //  =1
+   u16 BitCount  ;   //  bits per pixel (1, 4, 8)
+   u32 SizeInBytes ; //  Size of (InfoHeader + ANDbitmap + XORbitmap)
+   u32 FileOffset ;  //  FilePos, where InfoHeader starts
+} icon_entry_t, *icon_entry_p ;
+
+//**********************************************************************
+static int get_ico_cur_ani_info(u8 *bfr, char *mlstr)
+{
+   // hex_dump(bfr, 64);
+   u16 *uptr = (u16 *) bfr ;
+   if (*uptr != 0) {
+      sprintf(tempstr, "offset 0 bad: 0x%04X", *uptr) ;
+      sprintf(mlstr, "%-30s", tempstr) ;
+      return 0;
+   }
+   uptr++ ;
+   //  skip unused ico/cur decider; it is sometimes not correct anyway
+   uptr++ ;
+   u16 NumIcons = *uptr++ ;
+   if (NumIcons == 0) {
+      sprintf(tempstr, "No icons in file") ;
+      sprintf(mlstr, "%-30s", tempstr) ;
+      return 0;
+   }
+   
+   //  get image-specific data
+   //  Thoughts on ico/cur with multiple icons included...
+   //  as a first pass, I'll try just ignoring this number,
+   //  and looking at the first icon only...
+   //  Let's see how that works...
+   //  If we get icons that have different-sized images,
+   //  this will get complicated...
+   icon_entry_p iptr = (icon_entry_p) (char *) uptr ;
+   //  It turns out, that the ico/cur header data is unreliable.
+   //  I need to dive into the BMP/PNG data to get data for ico/cur
+   // if (iptr->ColorCount == 0) {
+   //       
+   //    if (decider == 1) {  //  ico
+   //       // colors = 1 << iptr->BitCount ;
+   //       // printf("ICO:  %u: %u x %u, Planes: %u, BitCount: %u, colors: %u\n", 
+   //       //    idx, iptr->Width, iptr->Height, iptr->Planes, iptr->BitCount, colors) ;
+   //       sprintf(tempstr, "%4u x %4u, %u bpp", iptr->Width, iptr->Height, iptr->BitCount) ;
+   //    }
+   //    else {   //  cur
+   //       // printf("CUR:  %u: %u x %u, colors: %u, dbytes: %u\n", 
+   //       //    idx, iptr->Width, iptr->Height, iptr->ColorCount, iptr->SizeInBytes) ;
+   //       sprintf(tempstr, "%4u x %4u, %u data bytes", iptr->Width, iptr->Height, iptr->SizeInBytes) ;
+   //    }
+   // }
+   // else {
+   //    sprintf(tempstr, "%4u x %4u, %u colors", iptr->Width, iptr->Height, iptr->ColorCount) ;
+   // }
+   // sprintf(mlstr, "%-30s", tempstr) ;
+
+   // Recall that if an image is stored in BMP format, it must exclude the opening 
+   // BITMAPFILEHEADER structure, whereas if it is stored in PNG format, 
+   // it must be stored in its entirety.
+   // 
+   //  Note that the height of the BMP image must be twice 
+   //  the height declared in the image directory. 
+   // printf("NumIcons: %u, FileOffset: %X\n", NumIcons, iptr->FileOffset);
+   
+   //  biCompression field
+// #define BI_RGB 0
+// #define BI_RLE8 1
+// #define BI_RLE4 2
+// #define BI_BITFIELDS 3
+// #define BI_JPEG 4
+// #define BI_PNG 5
+   
+   PBITMAPINFOHEADER pmih = (PBITMAPINFOHEADER) &bfr[iptr->FileOffset] ;
+   switch (pmih->biCompression) {
+   case BI_RGB:
+      if (pmih->biSize == sizeof(BITMAPINFOHEADER)) {
+         // printf("BitCount: %u, ClrUsed: %u\n", pmih->biBitCount, (uint) pmih->biClrUsed);
+         if (NumIcons > 1) {
+            sprintf(tempstr, "%4u x %4u, %u bpp [%u]", 
+               (uint) pmih->biWidth,
+               (uint) pmih->biWidth, //  don't use biHeight: height is 2 * width, for bmp reasons
+               pmih->biBitCount, NumIcons) ;
+         }
+         else {
+            sprintf(tempstr, "%4u x %4u, %u bpp", 
+               (uint) pmih->biWidth,
+               (uint) pmih->biWidth, //  don't use biHeight: height is 2 * width, for bmp reasons
+               pmih->biBitCount) ;
+         }
+      } 
+      else {
+         sprintf(tempstr, "Incorrect BMP size [%X]", (unsigned) pmih->biSize);
+      }
+      break ;
+      
+   case BI_PNG:
+      sprintf(tempstr, "data is PNG");
+      break ;
+      
+   default:
+      sprintf(tempstr, "Unsupp. comp. [%u]", (unsigned) pmih->biCompression);
+      break ;
+   }
+   sprintf(mlstr, "%-30s", tempstr) ;
+   // hex_dump(&dbuffer[iptr->FileOffset], 64);
+   return 0 ;
+}
+
+//***************************************************************************
+int get_ico_cur_info(char *fname, char *mlstr)
+{
+   int result = read_into_dbuffer(fname) ;
+   if (result != 0) {
+      sprintf(mlstr, "%-30s", "unreadable file") ;
+      return 0 ;
+   } 
+   return get_ico_cur_ani_info(&dbuffer[0], mlstr);
+}
+
 //***************************************************************************
 //  buffers/functions for compiling size subtotals
 //***************************************************************************
@@ -187,9 +312,13 @@ int get_ani_info(char *fname, char *mlstr)
             uptr += data_len + 4 ;
             // printf("seq: %u ", data_len);
          }
+         //  ICON data is now available
          else if (_strnicmp((const char *)uptr, "icon", 4) == 0) {
-            sprintf(tempstr, "icon: break");
-            sprintf(mlstr, "%-30s", tempstr) ;
+            uptr += 8 ;
+            get_ico_cur_ani_info(uptr, mlstr);
+            // hex_dump(uptr, 64);
+            // sprintf(tempstr, "icon: break");
+            // sprintf(mlstr, "%-30s", tempstr) ;
             break ;
          }
          else {
@@ -207,111 +336,6 @@ int get_ani_info(char *fname, char *mlstr)
    return 0 ;
 }
 
-//**********************************************************************
-//lint -esym(751, icon_entry_t)  variable not referenced
-typedef struct icon_entry_s {
-   u8 Width ;        //  Cursor Width (16, 32 or 64)
-   u8 Height ;       //  Cursor Height (16, 32 or 64 , most commonly = Width)
-   u8 ColorCount ;   //  Number of Colors (2,16, 0=256)
-   u8 Reserved   ;   //  =0
-   u16 Planes    ;   //  =1
-   u16 BitCount  ;   //  bits per pixel (1, 4, 8)
-   u32 SizeInBytes ; //  Size of (InfoHeader + ANDbitmap + XORbitmap)
-   u32 FileOffset ;  //  FilePos, where InfoHeader starts
-} icon_entry_t, *icon_entry_p ;
-
-//**********************************************************************
-int get_ico_cur_info(char *fname, char *mlstr)
-{
-   int result = read_into_dbuffer(fname) ;
-   if (result != 0) {
-      sprintf(mlstr, "%-30s", "unreadable file") ;
-      return 0 ;
-   } 
-   u16 *uptr = (u16 *) dbuffer ;
-   if (*uptr != 0) {
-      sprintf(tempstr, "offset 0 bad: 0x%04X", *uptr) ;
-      sprintf(mlstr, "%-30s", tempstr) ;
-      return 0;
-   }
-   uptr++ ;
-   //  skip unused ico/cur decider; it is sometimes not correct anyway
-   uptr++ ;
-   u16 NumIcons = *uptr++ ;
-   if (NumIcons == 0) {
-      sprintf(tempstr, "No icons in file") ;
-      sprintf(mlstr, "%-30s", tempstr) ;
-      return 0;
-   }
-   
-   //  get image-specific data
-   //  Thoughts on ico/cur with multiple icons included...
-   //  as a first pass, I'll try just ignoring this number,
-   //  and looking at the first icon only...
-   //  Let's see how that works...
-   //  If we get icons that have different-sized images,
-   //  this will get complicated...
-   icon_entry_p iptr = (icon_entry_p) (char *) uptr ;
-   //  It turns out, that the ico/cur header data is unreliable.
-   //  I need to dive into the BMP/PNG data to get data for ico/cur
-   // if (iptr->ColorCount == 0) {
-   //       
-   //    if (decider == 1) {  //  ico
-   //       // colors = 1 << iptr->BitCount ;
-   //       // printf("ICO:  %u: %u x %u, Planes: %u, BitCount: %u, colors: %u\n", 
-   //       //    idx, iptr->Width, iptr->Height, iptr->Planes, iptr->BitCount, colors) ;
-   //       sprintf(tempstr, "%4u x %4u, %u bpp", iptr->Width, iptr->Height, iptr->BitCount) ;
-   //    }
-   //    else {   //  cur
-   //       // printf("CUR:  %u: %u x %u, colors: %u, dbytes: %u\n", 
-   //       //    idx, iptr->Width, iptr->Height, iptr->ColorCount, iptr->SizeInBytes) ;
-   //       sprintf(tempstr, "%4u x %4u, %u data bytes", iptr->Width, iptr->Height, iptr->SizeInBytes) ;
-   //    }
-   // }
-   // else {
-   //    sprintf(tempstr, "%4u x %4u, %u colors", iptr->Width, iptr->Height, iptr->ColorCount) ;
-   // }
-   // sprintf(mlstr, "%-30s", tempstr) ;
-
-   // Recall that if an image is stored in BMP format, it must exclude the opening 
-   // BITMAPFILEHEADER structure, whereas if it is stored in PNG format, 
-   // it must be stored in its entirety.
-   // 
-   //  Note that the height of the BMP image must be twice 
-   //  the height declared in the image directory. 
-   PBITMAPINFOHEADER pmih = (PBITMAPINFOHEADER) &dbuffer[iptr->FileOffset] ;
-   if (pmih->biSize == sizeof(BITMAPINFOHEADER)) {
-      if (NumIcons > 1) {
-         sprintf(tempstr, "%4u x %4u, %u bpp [%u]", 
-            (uint) pmih->biWidth,
-            (uint) pmih->biWidth, //  don't use biHeight: height is 2 * width, for bmp reasons
-            pmih->biBitCount, NumIcons) ;
-      }
-      else {
-         sprintf(tempstr, "%4u x %4u, %u bpp", 
-            (uint) pmih->biWidth,
-            (uint) pmih->biWidth, //  don't use biHeight: height is 2 * width, for bmp reasons
-            pmih->biBitCount) ;
-      }
-   } 
-   else {
-      sprintf(tempstr, "data is PNG");
-   }
-   sprintf(mlstr, "%-30s", tempstr) ;
-   // hex_dump(&dbuffer[iptr->FileOffset], 64);
-   return 0 ;
-}
-
-// int get_ico_info(char *fname, char *mlstr)
-// {
-//    return get_ico_cur_info(fname, mlstr, 1) ;
-// }
-// 
-// int get_cur_info(char *fname, char *mlstr)
-// {
-//    return get_ico_cur_info(fname, mlstr, 2) ;
-// }
- 
 //************************************************************************
 //  A JFIF-standard file will start with the four bytes (hex) FF D8 FF E0,
 //  followed by two variable bytes (often hex 00 10), followed by 'JFIF'
@@ -773,7 +797,7 @@ int get_gif_info(char *fname, char *mlstr)
 int get_bmp_info(char *fname, char *mlstr)
 {
    int result ;
-   unsigned rows, cols, bpp ;
+   unsigned width, height, bpp ;
    // BITMAPFILEHEADER *bmfh ;
    BITMAPINFO *bmi ;
 
@@ -785,16 +809,16 @@ int get_bmp_info(char *fname, char *mlstr)
       // bmfh = (BITMAPFILEHEADER *) dbuffer ;
       bmi  = (BITMAPINFO *) &dbuffer[sizeof(BITMAPFILEHEADER)] ;
 
-      cols = (uint) bmi->bmiHeader.biWidth ;
-      rows = (uint) bmi->bmiHeader.biHeight ;
+      width = (uint) bmi->bmiHeader.biWidth ;
+      height = (uint) bmi->bmiHeader.biHeight ;
       bpp  = bmi->bmiHeader.biBitCount ;
 
       if (bpp > 16) {
-         sprintf(mlstr, "%4u x %4u, %2u bpp        ", cols, rows, bpp) ;
+         sprintf(tempstr, "%4u x %4u, %2u bpp", width, height, bpp) ;
       } else {
-         sprintf(tempstr, "%4u x %4u, %u colors", cols, rows, (1U << bpp)) ;
-         sprintf(mlstr, "%-30s", tempstr) ;
+         sprintf(tempstr, "%4u x %4u, %u colors", width, height, (1U << bpp)) ;
       }
+      sprintf(mlstr, "%-30s", tempstr) ;
    }
    return 0 ;
 }

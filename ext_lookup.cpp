@@ -30,7 +30,7 @@ typedef struct mm_lookup_s {
 
 static mm_lookup_t const mm_lookup[] = {
 //  image formats
-// { "ani",  get_ani_info },
+{ "ani",  get_ani_info },
 // { "bmp",  get_bmp_info },
 { "bmp",  get_devil_info },
 { "cur",  get_ico_cur_info },
