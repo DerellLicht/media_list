@@ -33,8 +33,8 @@ static mm_lookup_t const mm_lookup[] = {
 // { "ani",  get_ani_info },
 // { "bmp",  get_bmp_info },
 { "bmp",  get_devil_info },
-{ "cur",  get_cur_info },
-{ "ico",  get_ico_info },
+{ "cur",  get_ico_cur_info },
+{ "ico",  get_ico_cur_info },
 // { "cur",  get_devil_info },   //  wrong color depth
 // { "ico",  get_devil_info },   //  wrong color depth
 { "gif",  get_devil_info },
