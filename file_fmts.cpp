@@ -235,12 +235,13 @@ static int get_ico_cur_info(char *fname, char *mlstr, u8 decider)
       return 0;
    }
    uptr++ ;
-   // printf("itype: %04X\n", temp16);
-   if (*uptr != decider) {
-      sprintf(tempstr, "offset 2 bad: 0x%04X", *uptr) ;
-      sprintf(mlstr, "%-30s", tempstr) ;
-      return 0;
-   }
+   //  interesting note... occasionally I find an ico file with cur extension,
+   //  or vise versa... and it really does *not* matter at all!!!
+   // if (*uptr != decider) {
+   //    sprintf(tempstr, "offset 2 bad: 0x%04X", *uptr) ;
+   //    sprintf(mlstr, "%-30s", tempstr) ;
+   //    return 0;
+   // }
    uptr++ ;
    u16 NumIcons = *uptr++ ;
    if (NumIcons == 0) {
@@ -264,17 +265,19 @@ static int get_ico_cur_info(char *fname, char *mlstr, u8 decider)
    // }
    
    //  get image-specific data
-   //  NOTE: both .cur and .ico files theoretically support multiple images,
-   //        but virtually all existing files are single-image: NumIcons == 1.
-   //        For simplicity's sake, for now, I'm going to assume that NumIcons = 1;
-   //        if I ever see files with that not true, I'll display relevant data
-   //        and manage the file at that point.
+   //  Thoughts on ico/cur with multiple icons included...
+   //  as a first pass, I'll try just ignoring this number,
+   //  and looking at the first icon only...
+   //  Let's see how that works...
+   //  If we get icons that have different-sized images,
+   //  this will get complicated...
    icon_entry_p iptr ;
-   if (NumIcons > 1) {
-      sprintf(tempstr, "NumIcons: %u [not supported]", NumIcons);
-      sprintf(mlstr, "%-30s", tempstr) ;
-   }
-   else {
+   // if (NumIcons > 1) {
+   //    sprintf(tempstr, "NumIcons: %u [not supported]", NumIcons);
+   //    sprintf(mlstr, "%-30s", tempstr) ;
+   // }
+   // else 
+   {
       iptr = (icon_entry_p) (char *) uptr ;
       //  It turns out, that the ico/cur header data is unreliable.
       //  I need to dive into the BMP/PNG data to get data for ico/cur
@@ -306,10 +309,18 @@ static int get_ico_cur_info(char *fname, char *mlstr, u8 decider)
       //  debug code
       PBITMAPINFOHEADER pmih = (PBITMAPINFOHEADER) &dbuffer[iptr->FileOffset] ;
       if (pmih->biSize == sizeof(BITMAPINFOHEADER)) {
-         sprintf(tempstr, "%4u x %4u, %u bpp", 
-            (uint) pmih->biWidth,
-            (uint) pmih->biWidth, //  don't use biHeight: height is 2 * width, for bmp reasons
-            pmih->biBitCount) ;
+         if (NumIcons > 1) {
+            sprintf(tempstr, "%4u x %4u, %u bpp [%u]", 
+               (uint) pmih->biWidth,
+               (uint) pmih->biWidth, //  don't use biHeight: height is 2 * width, for bmp reasons
+               pmih->biBitCount, NumIcons) ;
+         }
+         else {
+            sprintf(tempstr, "%4u x %4u, %u bpp", 
+               (uint) pmih->biWidth,
+               (uint) pmih->biWidth, //  don't use biHeight: height is 2 * width, for bmp reasons
+               pmih->biBitCount) ;
+         }
       } 
       else {
          sprintf(tempstr, "data is PNG");
@@ -318,7 +329,7 @@ static int get_ico_cur_info(char *fname, char *mlstr, u8 decider)
       // hex_dump(&dbuffer[iptr->FileOffset], 64);
    }
    return 0 ;
-}
+}  //lint !e715  decider not referenced
 
 int get_ico_info(char *fname, char *mlstr)
 {
