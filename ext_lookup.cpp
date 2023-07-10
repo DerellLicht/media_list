@@ -45,7 +45,7 @@ static mm_lookup_t const mm_lookup[] = {
 // { "png",  get_devil_info },   //  much slower than my code!!
 { "sid",  get_sid_info },
 { "tif",  get_devil_info },
-{ "tiff",  get_devil_info },
+{ "tiff", get_devil_info },
 { "webp", get_webp_info },
 //  audio formats
 { "flac", get_mi_info },
