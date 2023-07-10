@@ -7,5 +7,5 @@ images/
 video/
 _lint.tmp
 *.zip
-*.out
+images.out
 display.formats.txt

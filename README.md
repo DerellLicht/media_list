@@ -18,5 +18,7 @@ flac, ogg, mp3, wav, wma
 - video formats  
 avi, flv, mkv, mov, mp4, mpg, mpeg, wmv, webm
 
+View [sample output](http://derelllicht.com/files/MediaList.out) here
+
 Download [executable](http://derelllicht.com/files/media_list.zip) here
 

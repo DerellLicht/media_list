@@ -1,0 +1,53 @@
+D:\SourceCode\Git\media_list Yes, Master?? > medialist images
+filespec: D:\SourceCode\Git\media_list\images\*
+
+        29,326    32 x   32, 8 bpp [13]       256swobusy.ani
+         2,238    32 x   32, 8 bpp            armour.ico
+        36,076    32 x   32, 8 bpp [16]       Ecliptic.ani
+        16,958    64 x   64, 32 bpp           Firefox_64x64.ico
+        15,790    32 x   32, 8 bpp [7]        Flames.ani
+        10,134    32 x   32, 4 bpp [6]        help256.ico
+         2,238    32 x   32, 8 bpp            MetalSword.cur
+           766    32 x   32, 4 bpp            M_cross.cur
+       302,180  1080 x  719, VP8 format       no friendly welcome.webp
+        15,846    32 x   32, 8 bpp [7]        Scroll.ani
+        40,234   564 x  368, 8 bpp            sis645.gif
+     7,816,688  2560 x 1600, 32 bpp           stained glass 2.png
+     1,546,054  1030 x  500, 24 bpp           sure.is.shiny.bmp
+         2,238    32 x   32, 8 bpp            S_move.cur
+    73,993,252  3584 x 1717, 48 bpp           vegetable market 1569.tif
+     2,208,573  1944 x 2592, Exif 24 bpp      Zion.tightrope1.jpg
+        12,552    32 x   32, 4 bpp [16]       zorak.ani
+       693,219  1600 x 1067, Exif 24 bpp      zzyzx.altar.jpg
+     2,677,124  2048 x 1536, Jfif 24 bpp      zzyzx.refuge.jpg
+     1,034,003  2048 x 1536, Exif 24 bpp      zzyzx.road2.jpg
+
+D:\SourceCode\Git\media_list Yes, Master?? > medialist audio
+filespec: D:\SourceCode\Git\media_list\audio\*
+
+    15,297,195   862 kbps VBR,   2.37 mins    02 Geralt of Rivia.flac
+     6,066,258   256 kbps CBR,   3.16 mins    6N The Sounds Of Silence.mp3
+    15,568,338   706 kbps CBR,   2.94 mins    California Towhee.wav
+        15,103    20 kbps CBR,   4.64 secs    desert1.wma
+        12,229    20 kbps CBR,   3.16 secs    journey default sound.wma
+     1,925,164   256 kbps CBR,   1.00 mins    Journey.mp3
+       967,967   128 kbps VBR,   1.00 mins    Journey.ogg
+       337,143   128 kbps VBR,  21.13 secs    One_Step_Forward.ogg
+
+total playing time: 10.95 minutes
+
+D:\SourceCode\Git\media_list Yes, Master?? > medialist video
+filespec: D:\SourceCode\Git\media_list\video\*
+
+     3,214,317   352 x  240,  12.68 secs      airforce.takeoff.mpg
+    13,749,092   320 x  236,  59.75 secs      Apple.1984.mov
+       821,874   320 x  240,   1.03 mins      B-17inBattle.wmv
+     3,089,266   320 x  240,   1.30 mins      b52.crash.flv
+     4,654,619   640 x  480,   1.01 mins      Cat Herders - EDS.mp4
+     2,129,772   320 x  240,  28.50 secs      challenger.lg.mov
+    29,562,051  1920 x 1080,  43.99 secs      fissure_20 activity.webm
+       664,820   320 x  240,   4.80 secs      flapping.plane.avi
+     9,958,240   640 x  480,   2.23 mins      Monolith.mkv
+       998,100  1280 x  720,   4.99 secs      skunk video.mp4
+
+total playing time: 8.15 minutes
