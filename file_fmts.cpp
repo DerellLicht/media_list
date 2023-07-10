@@ -80,7 +80,7 @@ typedef struct icon_entry_s {
 } icon_entry_t, *icon_entry_p ;
 
 //**********************************************************************
-static int get_ico_cur_ani_info(u8 *bfr, char *mlstr)
+static int get_ico_cur_ani_info(u8 *bfr, char *mlstr, uint NumAniFrames)
 {
    // hex_dump(bfr, 64);
    u16 *uptr = (u16 *) bfr ;
@@ -149,7 +149,13 @@ static int get_ico_cur_ani_info(u8 *bfr, char *mlstr)
    case BI_RGB:
       if (pmih->biSize == sizeof(BITMAPINFOHEADER)) {
          // printf("BitCount: %u, ClrUsed: %u\n", pmih->biBitCount, (uint) pmih->biClrUsed);
-         if (NumIcons > 1) {
+         if (NumAniFrames > 1) {
+            sprintf(tempstr, "%4u x %4u, %u bpp [%u]", 
+               (uint) pmih->biWidth,
+               (uint) pmih->biWidth, //  don't use biHeight: height is 2 * width, for bmp reasons
+               pmih->biBitCount, NumAniFrames) ;
+         }
+         else if (NumIcons > 1) {
             sprintf(tempstr, "%4u x %4u, %u bpp [%u]", 
                (uint) pmih->biWidth,
                (uint) pmih->biWidth, //  don't use biHeight: height is 2 * width, for bmp reasons
@@ -188,7 +194,7 @@ int get_ico_cur_info(char *fname, char *mlstr)
       sprintf(mlstr, "%-30s", "unreadable file") ;
       return 0 ;
    } 
-   return get_ico_cur_ani_info(&dbuffer[0], mlstr);
+   return get_ico_cur_ani_info(&dbuffer[0], mlstr, 0);
 }
 
 //***************************************************************************
@@ -315,7 +321,7 @@ int get_ani_info(char *fname, char *mlstr)
          //  ICON data is now available
          else if (_strnicmp((const char *)uptr, "icon", 4) == 0) {
             uptr += 8 ; // skip ICON header
-            get_ico_cur_ani_info(uptr, mlstr);
+            get_ico_cur_ani_info(uptr, mlstr, anih_header->NumFrames);
             break ;
          }
          else {
