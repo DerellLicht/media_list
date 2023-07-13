@@ -466,8 +466,8 @@ int get_jpeg_info(char *fname, char *mlstr)
       sprintf(mlstr, "%4s - no SOF0 segment      ", jpeg_fmt[format]) ;
    } else {     //                             "
 //    sprintf(mlstr, "%4u x %4u, %4s           ", 
-      sprintf(mlstr, "%4u x %4u, %4s %u bpp      ", 
-         rows, cols, jpeg_fmt[format], density_units*3) ;
+      sprintf(mlstr, "%4u x %4u, %u bpp %4s      ", 
+         rows, cols, density_units*3, jpeg_fmt[format]) ;
    }
    return 0 ;
 
