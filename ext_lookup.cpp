@@ -1,9 +1,8 @@
-//*****************************************************************
+//**********************************************************************************
 //  Copyright (c) 1998-2023 Daniel D. Miller                       
 //  ext_lookup - file extension lookup
-//  This file contains the extension-lookup and vectoring table
-//  with associated code.
-//*****************************************************************
+//  This file contains the extension-lookup and vectoring table and function.
+//**********************************************************************************
 
 #undef __STRICT_ANSI__
 #ifdef USE_64BIT
