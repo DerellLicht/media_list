@@ -199,21 +199,43 @@ static char fpath[1024] ;
       }
    }
 
-   uint video_stream_count = MI.Count_Get(Stream_Video);
-   // uint video_stream_count2 = MediaInfo_Count_Get(Handle, (MediaInfo_stream_C)Stream_Video);
-   // printf("video stream count: %u\n", video_stream_count);
-   bool file_is_video = (video_stream_count == 0 ) ? false : true ;
-      
-   if (file_is_video) {
-      //  get width/height
-      sptr = MediaInfo_Get(Handle, (MediaInfo_stream_C)Stream_Video, 0, "Width", 
-                          (MediaInfo_info_C) Info_Text, (MediaInfo_info_C) Info_Name);
-      video_width = (uint) atoi(sptr);
-      sptr = MediaInfo_Get(Handle, (MediaInfo_stream_C)Stream_Video, 0, "Height", 
-                          (MediaInfo_info_C) Info_Text, (MediaInfo_info_C) Info_Name);
-      video_height = (uint) atoi(sptr);
+   //  later note: it turns out that MediaInfo *does* support certain image formats.
+   //  In particular, AVIF is supported.
+   //  If none of the Duration fields are present, assume that file type is Image,
+   //  and proceed to read appropriate data.
+typedef enum {
+FILE_TYPE_IMAGE=0,
+FILE_TYPE_AUDIO,
+FILE_TYPE_VIDEO,
+FILE_TYPE_UNK
+} file_type_t ;
+  
+   file_type_t file_type = FILE_TYPE_UNK ;
+   if (play_duration == 0) {
+      file_type = FILE_TYPE_IMAGE ;
    }
    else {
+      uint video_stream_count = MI.Count_Get(Stream_Video);
+      // uint video_stream_count2 = MediaInfo_Count_Get(Handle, (MediaInfo_stream_C)Stream_Video);
+      // printf("video stream count: %u\n", video_stream_count);
+      file_type = (video_stream_count == 0 ) ? FILE_TYPE_AUDIO : FILE_TYPE_VIDEO ;
+   }
+
+   switch (file_type) {
+   case FILE_TYPE_IMAGE:
+      //  get width/height
+      sptr = MediaInfo_Get(Handle, (MediaInfo_stream_C)Stream_Image, 0, "Width", 
+                          (MediaInfo_info_C) Info_Text, (MediaInfo_info_C) Info_Name);
+      video_width = (uint) atoi(sptr);
+      sptr = MediaInfo_Get(Handle, (MediaInfo_stream_C)Stream_Image, 0, "Height", 
+                          (MediaInfo_info_C) Info_Text, (MediaInfo_info_C) Info_Name);
+      video_height = (uint) atoi(sptr);
+      sptr = MediaInfo_Get(Handle, (MediaInfo_stream_C)Stream_Image, 0, "BitDepth", 
+                          (MediaInfo_info_C) Info_Text, (MediaInfo_info_C) Info_Name);
+      audio_bitrate = (uint) atoi(sptr);
+      break;
+      
+   case FILE_TYPE_AUDIO:
       //  pull audio params
       sptr = MediaInfo_Get(Handle, (MediaInfo_stream_C)Stream_Audio, 0, "BitRate", 
                           (MediaInfo_info_C) Info_Text, (MediaInfo_info_C) Info_Name);
@@ -223,15 +245,40 @@ static char fpath[1024] ;
       // play_duration = (uint) atoi(sptr);
       strncpy(audio_brate_mode, sptr, 3);
       audio_brate_mode[3] = 0 ;
+      break;
+      
+   case FILE_TYPE_VIDEO:
+      //  get width/height
+      sptr = MediaInfo_Get(Handle, (MediaInfo_stream_C)Stream_Video, 0, "Width", 
+                          (MediaInfo_info_C) Info_Text, (MediaInfo_info_C) Info_Name);
+      video_width = (uint) atoi(sptr);
+      sptr = MediaInfo_Get(Handle, (MediaInfo_stream_C)Stream_Video, 0, "Height", 
+                          (MediaInfo_info_C) Info_Text, (MediaInfo_info_C) Info_Name);
+      video_height = (uint) atoi(sptr);
+      break;
+      
+   default:
+      break;
    }
    
 #ifdef  STAND_ALONE
-   if (file_is_video) {
-      printf("video size: %ux%u, %u msec\n", video_width, video_height, play_duration);
-   }
-   else {
+   switch (file_type) {
+   case FILE_TYPE_IMAGE:
+      printf("image size: %ux%u, %u bpp\n", video_width, video_height, audio_bitrate);
+      break;
+      
+   case FILE_TYPE_AUDIO:
       printf("audio info: %u bps %s, %u msec\n", 
          audio_bitrate, audio_brate_mode, play_duration);
+      break;
+      
+   case FILE_TYPE_VIDEO:
+      printf("video size: %ux%u, %u msec\n", video_width, video_height, play_duration);
+      break;
+      
+   default:
+      printf("Unknown media type\n");
+      break;
    }
 
    //  This one doesn't work; passing int to Get() is not valid.
@@ -276,19 +323,21 @@ static char fpath[1024] ;
    MI.Close();   //  ??
    MediaInfo_Close(Handle);
    
+   uint kbps ;
    double run_time = (double) play_duration / 1000.0 ;
-   if (file_is_video) {
-      if (run_time < 60.0) {
-         sprintf(tempstr, "%4u x %4u, %6.2f secs", video_width, video_height, run_time) ;
-      } else {
-         run_time /= 60.0 ;
-         sprintf(tempstr, "%4u x %4u, %6.2f mins", video_width, video_height, run_time) ;
-      }
-   }
-   else {
+   switch (file_type) {
+   case FILE_TYPE_IMAGE:
+      //  multiply by 3 assuming RGB scale.
+      //  if there was alpha channel, this would be 4 instead.
+      //  Note, though, that MediaInfo doesn't appear to have any way
+      //  to check for alpha channel
+      sprintf(tempstr, "%u x %u, %u bpp", video_width, video_height, 3*audio_bitrate);
+      break;
+      
+   case FILE_TYPE_AUDIO:
       // printf("audio info: %u bps %s, %u msec\n", 
       //    audio_bitrate, audio_brate_mode, play_duration);
-      uint kbps = audio_bitrate / 1000 ;
+      kbps = audio_bitrate / 1000 ;
       if ((audio_bitrate % 1000) > 50) {
          kbps++ ;
       }
@@ -298,7 +347,22 @@ static char fpath[1024] ;
          run_time /= 60.0 ;
          sprintf(tempstr, "%4u kbps %s, %6.2f mins", kbps, audio_brate_mode, run_time) ;
       }
+      break;
+      
+   case FILE_TYPE_VIDEO:
+      if (run_time < 60.0) {
+         sprintf(tempstr, "%4u x %4u, %6.2f secs", video_width, video_height, run_time) ;
+      } else {
+         run_time /= 60.0 ;
+         sprintf(tempstr, "%4u x %4u, %6.2f mins", video_width, video_height, run_time) ;
+      }
+      break;
+      
+   default:
+      printf("Unknown media type\n");
+      break;
    }
+   
    sprintf(mlstr, "%-30s", tempstr) ;
    total_ptime += (double) (play_duration / 1000.0) ;
    return 0;

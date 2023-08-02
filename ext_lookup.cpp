@@ -32,6 +32,7 @@ typedef struct mm_lookup_s {
 static mm_lookup_t const mm_lookup[] = {
 //  image formats
 { "ani",  get_ani_info },
+{ "avif", get_mi_info },
 { "bmp",  get_bmp_info },
 { "cur",  get_ico_cur_info },
 { "ico",  get_ico_cur_info },
@@ -45,8 +46,10 @@ static mm_lookup_t const mm_lookup[] = {
 // { "jpg",  get_devil_info },
 // { "png",  get_devil_info },   //  much slower than my code!!
 { "sid",  get_sid_info },
-{ "tif",  get_devil_info },
-{ "tiff", get_devil_info },
+// { "tif",  get_devil_info },
+// { "tiff", get_devil_info },
+{ "tif",  get_mi_info },
+{ "tiff", get_mi_info },
 { "webp", get_webp_info },
 //  audio formats
 { "flac", get_mi_info },

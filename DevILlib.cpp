@@ -17,6 +17,9 @@
 // build:  g++ -Wall -O3 -DSTAND_ALONE DevILlib.cpp -o devil.exe -lDevIL
 // build:  g++ -Wall -O3 -DSTAND_ALONE DevILlib.cpp -std=c++0x -o devil.exe -lDevIL
 //-----------------------------------------------------------------------------
+//  NOTE: effective from August 2023, the DevIL library is no longer used
+//  in this application... support for tiff/avif is provided by MediaInfo library.
+//-----------------------------------------------------------------------------
 
 #include <windows.h>
 

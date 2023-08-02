@@ -25,11 +25,11 @@ CFLAGS += -DUSE_64BIT
 CxxFLAGS += -DUSE_64BIT
 endif
 
-CPPSRC=media_list.cpp qualify.cpp ext_lookup.cpp file_fmts.cpp DevILlib.cpp
+CPPSRC=media_list.cpp qualify.cpp ext_lookup.cpp file_fmts.cpp
 
 CXXSRC=MediaInfoDll.cxx
 
-LIBS=-lshlwapi -lDevIL
+LIBS=-lshlwapi
 
 OBJS = $(CSRC:.c=.o) $(CPPSRC:.cpp=.o)  $(CXXSRC:.cxx=.o) 
 
@@ -53,7 +53,7 @@ clean:
 
 dist:
 	rm -f media_list.zip
-	zip media_list.zip $(BIN) Readme.md MediaInfo.dll DevIL.dll
+	zip media_list.zip $(BIN) Readme.md MediaInfo.dll
 
 wc:
 	wc -l *.cpp
@@ -73,5 +73,4 @@ media_list.o: media_list.h qualify.h
 qualify.o: qualify.h
 ext_lookup.o: media_list.h file_fmts.h
 file_fmts.o: media_list.h file_fmts.h
-DevILlib.o: media_list.h file_fmts.h
 MediaInfoDll.o: MediaInfoDLL.h media_list.h file_fmts.h
