@@ -1,6 +1,7 @@
 //*************************************************************************
 //  Copyright (c) 1998-2023 Daniel D. Miller                       
 //  file_fmts.cpp - file-format parsers for multimedia info display.
+//  This file contains all parsers which are not handled by MediaInfo.dll
 //*************************************************************************
 
 #define  OBSOLETE_PROTOCOLS
@@ -477,83 +478,6 @@ jpeg_unreadable:
 }
 
 //*********************************************************
-#ifndef  OBSOLETE_PROTOCOLS
-typedef struct {
-   long           chunkSize;
-   short          wFormatTag;
-   unsigned short wChannels;
-   unsigned long  dwSamplesPerSec;
-   unsigned long  dwAvgBytesPerSec;
-   unsigned short wBlockAlign;
-   unsigned short wBitsPerSample;
-   /* Note: there may be additional fields here, depending upon wFormatTag. */
-} FormatChunk;
-                
-int get_wave_info(char *fname, char *mlstr)
-{
-   int result, rbytes ;
-   FormatChunk *fcptr ;
-   struct stat st ;
-   off_t fsize ;
-   char *hd ;
-   unsigned srate ;
-   double ptime ;
-
-   sprintf(fpath, "%s\\%s", base_path, fname) ;
-
-   //  get file size
-   result = stat(fpath, &st) ;
-   if (result < 0) {
-      sprintf(mlstr, "%-30s", "cannot stat Wave file") ;
-      return 0;
-   }
-   fsize = st.st_size ;
-
-   result = read_into_dbuffer(fname) ;
-   if (result != 0) {
-      sprintf(mlstr, "%-30s", "unreadable Wave") ;
-   } 
-      //  first, search for the "fmt" string
-   else if (strncmp((char *)  dbuffer,    "RIFF", 4) != 0  ||
-            strncmp((char *) &dbuffer[8], "WAVE", 4) != 0) {
-      sprintf(mlstr, "%-30s", "unknown wave format") ;
-   }
-   else {
-      hd = (char *) &dbuffer[12] ;
-      rbytes = 0 ;
-      while (LOOP_FOREVER) {
-         if (strncmp(hd, "fmt ", 4) == 0) {
-            hd += 4 ;
-            break;
-         }
-         hd++ ;
-         //  make sure we stop before search string overruns buffer
-         if (++rbytes == (sizeof(dbuffer) - 4)) {
-            // return EILSEQ;
-            sprintf(mlstr, "%-30s", "no fmt in Wave file") ;
-            return 0;
-         }
-      }
-      fcptr = (FormatChunk *) hd ;
-      srate = fcptr->dwSamplesPerSec ;
-      ptime = (double) fsize / (double) fcptr->dwAvgBytesPerSec ;
-      total_ptime += ptime ;
-      unsigned uplay_secs = (unsigned) ptime ;
-      unsigned uplay_mins = uplay_secs / 60 ;
-      uplay_secs = uplay_secs % 60 ;
-      
-      if (ptime < 60.0) {
-         sprintf(mlstr, "%5u hz, %6.2f seconds    ", srate, ptime) ;
-      } else {
-         // ptime /= 60.0 ;
-         sprintf(mlstr, "%5u hz, %3u:%02u minutes    ", srate, uplay_mins, uplay_secs) ;
-      }
-   }
-   return 0;
-}
-#endif
-
-//*********************************************************
 // WebP file header:
 //  0                   1                   2                   3
 //  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -929,9 +853,90 @@ int get_png_info(char *fname, char *mlstr)
    return 0 ;
 }
 
+//************************************************************************
+//  NOTE: this parser is no longer used; I am using the MediaInfo DLL
+//        to handle all video formats, including AVI.
+//        This code is retained here merely for reference.
+//************************************************************************
+#ifndef  OBSOLETE_PROTOCOLS
+typedef struct {
+   long           chunkSize;
+   short          wFormatTag;
+   unsigned short wChannels;
+   unsigned long  dwSamplesPerSec;
+   unsigned long  dwAvgBytesPerSec;
+   unsigned short wBlockAlign;
+   unsigned short wBitsPerSample;
+   /* Note: there may be additional fields here, depending upon wFormatTag. */
+} FormatChunk;
+                
+int get_wave_info(char *fname, char *mlstr)
+{
+   int result, rbytes ;
+   FormatChunk *fcptr ;
+   struct stat st ;
+   off_t fsize ;
+   char *hd ;
+   unsigned srate ;
+   double ptime ;
+
+   sprintf(fpath, "%s\\%s", base_path, fname) ;
+
+   //  get file size
+   result = stat(fpath, &st) ;
+   if (result < 0) {
+      sprintf(mlstr, "%-30s", "cannot stat Wave file") ;
+      return 0;
+   }
+   fsize = st.st_size ;
+
+   result = read_into_dbuffer(fname) ;
+   if (result != 0) {
+      sprintf(mlstr, "%-30s", "unreadable Wave") ;
+   } 
+      //  first, search for the "fmt" string
+   else if (strncmp((char *)  dbuffer,    "RIFF", 4) != 0  ||
+            strncmp((char *) &dbuffer[8], "WAVE", 4) != 0) {
+      sprintf(mlstr, "%-30s", "unknown wave format") ;
+   }
+   else {
+      hd = (char *) &dbuffer[12] ;
+      rbytes = 0 ;
+      while (LOOP_FOREVER) {
+         if (strncmp(hd, "fmt ", 4) == 0) {
+            hd += 4 ;
+            break;
+         }
+         hd++ ;
+         //  make sure we stop before search string overruns buffer
+         if (++rbytes == (sizeof(dbuffer) - 4)) {
+            // return EILSEQ;
+            sprintf(mlstr, "%-30s", "no fmt in Wave file") ;
+            return 0;
+         }
+      }
+      fcptr = (FormatChunk *) hd ;
+      srate = fcptr->dwSamplesPerSec ;
+      ptime = (double) fsize / (double) fcptr->dwAvgBytesPerSec ;
+      total_ptime += ptime ;
+      unsigned uplay_secs = (unsigned) ptime ;
+      unsigned uplay_mins = uplay_secs / 60 ;
+      uplay_secs = uplay_secs % 60 ;
+      
+      if (ptime < 60.0) {
+         sprintf(mlstr, "%5u hz, %6.2f seconds    ", srate, ptime) ;
+      } else {
+         // ptime /= 60.0 ;
+         sprintf(mlstr, "%5u hz, %3u:%02u minutes    ", srate, uplay_mins, uplay_secs) ;
+      }
+   }
+   return 0;
+}
+#endif
+
 #ifndef  OBSOLETE_PROTOCOLS
 //************************************************************************
-//  NOTE: this code is no longer used; I am using the MediaInfo DLL
+//  NOTE: this parser is no longer used; I am using the MediaInfo DLL
 //        to handle all video formats, including AVI.
 //        This code is retained here merely for reference.
 //************************************************************************

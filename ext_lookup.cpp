@@ -38,15 +38,7 @@ static mm_lookup_t const mm_lookup[] = {
 { "gif",  get_gif_info },
 { "jpg",  get_jpeg_info },
 { "png",  get_png_info },
-// { "bmp",  get_devil_info },
-// { "cur",  get_devil_info },   //  wrong color depth
-// { "ico",  get_devil_info },   //  wrong color depth
-// { "gif",  get_devil_info },
-// { "jpg",  get_devil_info },
-// { "png",  get_devil_info },   //  much slower than my code!!
 { "sid",  get_sid_info },
-// { "tif",  get_devil_info },
-// { "tiff", get_devil_info },
 { "tif",  get_mi_info },
 { "tiff", get_mi_info },
 { "webp", get_webp_info },
