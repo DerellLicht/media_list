@@ -5,6 +5,7 @@ files/
 audio/
 images/
 video/
+history/
 _lint.tmp
 *.zip
 images.out
