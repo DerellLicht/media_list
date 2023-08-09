@@ -69,23 +69,13 @@ int read_files(char *filespec)
          fn_okay = 1;
 
       if (fn_okay) {
-         // printf("DIRECTORY %04X %s\n", fdata.attrib, fdata.cFileName) ;
-         // printf("%9ld %04X %s\n", fdata.file_size, fdata.attrib, fdata.cFileName) ;
          filecount++;
 
          //****************************************************
          //  allocate and initialize the structure
          //****************************************************
-         // ftemp = new ffdata;
-         ftemp = (ffdata_t *) malloc(sizeof(ffdata_t)) ;
-         if (ftemp == NULL) {
-            return -errno;
-         }
-         memset((char *) ftemp, 0, sizeof(ffdata_t));
-
-         //  convert filename to lower case if appropriate
-         // if (!n.ucase)
-         //    strlwr(fblk.name) ;
+         ftemp = (ffdata_t *) new ffdata_t ;
+         ZeroMemory((char *) ftemp, sizeof(ffdata_t));
 
          ftemp->attrib = (uchar) fdata.dwFileAttributes;
 
@@ -104,7 +94,8 @@ int read_files(char *filespec)
          iconv.u[1] = fdata.nFileSizeHigh;
          ftemp->fsize = iconv.i;
 
-         ftemp->filename = (char *) malloc(strlen ((char *) fdata.cFileName) + 1);
+         // ftemp->filename = (char *) malloc(strlen ((char *) fdata.cFileName) + 1);
+         ftemp->filename = (char *) new char[(strlen ((char *) fdata.cFileName) + 1)];
          strcpy (ftemp->filename, (char *) fdata.cFileName);
 
          ftemp->dirflag = ftemp->attrib & FILE_ATTRIBUTE_DIRECTORY;
@@ -122,8 +113,9 @@ int read_files(char *filespec)
       }  //  if file is parseable...
 
       //  search for another file
-      if (FindNextFile (handle, &fdata) == 0)
+      if (FindNextFile (handle, &fdata) == 0) {
          done = 1;
+      }
    }
 
    FindClose (handle);
