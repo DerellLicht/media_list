@@ -25,7 +25,7 @@ CFLAGS += -DUSE_64BIT
 CxxFLAGS += -DUSE_64BIT
 endif
 
-CPPSRC=media_list.cpp qualify.cpp ext_lookup.cpp file_fmts.cpp
+CPPSRC=media_list.cpp common.cpp qualify.cpp ext_lookup.cpp file_fmts.cpp
 
 CXXSRC=MediaInfoDll.cxx
 
@@ -69,8 +69,9 @@ $(BIN): $(OBJS)
 
 # DO NOT DELETE
 
-media_list.o: media_list.h qualify.h
+media_list.o: common.h media_list.h qualify.h
+common.o: common.h
 qualify.o: qualify.h
-ext_lookup.o: media_list.h file_fmts.h
-file_fmts.o: media_list.h file_fmts.h
-MediaInfoDll.o: MediaInfoDLL.h media_list.h file_fmts.h
+ext_lookup.o: common.h media_list.h file_fmts.h
+file_fmts.o: common.h media_list.h file_fmts.h
+MediaInfoDll.o: MediaInfoDLL.h common.h media_list.h file_fmts.h

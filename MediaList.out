@@ -6,21 +6,24 @@ filespec: D:\SourceCode\Git\media_list\images\*
         36,076    32 x   32, 8 bpp [16]       Ecliptic.ani
         16,958    64 x   64, 32 bpp           Firefox_64x64.ico
         15,790    32 x   32, 8 bpp [7]        Flames.ani
+       168,978  1440 x 1440, 24 bpp           freemantle highway 2.avif
         10,134    32 x   32, 4 bpp [6]        help256.ico
          2,238    32 x   32, 8 bpp            MetalSword.cur
            766    32 x   32, 4 bpp            M_cross.cur
+       202,253  1600 x 1200, 24 bpp Exif      newark.slough.bridge3.jpg
        302,180  1080 x  719, VP8 format       no friendly welcome.webp
+       313,380   570 x  722, 8 bpp            oil.rig1.gif
         15,846    32 x   32, 8 bpp [7]        Scroll.ani
         40,234   564 x  368, 8 bpp            sis645.gif
      7,816,688  2560 x 1600, 32 bpp           stained glass 2.png
      1,546,054  1030 x  500, 24 bpp           sure.is.shiny.bmp
          2,238    32 x   32, 8 bpp            S_move.cur
     73,993,252  3584 x 1717, 48 bpp           vegetable market 1569.tif
-     2,208,573  1944 x 2592, Exif 24 bpp      Zion.tightrope1.jpg
+     2,208,573  1944 x 2592, 24 bpp Exif      Zion.tightrope1.jpg
         12,552    32 x   32, 4 bpp [16]       zorak.ani
-       693,219  1600 x 1067, Exif 24 bpp      zzyzx.altar.jpg
-     2,677,124  2048 x 1536, Jfif 24 bpp      zzyzx.refuge.jpg
-     1,034,003  2048 x 1536, Exif 24 bpp      zzyzx.road2.jpg
+       693,219  1600 x 1067, 24 bpp Exif      zzyzx.altar.jpg
+     2,677,124  2048 x 1536, 24 bpp Jfif      zzyzx.refuge.jpg
+     1,034,003  2048 x 1536, 24 bpp Exif      zzyzx.road2.jpg
 
 D:\SourceCode\Git\media_list Yes, Master?? > medialist audio
 filespec: D:\SourceCode\Git\media_list\audio\*

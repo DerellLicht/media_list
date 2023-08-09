@@ -17,6 +17,7 @@
 #include <fileapi.h>
 #endif
 
+#include "common.h"
 #include "media_list.h"
 #include "file_fmts.h"
 
@@ -61,7 +62,7 @@ static mm_lookup_t const mm_lookup[] = {
 { "", 0 }} ;
 
 //************************************************************************
-int print_media_info(ffdata const * const fptr)
+int print_media_info(ffdata_t const * const fptr)
 {
    char mlstr[31] = "";
    int show_normal_info ;

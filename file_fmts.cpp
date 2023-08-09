@@ -16,6 +16,7 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 
+#include "common.h"
 #include "media_list.h"
 #include "file_fmts.h"
 
