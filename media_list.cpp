@@ -14,19 +14,13 @@
 #include "media_list.h"
 #include "qualify.h"
 
-WIN32_FIND_DATA fdata ; //  long-filename file struct
-
 //  per Jason Hood, this turns off MinGW's command-line expansion, 
 //  so we can handle wildcards like we want to.                    
 //lint -e765  external '_CRT_glob' could be made static
 //lint -e714  Symbol '_CRT_glob' not referenced
 int _CRT_glob = 0 ;
 
-uint filecount = 0 ;
-
 double total_ptime = 0.0 ;
-//lint -esym(843, show_all)
-bool show_all = true ;
 
 //lint -esym(534, FindClose)  // Ignoring return value of function
 //lint -esym(818, filespec, argv)  //could be declared as pointing to const
@@ -35,9 +29,12 @@ bool show_all = true ;
 static ffdata_t *ftop  = NULL;
 static ffdata_t *ftail = NULL;
 
+static uint filecount = 0 ;
+
 //**********************************************************************************
 int read_files(char *filespec)
 {
+   WIN32_FIND_DATA fdata ; //  long-filename file struct
    int done, fn_okay ;
    HANDLE handle;
    ffdata_t *ftemp;
@@ -54,13 +51,6 @@ int read_files(char *filespec)
    //  loop on find_next
    done = 0;
    while (!done) {
-      if (!show_all) {
-         if ((fdata.dwFileAttributes & 
-            (FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_READONLY | FILE_ATTRIBUTE_SYSTEM)) != 0) {
-            fn_okay = 0 ;
-            goto search_next_file;
-         }
-      }
       //  filter out directories if not requested
       if ((fdata.dwFileAttributes & FILE_ATTRIBUTE_VOLID) != 0)
          fn_okay = 0;
@@ -131,7 +121,6 @@ int read_files(char *filespec)
          ftail = ftemp;
       }  //  if file is parseable...
 
-search_next_file:
       //  search for another file
       if (FindNextFile (handle, &fdata) == 0)
          done = 1;
