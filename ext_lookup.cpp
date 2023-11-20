@@ -65,9 +65,8 @@ static mm_lookup_t const mm_lookup[] = {
 int print_media_info(ffdata_t const * const fptr)
 {
    char mlstr[31] = "";
-   int show_normal_info ;
+   bool show_normal_info = true ;
 
-   show_normal_info = 1 ;
    //  display directory entry
    if (fptr->dirflag) {
       printf("%14s  ", "");
@@ -88,7 +87,7 @@ int print_media_info(ffdata_t const * const fptr)
             if (strnicmp(p, mm_lookup[idx].ext, sizeof(mm_lookup[idx].ext)) == 0) {
                //  call the special string generator function
                (*mm_lookup[idx].func)(fptr->filename, mlstr) ; //lint !e522
-               show_normal_info = 0 ;
+               show_normal_info = false ;
                break;
             }
          }
