@@ -366,8 +366,8 @@ int get_ani_info(char *fname, char *mlstr)
 //    sometimes called YUV, colour).
 //************************************************************************
 
-static char const * const jpeg_fmt[3] = {
-   "Jpeg", "Jfif", "Exif" 
+static char const * const jpeg_fmt[4] = {
+   "Jpeg", "Jfif", "Exif", "thm"
 } ;
 
 #define  SOI_FLAG    ((unsigned short) 0xFFD8)

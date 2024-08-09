@@ -38,6 +38,7 @@ static mm_lookup_t const mm_lookup[] = {
 { "ico",  get_ico_cur_info },
 { "gif",  get_gif_info },
 { "jpg",  get_jpeg_info },
+{ "thm",  get_jpeg_info },
 { "png",  get_png_info },
 { "sid",  get_sid_info },
 { "tif",  get_mi_info },
