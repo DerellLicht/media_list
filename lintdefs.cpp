@@ -1,5 +1,3 @@
-# 
-
 //lint -esym(40, errno)
 
 //lint -e534  Ignoring return value of function
@@ -16,3 +14,11 @@
 
 //  deal with ambiguities in MediaInfoDll.cpp
 //lint -esym(526, get_mi_info)  //  symbol not defined
+
+//  unicode warnings
+//lint -e559  Size of argument inconsistent with format
+
+//lint -esym(526, _wstat, _wopen)
+//lint -esym(628, _wstat, _wopen)
+//lint -esym(746, _wstat, _wopen)
+//lint -esym(1055, _wstat, _wopen)

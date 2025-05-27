@@ -11,16 +11,17 @@
 #include <stdio.h>
 #include <io.h>
 #include <fcntl.h>
+#include <tchar.h>
 
 #include "common.h"
 #include "media_list.h"
 #include "file_fmts.h"
 
 static char tempstr[MAXLINE+1] ;
+static TCHAR fpath[MAX_FILE_LEN+2] ;
 
 #define  DBUFFER_LEN    1024
-static unsigned char dbuffer[DBUFFER_LEN] ;
-static char fpath[MAX_FILE_LEN+2] ;
+static u8 dbuffer[DBUFFER_LEN] ;
 
 //*********************************************************************
 static unsigned short get2bytes(unsigned char const * p)
@@ -45,17 +46,17 @@ static unsigned get4bytes(unsigned char const * p)
 }
 
 //************************************************************************
-static int read_into_dbuffer(char *fname)
+static int read_into_dbuffer(TCHAR *fname)
 {
    int hdl, rbytes ;
 
-   sprintf(fpath, "%s\\%s", base_path, fname) ;
-   hdl = open(fpath, O_BINARY | O_RDONLY) ;
+   _stprintf(fpath, _T("%s\\%s"), base_path, fname) ;
+   hdl = _topen(fpath, O_BINARY | O_RDONLY) ;
    if (hdl < 0) 
       return errno;
    
    //  read header data
-   rbytes = read(hdl, dbuffer, sizeof(dbuffer)) ;
+   rbytes = _read(hdl, dbuffer, sizeof(dbuffer)) ;
    if (rbytes < 0) {
       close(hdl) ;
       return errno;
@@ -185,7 +186,7 @@ static int get_ico_cur_ani_info(u8 *bfr, char *mlstr, uint NumAniFrames)
 }
 
 //***************************************************************************
-int get_ico_cur_info(char *fname, char *mlstr)
+int get_ico_cur_info(TCHAR *fname, char *mlstr)
 {
    int result = read_into_dbuffer(fname) ;
    if (result != 0) {
@@ -231,7 +232,7 @@ typedef struct anih_header_s {
 //lint -esym(550, list_len)
 //lint -esym(751, anih_header_t)
 //lint -esym(759, get_ani_info)
-int get_ani_info(char *fname, char *mlstr)
+int get_ani_info(TCHAR *fname, char *mlstr)
 {
    uint *u32ptr ;
    uint data_len ;
@@ -243,7 +244,7 @@ int get_ani_info(char *fname, char *mlstr)
       if (_strnicmp((const char *)uptr, "RIFF", 4) != 0) {
          sprintf(tempstr, "No RIFF") ;
          sprintf(mlstr, "%-30s", tempstr) ;
-         return 0;
+         goto error_exit;
       }
       uptr+=4 ;   //  point to data length
       // uint *u32ptr = (uint *) uptr ;
@@ -255,7 +256,7 @@ int get_ani_info(char *fname, char *mlstr)
       if (_strnicmp((const char *)uptr, "ACON", 4) != 0) {
          sprintf(tempstr, "No ACON") ;
          sprintf(mlstr, "%-30s", tempstr) ;
-         return 0;
+         goto error_exit;
       }
       uptr+=4 ;
       //  we actually need to scan for 'anih', and it may not 
@@ -271,7 +272,7 @@ int get_ani_info(char *fname, char *mlstr)
          if (ulen >= DBUFFER_LEN) {
             sprintf(tempstr, "No anih") ;
             sprintf(mlstr, "%-30s", tempstr) ;
-            return 0;
+            goto error_exit;
          }
       }
       uptr+=4 ;
@@ -334,7 +335,12 @@ int get_ani_info(char *fname, char *mlstr)
       //  we have found first ICON block
       
    }
+   // _tprintf(_T("good exit: %s: %s\n"), fname, ascii2unicode(mlstr));
    return 0 ;
+   
+error_exit:
+   _tprintf(_T("error exit: %s: %s\n"), fname, ascii2unicode(mlstr));
+   return 0 ;   
 }
 
 //************************************************************************
@@ -372,7 +378,7 @@ static char const * const jpeg_fmt[4] = {
 #define  APP0_FLAG   ((unsigned short) 0xFFE0)
 #define  EXIF_FLAG   ((unsigned short) 0xFFE1)
 
-int get_jpeg_info(char *fname, char *mlstr)
+int get_jpeg_info(TCHAR *fname, char *mlstr)
 {
    int hdl, rbytes ;
    // unsigned char *hd ;
@@ -387,9 +393,9 @@ int get_jpeg_info(char *fname, char *mlstr)
    int inbuffer ;
    // int result = 0 ;
 
-   sprintf(fpath, "%s\\%s", base_path, fname) ;
+   _stprintf(fpath, _T("%s\\%s"), base_path, fname) ;
 
-   hdl = open(fpath, O_BINARY | O_RDONLY) ;
+   hdl = _topen(fpath, O_BINARY | O_RDONLY) ;
    if (hdl < 0) 
       goto jpeg_unreadable;
 
@@ -397,7 +403,7 @@ int get_jpeg_info(char *fname, char *mlstr)
    inbuffer = 1 ;
    while (inbuffer >= 0) {
       // printf("reading %5u bytes at offset %u\n", 100, foffset) ;
-      rbytes = read(hdl, dbuffer, 100) ;
+      rbytes = _read(hdl, dbuffer, 100) ;
       //  check for errors,
       if (rbytes < 0) {
          // result = errno ;
@@ -532,9 +538,9 @@ jpeg_unreadable:
 // int image_width = ReadBits(14) + 1;
 // int image_height = ReadBits(14) + 1;
 
-int get_webp_info(char *fname, char *mlstr)
+int get_webp_info(TCHAR *fname, char *mlstr)
 {
-   sprintf(fpath, "%s\\%s", base_path, fname) ;
+   _stprintf(fpath, _T("%s\\%s"), base_path, fname) ;
    int result = read_into_dbuffer(fname) ;
    if (result != 0) {
       sprintf(mlstr, "%-30s", "unreadable WebP") ;
@@ -652,7 +658,7 @@ u32 swap32(u32 invalue)
    return uconv.ul;
 }
 
-int get_sid_info(char *fname, char *mlstr)
+int get_sid_info(TCHAR *fname, char *mlstr)
 {
    sid_info_p sid_info ;
    unsigned rows, cols, bpp ;
@@ -691,7 +697,7 @@ typedef struct gif_info_s {
 // 22 = 0 010 0 010
 // b3 = 10 110 011
 
-int get_gif_info(char *fname, char *mlstr)
+int get_gif_info(TCHAR *fname, char *mlstr)
 {
    int result ;
    gif_info_p gif_info ;
@@ -717,7 +723,7 @@ int get_gif_info(char *fname, char *mlstr)
 }
 
 //************************************************************************
-int get_bmp_info(char *fname, char *mlstr)
+int get_bmp_info(TCHAR *fname, char *mlstr)
 {
    int result ;
    unsigned width, height, bpp ;
@@ -791,7 +797,7 @@ int get_bmp_info(char *fname, char *mlstr)
 //    unsigned char  colorType ;
 // } png_info_t, *png_info_p ;
 
-int get_png_info(char *fname, char *mlstr)
+int get_png_info(TCHAR *fname, char *mlstr)
 {
    int result ;
    unsigned rows, cols, bpp ;
@@ -867,7 +873,7 @@ typedef struct {
    /* Note: there may be additional fields here, depending upon wFormatTag. */
 } FormatChunk;
                 
-int get_wave_info(char *fname, char *mlstr)
+int get_wave_info(TCHAR *fname, char *mlstr)
 {
    int result, rbytes ;
    FormatChunk *fcptr ;
@@ -955,7 +961,7 @@ typedef struct {
 } MainAVIHeader;
 
 //lint -esym(759, get_avi_info)
-int get_avi_info(char *fname, char *mlstr)
+int get_avi_info(TCHAR *fname, char *mlstr)
 {
    int result ;
    unsigned rows, cols, bcount ;

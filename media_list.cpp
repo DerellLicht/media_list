@@ -8,6 +8,7 @@
 
 #include <windows.h>
 #include <stdio.h>
+#include <tchar.h>
 
 #include "common.h"
 #include "media_list.h"
@@ -31,7 +32,7 @@ static ffdata_t *ftail = NULL;
 static uint filecount = 0 ;
 
 //**********************************************************************************
-int read_files(char *filespec)
+int read_files(TCHAR *filespec)
 {
    WIN32_FIND_DATA fdata ; //  long-filename file struct
    int done, fn_okay ;
@@ -56,11 +57,11 @@ int read_files(char *filespec)
       else if ((fdata.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != FILE_ATTRIBUTE_DIRECTORY)
          fn_okay = 1;
       //  For directories, filter out "." and ".."
-      else if (fdata.cFileName[0] != '.') //  fn=".something"
+      else if (fdata.cFileName[0] != _T('.')) //  fn=".something"
          fn_okay = 1;
       else if (fdata.cFileName[1] == 0)   //  fn="."
          fn_okay = 0;
-      else if (fdata.cFileName[1] != '.') //  fn="..something"
+      else if (fdata.cFileName[1] != _T('.')) //  fn="..something"
          fn_okay = 1;
       else if (fdata.cFileName[2] == 0)   //  fn=".."
          fn_okay = 0;
@@ -74,7 +75,7 @@ int read_files(char *filespec)
          //  allocate and initialize the structure
          //****************************************************
          ftemp = (ffdata_t *) new ffdata_t ;
-         ZeroMemory((char *) ftemp, sizeof(ffdata_t));
+         ZeroMemory((void *) ftemp, sizeof(ffdata_t));
 
          ftemp->attrib = (uchar) fdata.dwFileAttributes;
 
@@ -94,8 +95,8 @@ int read_files(char *filespec)
          ftemp->fsize = iconv.i;
 
          // ftemp->filename = (char *) malloc(strlen ((char *) fdata.cFileName) + 1);
-         ftemp->filename = (char *) new char[(strlen ((char *) fdata.cFileName) + 1)];
-         strcpy (ftemp->filename, (char *) fdata.cFileName);
+         ftemp->filename = (TCHAR *) new TCHAR[(_tcslen ((TCHAR *) fdata.cFileName) + 1)];
+         _tcscpy (ftemp->filename, (TCHAR *) fdata.cFileName);
 
          ftemp->dirflag = ftemp->attrib & FILE_ATTRIBUTE_DIRECTORY;
 
@@ -122,65 +123,74 @@ int read_files(char *filespec)
 }
 
 //**********************************************************************************
-char file_spec[MAX_FILE_LEN+1] = "" ;
+static char tfile_spec[MAX_FILE_LEN+1] = "" ;
+static TCHAR file_spec[MAX_FILE_LEN+1] = _T("") ;
 
 int main(int argc, char **argv)
+// undefined reference to `WinMain@16'
+// int _tmain(int argc, TCHAR **argv)
 {
    int idx, result ;
    for (idx=1; idx<argc; idx++) {
       char *p = argv[idx] ;
-      strncpy(file_spec, p, MAX_FILE_LEN);
-      file_spec[MAX_FILE_LEN] = 0 ;
+      strncpy(tfile_spec, p, MAX_FILE_LEN);
+      tfile_spec[MAX_FILE_LEN] = 0 ;
+      TCHAR *tptr = ascii2unicode(tfile_spec);
+      _tcscpy(file_spec, tptr);
    }
+   // for (idx=1; idx<argc; idx++) {
+   //    TCHAR *p = argv[idx] ;
+   //    _tcsncpy(file_spec, p, MAX_FILE_LEN);
+   //    file_spec[MAX_FILE_LEN] = 0 ;
+   // }
 
    if (file_spec[0] == 0) {
-      strcpy(file_spec, ".");
+      _tcscpy(file_spec, _T("."));
    }
 
    result = qualify(file_spec) ;
    if (result == QUAL_INV_DRIVE) {
-      printf("%s: %d\n", file_spec, result);
+      _tprintf(_T("%s: %d\n"), file_spec, result);
       return 1 ;
    }
-   // printf("file spec: %s\n", file_spec);
+   // _tprintf(_T("file spec: %s\n"), file_spec);
    
    //  Extract base path from first filespec,
    //  and strip off filename
-   strcpy(base_path, file_spec) ;
-   char *strptr = strrchr(base_path, '\\') ;
+   _tcscpy(base_path, file_spec) ;
+   TCHAR *strptr = _tcsrchr(base_path, _T('\\')) ;
    if (strptr != 0) {
        strptr++ ;  //lint !e613  skip past backslash, to filename
       *strptr = 0 ;  //  strip off filename
    }
-   base_len = strlen(base_path) ;
+   base_len = _tcslen(base_path) ;
    // printf("base path: %s\n", base_path);
    
    result = read_files(file_spec);
    if (result < 0) {
-      printf("filespec: %s, %s\n", file_spec, strerror(-result));
+      _tprintf(_T("filespec: %s, %s\n"), file_spec, strerror(-result));
    }
    else {
-      printf("filespec: %s\n", file_spec);
+      _tprintf(_T("filespec: %s, fcount: %u\n"), file_spec, filecount);
       if (filecount > 0) {
          puts("");
          for (ffdata_t *ftemp = ftop; ftemp != NULL; ftemp = ftemp->next) {
-            // printf("%s\n", ftemp->filename);
+            // _tprintf(_T("%s\n"), ftemp->filename);
             print_media_info(ftemp);
          }
 
       }
       
       //  see if there is any special results to display
-      char mlstr[80] ;
+      TCHAR timestr[80] ;
       if (total_ptime > 0x01) {
          if (total_ptime < 60.0) {
-            sprintf(mlstr, "%.2f seconds     ", total_ptime) ;
+            _stprintf(timestr, _T("%.2f seconds     "), total_ptime) ;  //lint !e592
          } else {
             total_ptime /= 60.0 ;
-            sprintf(mlstr, "%.2f minutes     ", total_ptime) ;
+            _stprintf(timestr, _T("%.2f minutes     "), total_ptime) ;  //lint !e592
          }
-         puts("");
-         printf("total playing time: %s\n", mlstr) ;
+         _tprintf(_T("\ntotal playing time: %s\n"), timestr) ;
       }
    }
    return 0;

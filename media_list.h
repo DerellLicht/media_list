@@ -1,9 +1,6 @@
 //**********************************************************************************
-//  Copyright (c) 2023 Daniel D. Miller                       
+//  Copyright (c) 2025 Derell Licht
 //  media_list.cpp - list info about various media files
-//                                                                 
-//  Written by:   Daniel D. Miller
-//  
 //**********************************************************************************
 
 //lint -esym(759, total_ptime)  header declaration for symbol could be moved from header to module
@@ -14,7 +11,7 @@ typedef struct ffdata {
    uchar          attrib ;
    FILETIME       ft ;
    ULONGLONG      fsize ;
-   char           *filename ;
+   TCHAR          *filename ;
    uchar          dirflag ;
    struct ffdata  *next ;
 } ffdata_t ;

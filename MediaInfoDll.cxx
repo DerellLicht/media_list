@@ -57,6 +57,7 @@ using namespace MediaInfoNameSpace;
 #include <io.h>   // _lseeki64
 #include <sys/stat.h>   // _open
 #include <fcntl.h>   // _open
+#include <tchar.h>
 
 #ifdef  STAND_ALONE
 typedef  unsigned int  uint ;
@@ -69,8 +70,8 @@ typedef  unsigned int  uint ;
 static char tempstr[MAXLINE+1] ;
 #endif
 
-//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-static int parse_media_file(char *inpname, char *mlstr)
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+static int parse_media_file(TCHAR *inpname, char *mlstr)
 {
    MediaInfo MI;
 
@@ -81,9 +82,9 @@ static int parse_media_file(char *inpname, char *mlstr)
       return 1;
    }
 #else
-static char fpath[MAX_FILE_LEN+2] ;
-   sprintf(fpath, "%s\\%s", base_path, inpname) ;
-   int hdl = _open(fpath, _O_BINARY | _O_RDONLY) ;
+static TCHAR fpath[MAX_FILE_LEN+2] ;
+   _stprintf(fpath, _T("%s\\%s"), base_path, inpname) ;
+   int hdl = _topen(fpath, _O_BINARY | _O_RDONLY) ;
    if (hdl == -1) {
       sprintf(mlstr, "%-30s", "open failed") ;
       return 0 ;
@@ -178,25 +179,25 @@ static char fpath[MAX_FILE_LEN+2] ;
    uint video_width = 0;
    uint video_height = 0;
    uint audio_bitrate = 0 ;
-   char audio_brate_mode[4] = "" ;
+   TCHAR audio_brate_mode[4] = _T("") ;
 
    //  first, get file duration from General section
    uint play_duration = 0;
-   sptr = MediaInfo_Get(Handle, (MediaInfo_stream_C)Stream_General, 0, "Duration", 
+   sptr = MediaInfo_Get(Handle, (MediaInfo_stream_C)Stream_General, 0, _T("Duration"), 
                        (MediaInfo_info_C) Info_Text, (MediaInfo_info_C) Info_Name);
-   play_duration = (uint) atoi(sptr);
+   play_duration = (uint) _ttoi(sptr);
    if (play_duration == 0) {
 #ifdef  STAND_ALONE
       printf("General:Duration not available\n");
 #endif      
-      sptr = MediaInfo_Get(Handle, (MediaInfo_stream_C)Stream_Video, 0, "Duration", 
+      sptr = MediaInfo_Get(Handle, (MediaInfo_stream_C)Stream_Video, 0, _T("Duration"), 
                           (MediaInfo_info_C) Info_Text, (MediaInfo_info_C) Info_Name);
-      play_duration = (uint) atoi(sptr);
+      play_duration = (uint) _ttoi(sptr);
       //  If Video duration is not present, read audio duration.
       if (play_duration == 0) {
-         sptr = MediaInfo_Get(Handle, (MediaInfo_stream_C)Stream_Audio, 0, "Duration", 
+         sptr = MediaInfo_Get(Handle, (MediaInfo_stream_C)Stream_Audio, 0, _T("Duration"), 
                              (MediaInfo_info_C) Info_Text, (MediaInfo_info_C) Info_Name);
-         play_duration = (uint) atoi(sptr);
+         play_duration = (uint) _ttoi(sptr);
       }
    }
 
@@ -225,37 +226,37 @@ FILE_TYPE_UNK
    switch (file_type) {
    case FILE_TYPE_IMAGE:
       //  get width/height
-      sptr = MediaInfo_Get(Handle, (MediaInfo_stream_C)Stream_Image, 0, "Width", 
+      sptr = MediaInfo_Get(Handle, (MediaInfo_stream_C)Stream_Image, 0, _T("Width"), 
                           (MediaInfo_info_C) Info_Text, (MediaInfo_info_C) Info_Name);
-      video_width = (uint) atoi(sptr);
-      sptr = MediaInfo_Get(Handle, (MediaInfo_stream_C)Stream_Image, 0, "Height", 
+      video_width = (uint) _ttoi(sptr);
+      sptr = MediaInfo_Get(Handle, (MediaInfo_stream_C)Stream_Image, 0, _T("Height"), 
                           (MediaInfo_info_C) Info_Text, (MediaInfo_info_C) Info_Name);
-      video_height = (uint) atoi(sptr);
-      sptr = MediaInfo_Get(Handle, (MediaInfo_stream_C)Stream_Image, 0, "BitDepth", 
+      video_height = (uint) _ttoi(sptr);
+      sptr = MediaInfo_Get(Handle, (MediaInfo_stream_C)Stream_Image, 0, _T("BitDepth"), 
                           (MediaInfo_info_C) Info_Text, (MediaInfo_info_C) Info_Name);
-      audio_bitrate = (uint) atoi(sptr);
+      audio_bitrate = (uint) _ttoi(sptr);
       break;
       
    case FILE_TYPE_AUDIO:
       //  pull audio params
-      sptr = MediaInfo_Get(Handle, (MediaInfo_stream_C)Stream_Audio, 0, "BitRate", 
+      sptr = MediaInfo_Get(Handle, (MediaInfo_stream_C)Stream_Audio, 0, _T("BitRate"), 
                           (MediaInfo_info_C) Info_Text, (MediaInfo_info_C) Info_Name);
-      audio_bitrate = (uint) atoi(sptr);
-      sptr = MediaInfo_Get(Handle, (MediaInfo_stream_C)Stream_Audio, 0, "BitRate_Mode", 
+      audio_bitrate = (uint) _ttoi(sptr);
+      sptr = MediaInfo_Get(Handle, (MediaInfo_stream_C)Stream_Audio, 0, _T("BitRate_Mode"), 
                           (MediaInfo_info_C) Info_Text, (MediaInfo_info_C) Info_Name);
-      // play_duration = (uint) atoi(sptr);
-      strncpy(audio_brate_mode, sptr, 3);
+      // play_duration = (uint) _ttoi(sptr);
+      _tcsncpy(audio_brate_mode, sptr, 3);
       audio_brate_mode[3] = 0 ;
       break;
       
    case FILE_TYPE_VIDEO:
       //  get width/height
-      sptr = MediaInfo_Get(Handle, (MediaInfo_stream_C)Stream_Video, 0, "Width", 
+      sptr = MediaInfo_Get(Handle, (MediaInfo_stream_C)Stream_Video, 0, _T("Width"), 
                           (MediaInfo_info_C) Info_Text, (MediaInfo_info_C) Info_Name);
-      video_width = (uint) atoi(sptr);
-      sptr = MediaInfo_Get(Handle, (MediaInfo_stream_C)Stream_Video, 0, "Height", 
+      video_width = (uint) _ttoi(sptr);
+      sptr = MediaInfo_Get(Handle, (MediaInfo_stream_C)Stream_Video, 0, _T("Height"), 
                           (MediaInfo_info_C) Info_Text, (MediaInfo_info_C) Info_Name);
-      video_height = (uint) atoi(sptr);
+      video_height = (uint) _ttoi(sptr);
       break;
       
    default:
@@ -343,10 +344,10 @@ FILE_TYPE_UNK
          kbps++ ;
       }
       if (run_time < 60.0) {
-         sprintf(tempstr, "%4u kbps %s, %6.2f secs", kbps, audio_brate_mode, run_time) ;
+         sprintf(tempstr, "%4u kbps %s, %6.2f secs", kbps, unicode2ascii(audio_brate_mode), run_time) ;
       } else {
          run_time /= 60.0 ;
-         sprintf(tempstr, "%4u kbps %s, %6.2f mins", kbps, audio_brate_mode, run_time) ;
+         sprintf(tempstr, "%4u kbps %s, %6.2f mins", kbps, unicode2ascii(audio_brate_mode), run_time) ;
       }
       break;
       
@@ -393,7 +394,7 @@ int main (int argc, char **argv)
 }
 
 #else
-int get_mi_info(char *fname, char *mlstr)
+int get_mi_info(TCHAR *fname, char *mlstr)
 {
    return parse_media_file(fname, mlstr);
 }

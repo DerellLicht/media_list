@@ -10,6 +10,7 @@
 #endif
 #include <windows.h>
 #include <stdio.h>
+#include <tchar.h>
 #ifdef USE_64BIT
 #include <fileapi.h>
 #endif
@@ -22,67 +23,68 @@
 //  lookup tables for special-extension display functions
 //************************************************************************
 typedef struct mm_lookup_s {
-   char  ext[MAX_EXT_SIZE] ;
-   int (*func)(char *fname, char *mlstr) ;
+   TCHAR  ext[MAX_EXT_SIZE] ;
+   int (*func)(TCHAR *fname, char *mlstr) ;
 } mm_lookup_t ;
 
 static mm_lookup_t const mm_lookup[] = {
 //  image formats
-{ "ani",  get_ani_info },
-{ "avif", get_mi_info },
-{ "bmp",  get_bmp_info },
-{ "cur",  get_ico_cur_info },
-{ "ico",  get_ico_cur_info },
-{ "gif",  get_gif_info },
-{ "jpg",  get_jpeg_info },
-{ "thm",  get_jpeg_info },
-{ "png",  get_png_info },
-{ "sid",  get_sid_info },
-{ "tif",  get_mi_info },
-{ "tiff", get_mi_info },
-{ "webp", get_webp_info },
+{ _T("ani"),  get_ani_info },
+{ _T("avif"), get_mi_info },
+{ _T("bmp"),  get_bmp_info },
+{ _T("cur"),  get_ico_cur_info },
+{ _T("ico"),  get_ico_cur_info },
+{ _T("gif"),  get_gif_info },
+{ _T("jpg"),  get_jpeg_info },
+{ _T("thm"),  get_jpeg_info },
+{ _T("png"),  get_png_info },
+{ _T("sid"),  get_sid_info },
+{ _T("tif"),  get_mi_info },
+{ _T("tiff"), get_mi_info },
+{ _T("webp"), get_webp_info },
 //  audio formats
-{ "flac", get_mi_info },
-{ "mp3",  get_mi_info },
-{ "ogg",  get_mi_info },
-{ "wav",  get_mi_info },
-{ "wma",  get_mi_info },
+{ _T("flac"), get_mi_info },
+{ _T("mp3"),  get_mi_info },
+{ _T("ogg"),  get_mi_info },
+{ _T("wav"),  get_mi_info },
+{ _T("wma"),  get_mi_info },
 //  video formats
-{ "avi",  get_mi_info },
-{ "flv",  get_mi_info },
-{ "mkv",  get_mi_info },
-{ "mov",  get_mi_info },
-{ "mp4",  get_mi_info },
-{ "mpeg", get_mi_info },
-{ "mpg",  get_mi_info },
-{ "webm", get_mi_info },
-{ "wmv",  get_mi_info },
-{ "", 0 }} ;
+{ _T("avi"),  get_mi_info },
+{ _T("flv"),  get_mi_info },
+{ _T("mkv"),  get_mi_info },
+{ _T("mov"),  get_mi_info },
+{ _T("mp4"),  get_mi_info },
+{ _T("mpeg"), get_mi_info },
+{ _T("mpg"),  get_mi_info },
+{ _T("webm"), get_mi_info },
+{ _T("wmv"),  get_mi_info },
+{ _T(""), 0 }} ;
 
 //************************************************************************
 int print_media_info(ffdata_t const * const fptr)
 {
-   char mlstr[31] = "";
+   char mlstr[31] = "";  //  holds media-specific data
    bool show_normal_info = true ;
 
    //  display directory entry
    if (fptr->dirflag) {
-      printf("%14s  ", "");
-      printf("%30s", " ");
-      printf("[%s]\n", fptr->filename);
+      _tprintf(_T("%14s  "), _T(""));
+      _tprintf(_T("%30s"), _T(" "));
+      _tprintf(_T("[%s]\n"), fptr->filename);
    }
 
    //  display file entry
    else {
-      char *p ;
+      TCHAR *p ;
       unsigned idx ;
 
-      p = strrchr(fptr->filename, '.') ;
-      if (p != 0  &&  strlen(p) <= MAX_EXT_SIZE) {
+      p = _tcsrchr(fptr->filename, _T('.')) ;
+      if (p != 0  &&  _tcslen(p) <= MAX_EXT_SIZE) {
          p++ ; //  skip past the period
 
          for (idx=0; mm_lookup[idx].ext[0] != 0; idx++) {
-            if (strnicmp(p, mm_lookup[idx].ext, sizeof(mm_lookup[idx].ext)) == 0) {
+            if (_tcsnicmp(p, mm_lookup[idx].ext, _tcslen(mm_lookup[idx].ext)) == 0) {
+               // _tprintf(_T("%s [%u] found\n"), mm_lookup[idx].ext, idx);
                //  call the special string generator function
                (*mm_lookup[idx].func)(fptr->filename, mlstr) ; //lint !e522
                show_normal_info = false ;
@@ -92,19 +94,19 @@ int print_media_info(ffdata_t const * const fptr)
       }
 
       //  show file size
-      printf("%14s  ", convert_to_commas(fptr->fsize, NULL));
+      _tprintf(_T("%14s  "), ascii2unicode(convert_to_commas(fptr->fsize, NULL)));
 
       //  process multimedia display
       if (!show_normal_info) {
-         printf("%-30s", mlstr);
+         _tprintf(_T("%-30s"), ascii2unicode(mlstr));
       } 
       //  display normal file listing
       else {
-         printf("%30s", " ");
+         _tprintf(_T("%30s"), _T(" "));
       }
 
       //  format filename as required
-      printf("%s\n", fptr->filename);
+      _tprintf(_T("%s\n"), fptr->filename);
    }
    return 0 ;
 }

@@ -1,9 +1,6 @@
 //**********************************************************************************
-//  Copyright (c) 1998-2023 Daniel D. Miller                       
+//  Copyright (c) 1998-2025 Derell Licht                       
 //  common.cpp - common library functions
-//                                                                 
-//  Written by:   Daniel D. Miller  (the derelict)                 
-//  
 //**********************************************************************************
 
 //lint -esym(756, u64)  global typedef not referenced
@@ -31,7 +28,8 @@ typedef  unsigned int         u32 ;
 //  this definition was excluded by WINNT.H
 #define FILE_ATTRIBUTE_VOLID  0x00000008
 
-#define  MAX_FILE_LEN   1024
+#define  MAX_FILE_LEN      1024
+#define  MAX_UNICODE_LEN   1024
 
 #define  LOOP_FOREVER   true
 
@@ -52,12 +50,17 @@ union u64toul {
 
 //lint -esym(552, base_len)   Symbol not accessed
 //lint -esym(759, base_len)   header declaration for symbol could be moved from header to module
-extern char base_path[MAX_FILE_LEN+1] ;
+extern TCHAR base_path[MAX_FILE_LEN+1] ;
 extern unsigned base_len ;  //  length of base_path
 
 //  debug functions
 int hex_dump(u8 *bfr, int bytes, unsigned addr);
 int hex_dump(u8 *bfr, int bytes);
+
+// WCHAR *ascii2unicode(char *AsciiStr);
+// char *unicode2ascii(WCHAR *UnicodeStr);
+WCHAR *ascii2unicode(char const * const AsciiStr);
+char *unicode2ascii(WCHAR const * const UnicodeStr);
 
 // ULLONG_MAX = 18,446,744,073,709,551,615
 #define  MAX_ULL_COMMA_LEN  26

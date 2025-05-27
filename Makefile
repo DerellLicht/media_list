@@ -1,7 +1,8 @@
 # makefile for media_list app
-SHELL=cmd.exe
+# SHELL=cmd.exe
 USE_DEBUG = NO
 USE_64BIT = NO
+USE_UNICODE = YES
 
 ifeq ($(USE_64BIT),YES)
 TOOLS=d:\tdm64\bin
@@ -23,6 +24,13 @@ CFLAGS += -Wno-write-strings
 ifeq ($(USE_64BIT),YES)
 CFLAGS += -DUSE_64BIT
 CxxFLAGS += -DUSE_64BIT
+endif
+
+ifeq ($(USE_UNICODE),YES)
+CFLAGS += -DUNICODE -D_UNICODE
+CxxFLAGS += -DUNICODE -D_UNICODE
+LiFLAGS += -dUNICODE -d_UNICODE
+LFLAGS += -dUNICODE -d_UNICODE -mconsole
 endif
 
 CPPSRC=media_list.cpp common.cpp qualify.cpp ext_lookup.cpp file_fmts.cpp

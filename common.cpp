@@ -1,13 +1,11 @@
 //**********************************************************************************
-//  Copyright (c) 1998-2025 Daniel D. Miller                       
+//  Copyright (c) 1998-2025 Derell Licht                       
 //  common.cpp - common library functions
-//                                                                 
-//  Written by:   Daniel D. Miller  (the derelict)                 
-//  
 //**********************************************************************************
 
 #include <windows.h>
 #include <stdio.h>
+#include <tchar.h>
 
 #include "common.h"
 
@@ -17,8 +15,33 @@
 //lint -esym(768, ul2uc_u::uc, ul2uc_u::ul, ul2uc_u::us)
 
 //  name of drive+path without filenames
-char base_path[MAX_FILE_LEN+1] ;
+TCHAR base_path[MAX_FILE_LEN+1] ;
 unsigned base_len ;  //  length of base_path
+
+//****************************************************************************
+//lint -esym(714, ascii2unicode)
+//lint -esym(759, ascii2unicode)
+//lint -esym(765, ascii2unicode)
+WCHAR *ascii2unicode(char const * const AsciiStr)
+{
+   uint AsciiLen = strlen(AsciiStr) ;
+   static WCHAR UnicodeStr[MAX_UNICODE_LEN+1] ;
+   if (AsciiLen > MAX_UNICODE_LEN)
+       AsciiLen = MAX_UNICODE_LEN ;
+   MultiByteToWideChar(CP_ACP, 0, AsciiStr, -1, UnicodeStr, AsciiLen+1);
+   return UnicodeStr;
+}
+
+//****************************************************************************
+//lint -esym(714, unicode2ascii)
+//lint -esym(759, unicode2ascii)
+//lint -esym(765, unicode2ascii)
+char *unicode2ascii(WCHAR const * const UnicodeStr)
+{
+   static char AsciiStr[MAX_UNICODE_LEN+1] ;
+   WideCharToMultiByte(CP_ACP, 0, UnicodeStr, -1, AsciiStr, MAX_UNICODE_LEN, NULL, NULL);
+   return AsciiStr ;
+}
 
 //**********************************************************************
 //lint -esym(714, IsCharNum)
