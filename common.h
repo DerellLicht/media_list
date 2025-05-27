@@ -57,8 +57,9 @@ extern unsigned base_len ;  //  length of base_path
 int hex_dump(u8 *bfr, int bytes, unsigned addr);
 int hex_dump(u8 *bfr, int bytes);
 
-// WCHAR *ascii2unicode(char *AsciiStr);
-// char *unicode2ascii(WCHAR *UnicodeStr);
+TCHAR *get_system_message(void);
+TCHAR *get_system_message(DWORD errcode);
+int syslog(const TCHAR *fmt, ...);
 WCHAR *ascii2unicode(char const * const AsciiStr);
 char *unicode2ascii(WCHAR const * const UnicodeStr);
 

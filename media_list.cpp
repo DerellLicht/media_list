@@ -126,6 +126,11 @@ int read_files(TCHAR *filespec)
 static char tfile_spec[MAX_FILE_LEN+1] = "" ;
 static TCHAR file_spec[MAX_FILE_LEN+1] = _T("") ;
 
+// #ifdef UNICODE
+// int wmain(int argc, WCHAR **argv)
+// #else
+// int main(int argc, char **argv)
+// #endif
 int main(int argc, char **argv)
 // undefined reference to `WinMain@16'
 // int _tmain(int argc, TCHAR **argv)

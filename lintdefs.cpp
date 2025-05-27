@@ -22,3 +22,13 @@
 //lint -esym(628, _wstat, _wopen)
 //lint -esym(746, _wstat, _wopen)
 //lint -esym(1055, _wstat, _wopen)
+
+//  more common_funcs warnings
+//lint -e740   Unusual pointer cast (incompatible indirect types)
+//lint -e1786  Implicit conversion to Boolean (arg. no. 1) (int to bool)
+//lint -e1776  Converting a string literal to char * is not const safe (arg. no. 2)
+
+//lint -e734   Loss of precision (assignment) (31 bits to 15 bits)
+//lint -e732   Loss of sign (arg. no. 3) (int to unsigned long)
+
+

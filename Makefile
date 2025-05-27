@@ -33,7 +33,7 @@ LiFLAGS += -dUNICODE -d_UNICODE
 LFLAGS += -dUNICODE -d_UNICODE -mconsole
 endif
 
-CPPSRC=media_list.cpp common.cpp qualify.cpp ext_lookup.cpp file_fmts.cpp
+CPPSRC=media_list.cpp common.cpp qualify.cpp ext_lookup.cpp file_fmts.cpp conio32.cpp
 
 CXXSRC=MediaInfoDll.cxx
 
@@ -96,4 +96,5 @@ common.o: common.h
 qualify.o: qualify.h
 ext_lookup.o: common.h media_list.h file_fmts.h
 file_fmts.o: common.h media_list.h file_fmts.h
+conio32.o: common.h conio32.h
 MediaInfoDll.o: MediaInfoDLL.h common.h media_list.h file_fmts.h

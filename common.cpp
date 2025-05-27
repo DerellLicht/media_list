@@ -18,6 +18,100 @@
 TCHAR base_path[MAX_FILE_LEN+1] ;
 unsigned base_len ;  //  length of base_path
 
+//*************************************************************
+//  each subsequent call to this function overwrites 
+//  the previous report.
+//*************************************************************
+TCHAR *get_system_message(void)
+{
+   static TCHAR msg[261] ;
+   int slen ;
+
+   LPVOID lpMsgBuf;
+   FormatMessage( 
+      FORMAT_MESSAGE_ALLOCATE_BUFFER | 
+      FORMAT_MESSAGE_FROM_SYSTEM | 
+      FORMAT_MESSAGE_IGNORE_INSERTS,
+      NULL,
+      GetLastError(),
+      MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
+      (LPTSTR) &lpMsgBuf,
+      0, 0);
+   // Process any inserts in lpMsgBuf.
+   // ...
+   // Display the string.
+   _tcsncpy(msg, (TCHAR *) lpMsgBuf, 260) ;
+
+   // Free the buffer.
+   LocalFree( lpMsgBuf );
+
+   //  trim the newline off the message before copying it...
+   slen = _tcslen(msg) ;
+   if (msg[slen-1] == 10  ||  msg[slen-1] == 10) {
+      msg[slen-1] = 0 ;
+   }
+
+   return msg;
+}
+
+TCHAR *get_system_message(DWORD errcode)
+{
+   static TCHAR msg[261] ;
+   int slen ;
+
+   LPVOID lpMsgBuf;
+   FormatMessage( 
+      FORMAT_MESSAGE_ALLOCATE_BUFFER | 
+      FORMAT_MESSAGE_FROM_SYSTEM | 
+      FORMAT_MESSAGE_IGNORE_INSERTS,
+      NULL,
+      errcode,
+      MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
+      (LPTSTR) &lpMsgBuf,
+      0, 0);
+   // Process any inserts in lpMsgBuf.
+   // ...
+   // Display the string.
+   _tcsncpy(msg, (TCHAR *) lpMsgBuf, 260) ;
+
+   // Free the buffer.
+   LocalFree( lpMsgBuf );
+
+   //  trim the newline off the message before copying it...
+   slen = _tcslen(msg) ;
+   if (msg[slen-1] == 10  ||  msg[slen-1] == 10) {
+      msg[slen-1] = 0 ;
+   }
+
+   return msg;
+}
+
+//********************************************************************
+//  On Windows platform, try to redefine printf/fprintf
+//  so we can output code to a debug window.
+//  Also, shadow syslog() within OutputDebugStringA()
+//  Note: printf() remapping was unreliable,
+//  but syslog worked great.
+//********************************************************************
+//lint -esym(714, syslog)
+//lint -esym(759, syslog)
+//lint -esym(765, syslog)
+int syslog(const TCHAR *fmt, ...)
+{
+   TCHAR consoleBuffer[3000] ;
+   va_list al; //lint !e522
+
+//lint -esym(526, __builtin_va_start)
+//lint -esym(628, __builtin_va_start)
+   va_start(al, fmt);   //lint !e1055 !e530
+   _vstprintf(consoleBuffer, fmt, al);   //lint !e64
+   // if (common_logging_enabled)
+   //    fprintf(cmlogfd, "%s", consoleBuffer) ;
+   OutputDebugString(consoleBuffer) ;
+   va_end(al);
+   return 1;
+}
+
 //****************************************************************************
 //lint -esym(714, ascii2unicode)
 //lint -esym(759, ascii2unicode)
