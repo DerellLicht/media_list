@@ -1,5 +1,5 @@
 //**********************************************************************************
-//  Copyright (c) 1998-2023 Daniel D. Miller                       
+//  Copyright (c) 1998-2025 Daniel D. Miller                       
 //  common.cpp - common library functions
 //                                                                 
 //  Written by:   Daniel D. Miller  (the derelict)                 
@@ -8,7 +8,6 @@
 
 #include <windows.h>
 #include <stdio.h>
-#include <stdlib.h>  //  PATH_MAX
 
 #include "common.h"
 
@@ -18,7 +17,7 @@
 //lint -esym(768, ul2uc_u::uc, ul2uc_u::ul, ul2uc_u::us)
 
 //  name of drive+path without filenames
-char base_path[PATH_MAX] ;
+char base_path[MAX_FILE_LEN+1] ;
 unsigned base_len ;  //  length of base_path
 
 //**********************************************************************
@@ -122,11 +121,11 @@ int hex_dump(u8 *bfr, int bytes, unsigned addr)
          len += wsprintfA(tail+len, " ") ;
       }
 
-      // printf(" | %s |\n", tail) ;
-      strcat(pstr, " | ") ;
-      strcat(pstr, tail) ;
-      strcat(pstr, " |") ;
-      printf("%s\n", pstr) ;
+      // strcat(pstr, " | ") ;
+      // strcat(pstr, tail) ;
+      // strcat(pstr, " |") ;
+      printf("%s | %s |\n", pstr, tail) ;
+      // printf("%s\n", pstr) ;
       // syslog("%s\n", pstr) ;
 
       idx += leftovers ;
@@ -175,7 +174,7 @@ char *convert_to_commas(ULONGLONG uli, char *outstr)
    *strptr = temp_ull_str[inIdx] ;
 
    //  copy string from tail-aligned to head-aligned
-   strcpy(outstr, strptr) ;
+   strcpy(outstr, strptr) ;   // NOLINT
    return outstr ;
 }
 

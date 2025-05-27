@@ -6,7 +6,7 @@ USE_64BIT = NO
 ifeq ($(USE_64BIT),YES)
 TOOLS=d:\tdm64\bin
 else
-TOOLS=c:\mingw\bin
+TOOLS=c:\tdm32\bin
 endif
 
 ifeq ($(USE_DEBUG),YES)
@@ -28,6 +28,17 @@ endif
 CPPSRC=media_list.cpp common.cpp qualify.cpp ext_lookup.cpp file_fmts.cpp
 
 CXXSRC=MediaInfoDll.cxx
+
+#  clang-tidy options
+CHFLAGS = -header-filter=.*
+CHTAIL = -- 
+#CHTAIL += -Ider_libs
+ifeq ($(USE_64BIT),YES)
+CHTAIL += -DUSE_64BIT
+endif
+ifeq ($(USE_UNICODE),YES)
+CHTAIL += -DUNICODE -D_UNICODE
+endif
 
 LIBS=-lshlwapi
 
@@ -57,6 +68,9 @@ dist:
 
 wc:
 	wc -l *.cpp
+
+check:
+	cmd /C "d:\clang\bin\clang-tidy.exe $(CHFLAGS) $(CPPSRC) $(CHTAIL)"
 
 lint:
 	cmd /C "c:\lint9\lint-nt +v -width(160,4) $(LiFLAGS) -ic:\lint9 mingw.lnt -os(_lint.tmp) lintdefs.cpp $(CPPSRC)"

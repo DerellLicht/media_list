@@ -81,7 +81,7 @@ static int parse_media_file(char *inpname, char *mlstr)
       return 1;
    }
 #else
-static char fpath[1024] ;
+static char fpath[MAX_FILE_LEN+2] ;
    sprintf(fpath, "%s\\%s", base_path, inpname) ;
    int hdl = _open(fpath, _O_BINARY | _O_RDONLY) ;
    if (hdl == -1) {

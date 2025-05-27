@@ -1,5 +1,5 @@
 //**********************************************************************************
-//  Copyright (c) 1998-2023 Daniel D. Miller                       
+//  Copyright (c) 1998-2025 Daniel D. Miller                       
 //  media_list.cpp - list info about various media files
 //                                                                 
 //  Written by:   Daniel D. Miller  (the derelict)                 
@@ -8,7 +8,6 @@
 
 #include <windows.h>
 #include <stdio.h>
-#include <stdlib.h>  //  PATH_MAX
 
 #include "common.h"
 #include "media_list.h"
@@ -123,15 +122,15 @@ int read_files(char *filespec)
 }
 
 //**********************************************************************************
-char file_spec[PATH_MAX+1] = "" ;
+char file_spec[MAX_FILE_LEN+1] = "" ;
 
 int main(int argc, char **argv)
 {
    int idx, result ;
    for (idx=1; idx<argc; idx++) {
       char *p = argv[idx] ;
-      strncpy(file_spec, p, PATH_MAX);
-      file_spec[PATH_MAX] = 0 ;
+      strncpy(file_spec, p, MAX_FILE_LEN);
+      file_spec[MAX_FILE_LEN] = 0 ;
    }
 
    if (file_spec[0] == 0) {

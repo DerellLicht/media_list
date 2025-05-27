@@ -1,5 +1,5 @@
 //**********************************************************************************
-//  Copyright (c) 1998-2023 Daniel D. Miller                       
+//  Copyright (c) 1998-2025 Daniel D. Miller                       
 //  ext_lookup - file extension lookup
 //  This file contains the extension-lookup and vectoring table and function.
 //**********************************************************************************
@@ -10,9 +10,6 @@
 #endif
 #include <windows.h>
 #include <stdio.h>
-#ifdef _lint
-#include <stdlib.h>  //  PATH_MAX
-#endif
 #ifdef USE_64BIT
 #include <fileapi.h>
 #endif

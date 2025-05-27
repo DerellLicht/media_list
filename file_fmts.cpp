@@ -1,5 +1,5 @@
 //*************************************************************************
-//  Copyright (c) 1998-2023 Daniel D. Miller                       
+//  Copyright (c) 1998-2025 Daniel D. Miller                       
 //  file_fmts.cpp - file-format parsers for multimedia info display.
 //  This file contains all parsers which are not handled by MediaInfo.dll
 //*************************************************************************
@@ -9,12 +9,8 @@
 // #undef __STRICT_ANSI__
 #include <windows.h>
 #include <stdio.h>
-#ifdef _lint
-#include <stdlib.h>  //  PATH_MAX
-#endif
 #include <io.h>
 #include <fcntl.h>
-#include <sys/stat.h>
 
 #include "common.h"
 #include "media_list.h"
@@ -24,7 +20,7 @@ static char tempstr[MAXLINE+1] ;
 
 #define  DBUFFER_LEN    1024
 static unsigned char dbuffer[DBUFFER_LEN] ;
-static char fpath[260] ;
+static char fpath[MAX_FILE_LEN+2] ;
 
 //*********************************************************************
 static unsigned short get2bytes(unsigned char const * p)
@@ -293,13 +289,13 @@ int get_ani_info(char *fname, char *mlstr)
       //    anih_header->NumFrames, anih_header->NumSteps,
       //    *(uptr), *(uptr+1), *(uptr+2), *(uptr+3)) ;
       // sprintf(mlstr, "%-30s", tempstr) ;
-      uint list_len = 0 ;
+      // uint list_len ;
       // uint max_len = 0 ;
       while (LOOP_FOREVER) {
          if (_strnicmp((const char *)uptr, "LIST", 4) == 0) {
             uptr += 4 ;
-            u32ptr = (uint *) uptr ;
-            list_len = *u32ptr ;
+            u32ptr = (uint *) uptr ;   //  NOLINT
+            // list_len = *u32ptr ;
             uptr += 4 ;
             // printf("LIST: %u ", list_len);
          }
