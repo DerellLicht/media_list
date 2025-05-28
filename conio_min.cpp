@@ -25,7 +25,7 @@
 // } COORD; 
 //***************************************************************************
   
-//lint -e759  header declaration for symbol could be moved from header to module
+//lint -esym(759, dclrscr, dputs, is_redirected, dnewline, dreturn, get_scode)
 
 #include <windows.h>
 #include <stdio.h>
@@ -116,7 +116,7 @@ void console_init(TCHAR *title)
 
    //  Put up a meaningful console title.
    //  Will this *always* succeed???
-   if (title != 0) {
+   if (title != NULL) {
       bSuccess = SetConsoleTitle(title);
       PERR(bSuccess, "SetConsoleTitle");
    }
@@ -226,8 +226,6 @@ CHAR get_char(void)
    }
 
 //**********************************************************
-//  this is used only by testpause(), to wait on full screen
-//**********************************************************
 WORD get_scode(void)
    {
    WORD inchr ;
@@ -305,22 +303,22 @@ void dnewline(void)
 //  CR only, no LF
 //**********************************************************
 void dreturn(void)
-   {
+{
    sinfo.dwCursorPosition.X = 0 ;
    SetConsoleCursorPosition(hStdOut, sinfo.dwCursorPosition) ;
-   }   
+}   
 
 //**********************************************************
 static void dgotoxy(int x, int y)
-   {
+{
    sinfo.dwCursorPosition.X = x ;
    sinfo.dwCursorPosition.Y = y ;
    SetConsoleCursorPosition(hStdOut, sinfo.dwCursorPosition) ;
-   }
+}
 
 //**********************************************************
 void dclrscr(void)
-   {
+{
    COORD coord = { 0, 0 };
    int slen ;
    DWORD wrlen ;
@@ -331,21 +329,27 @@ void dclrscr(void)
    FillConsoleOutputAttribute(hStdOut, original_attribs, slen, coord, &wrlen) ;
 
    dgotoxy(0,0) ; // home the cursor
-   }   
+}   
 
-//**********************************************************
-void dputsio(const TCHAR *outstr)
+//******************************************************************************
+//  Sadly, neither of these output functions handle Unicode on redirection
+//******************************************************************************
+void dputs(const TCHAR *outstr)
 {
    DWORD wrlen ;
-   WORD slen = _tcslen(outstr) ;
 
    //  watch out for trouble conditions
-   if (outstr == 0  ||  *outstr == 0)  //lint !e774
+   if (outstr == NULL  ||  *outstr == 0)
       return ;
 
-   // _tprintf(_T("%s"), outstr);
-   WriteConsole(hStdOut, outstr, slen, &wrlen, 0) ;
-   sinfo.dwCursorPosition.X += slen ;
+   if (is_redirected()) {
+      _tprintf(_T("%s"), outstr);
+   }
+   else {
+      WORD slen = _tcslen(outstr) ;
+      WriteConsole(hStdOut, outstr, slen, &wrlen, 0) ;
+      sinfo.dwCursorPosition.X += slen ;
+   }
 }
 
 //********************************************************************
@@ -355,9 +359,9 @@ void dputsio(const TCHAR *outstr)
 //  Note: printf() remapping was unreliable,
 //  but syslog worked great.
 //********************************************************************
-//lint -esym(714, syslog)
-//lint -esym(759, syslog)
-//lint -esym(765, syslog)
+//lint -esym(714, dsyslog)
+//lint -esym(759, dsyslog)
+//lint -esym(765, dsyslog)
 int dsyslog(const TCHAR *fmt, ...)
 {
    TCHAR consoleBuffer[3000] ;
@@ -367,10 +371,8 @@ int dsyslog(const TCHAR *fmt, ...)
 //lint -esym(628, __builtin_va_start)
    va_start(al, fmt);   //lint !e1055 !e530
    _vstprintf(consoleBuffer, fmt, al);   //lint !e64
-   // if (common_logging_enabled)
-   //    fprintf(cmlogfd, "%s", consoleBuffer) ;
    // OutputDebugString(consoleBuffer) ;
-   dputsio(consoleBuffer) ;
+   dputs(consoleBuffer) ;
    va_end(al);
    return 1;
 }

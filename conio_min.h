@@ -11,5 +11,5 @@ WORD get_scode(void);
 void dclrscr(void);
 void dnewline(void);
 void dreturn(void);
-void dputsio(const TCHAR *outstr);
+void dputs(const TCHAR *outstr);
 int  dsyslog(const TCHAR *fmt, ...);
