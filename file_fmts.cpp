@@ -263,7 +263,7 @@ int get_ani_info(TCHAR *fname, char *mlstr)
       //  we actually need to scan for 'anih', and it may not 
       //  be on a u32 boundary, at least for Blue Sky Heart files.
       //  limit search to DBUFFER_LEN, though...
-      uint ulen = (uint) uptr - (uint) &dbuffer[0] ;
+      uint ulen = (uint) (uptr - &dbuffer[0]) ;
       while (LOOP_FOREVER) {
          if (_strnicmp((const char *)uptr, "anih", 4) == 0) {
             break ;

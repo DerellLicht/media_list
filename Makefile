@@ -8,6 +8,7 @@ ifeq ($(USE_64BIT),YES)
 TOOLS=d:\tdm64\bin
 else
 TOOLS=c:\tdm32\bin
+#TOOLS=C:\mingw\bin
 endif
 
 ifeq ($(USE_DEBUG),YES)
@@ -15,9 +16,9 @@ CFLAGS = -Wall -g -c
 CxxFLAGS = -Wall -g -c
 LFLAGS = -g
 else
-CFLAGS = -Wall -s -O3 -c
-CxxFLAGS = -Wall -s -O3 -c
-LFLAGS = -s -O3
+CFLAGS = -Wall -s -O3 -c -m32
+CxxFLAGS = -Wall -s -O3 -c -m32
+LFLAGS = -s -O3 -m32
 endif
 CFLAGS += -Weffc++
 CFLAGS += -Wno-write-strings
@@ -30,7 +31,10 @@ ifeq ($(USE_UNICODE),YES)
 CFLAGS += -DUNICODE -D_UNICODE
 CxxFLAGS += -DUNICODE -D_UNICODE
 LiFLAGS += -dUNICODE -d_UNICODE
-LFLAGS += -dUNICODE -d_UNICODE -mconsole
+LFLAGS += -dUNICODE -d_UNICODE
+ifeq ($(USE_64BIT),YES)
+LFLAGS += -municode
+endif
 endif
 
 CPPSRC=media_list.cpp common.cpp qualify.cpp ext_lookup.cpp file_fmts.cpp conio_min.cpp

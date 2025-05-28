@@ -126,20 +126,34 @@ int read_files(TCHAR *filespec)
    return 0;
 }
 
-//**********************************************************************************
-static char tfile_spec[MAX_FILE_LEN+1] = "" ;
+//********************************************************************************
+// #define  USE_TMAIN
+#undef  USE_TMAIN
+
 static TCHAR file_spec[MAX_FILE_LEN+1] = _T("") ;
 
-// #ifdef UNICODE
-// int wmain(int argc, WCHAR **argv)
-// #else
-// int main(int argc, char **argv)
-// #endif
-int main(int argc, char **argv)
-// undefined reference to `WinMain@16'
+#ifdef USE_64BIT
+int _tmain(int argc, TCHAR **argv)
+// undefined reference to `WinMain@16' with tdm32
+#else
+#ifdef USE_TMAIN
 // int _tmain(int argc, TCHAR **argv)
+int wmain(int argc, WCHAR **argv)
+// undefined reference to `WinMain@16' with tdm32
+#else
+int main(int argc, char **argv)
+#endif
+#endif
 {
    int idx, result ;
+#if defined(USE_64BIT)  ||  defined(USE_TMAIN)
+   for (idx=1; idx<argc; idx++) {
+      TCHAR *p = argv[idx] ;
+      _tcsncpy(file_spec, p, MAX_FILE_LEN);
+      file_spec[MAX_FILE_LEN] = 0 ;
+   }
+#else
+   char tfile_spec[MAX_FILE_LEN+1] = "" ;
    for (idx=1; idx<argc; idx++) {
       char *p = argv[idx] ;
       strncpy(tfile_spec, p, MAX_FILE_LEN);
@@ -147,11 +161,7 @@ int main(int argc, char **argv)
       TCHAR *tptr = ascii2unicode(tfile_spec);
       _tcscpy(file_spec, tptr);
    }
-   // for (idx=1; idx<argc; idx++) {
-   //    TCHAR *p = argv[idx] ;
-   //    _tcsncpy(file_spec, p, MAX_FILE_LEN);
-   //    file_spec[MAX_FILE_LEN] = 0 ;
-   // }
+#endif   
 
    if (file_spec[0] == 0) {
       _tcscpy(file_spec, _T("."));
