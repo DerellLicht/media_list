@@ -1,9 +1,6 @@
 //**********************************************************************************
-//  Copyright (c) 1998-2025 Daniel D. Miller                       
+//  Copyright (c) 1998-2025 Derell Licht
 //  media_list.cpp - list info about various media files
-//                                                                 
-//  Written by:   Daniel D. Miller  (the derelict)                 
-//  
 //**********************************************************************************
 
 #include <windows.h>
@@ -18,7 +15,7 @@
 #define  VER_NUMBER "1.01"
 
 //lint -esym(843, Version, ShortVersion) could be declared as const
-TCHAR *Version = _T(" medialist, Version " VER_NUMBER " ") ;   //lint !e707
+TCHAR *Version = _T("MediaList, Version " VER_NUMBER " ") ;   //lint !e707
 TCHAR *ShortVersion = _T(" medialist " VER_NUMBER " ") ;       //lint !e707
 
 //  per Jason Hood, this turns off MinGW's command-line expansion, 
@@ -161,9 +158,10 @@ int main(int argc, char **argv)
    }
 
    console_init(Version) ;
+   dsyslog(_T("\n%s\n"), Version) ;
    result = qualify(file_spec) ;
    if (result == QUAL_INV_DRIVE) {
-      _tprintf(_T("%s: %d\n"), file_spec, result);
+      dsyslog(_T("%s: %d\n"), file_spec, result);
       return 1 ;
    }
    // _tprintf(_T("file spec: %s\n"), file_spec);
