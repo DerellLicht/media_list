@@ -157,7 +157,7 @@ int main(int argc, char **argv)
       _tcscpy(file_spec, _T("."));
    }
 
-   console_init(Version) ;
+   console_init() ;
    dsyslog(_T("\n%s\n"), Version) ;
    result = qualify(file_spec) ;
    if (result == QUAL_INV_DRIVE) {

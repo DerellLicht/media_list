@@ -95,6 +95,6 @@ media_list.o: common.h conio_min.h media_list.h qualify.h
 common.o: common.h
 qualify.o: qualify.h
 ext_lookup.o: common.h conio_min.h media_list.h file_fmts.h
-file_fmts.o: common.h media_list.h file_fmts.h
+file_fmts.o: common.h conio_min.h media_list.h file_fmts.h
 conio_min.o: common.h conio_min.h
 MediaInfoDll.o: MediaInfoDLL.h common.h media_list.h file_fmts.h

@@ -3,7 +3,7 @@
 //  conio_min.h: Template for minimal 32-bit console programs                        
 //***************************************************************************
 
-void console_init(TCHAR*title);
+void console_init(void);
 void restore_console_attribs(void);
 bool is_redirected(void);
 CHAR get_char(void);

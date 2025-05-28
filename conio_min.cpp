@@ -93,7 +93,7 @@ bool is_redirected(void)
 //***************************************************************************
 //  This stores CONSOLE_SCREEN_BUFFER_INFO in global var sinfo
 //***************************************************************************
-void console_init(TCHAR *title)
+void console_init(void)
 {
    BOOL bSuccess;
    DWORD dwMode;
@@ -116,10 +116,11 @@ void console_init(TCHAR *title)
 
    //  Put up a meaningful console title.
    //  Will this *always* succeed???
-   if (title != NULL) {
-      bSuccess = SetConsoleTitle(title);
-      PERR(bSuccess, "SetConsoleTitle");
-   }
+   //  This doesn't appear to work on Windows 10 with tcc/le (in 2025)
+   // if (title != NULL) {
+   //    bSuccess = SetConsoleTitle(title);
+   //    PERR(bSuccess, "SetConsoleTitle");
+   // }
 
    //  Unfortunately, this also fails on all Bash-window terminals
    bSuccess = GetConsoleScreenBufferInfo(hStdOut, &sinfo) ;
