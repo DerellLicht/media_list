@@ -8,7 +8,6 @@ ifeq ($(USE_64BIT),YES)
 TOOLS=d:\tdm64\bin
 else
 TOOLS=c:\tdm32\bin
-#TOOLS=C:\mingw\bin
 endif
 
 ifeq ($(USE_DEBUG),YES)

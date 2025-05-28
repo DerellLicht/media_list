@@ -127,41 +127,54 @@ int read_files(TCHAR *filespec)
 }
 
 //********************************************************************************
-// #define  USE_TMAIN
-#undef  USE_TMAIN
+//  this solution is from:
+//  https://github.com/coderforlife/mingw-unicode-main/
+//********************************************************************************
+#if defined(__GNUC__) && defined(_UNICODE)
 
-static TCHAR file_spec[MAX_FILE_LEN+1] = _T("") ;
+#ifndef __MSVCRT__
+#error Unicode main function requires linking to MSVCRT
+#endif
 
-#ifdef USE_64BIT
-int _tmain(int argc, TCHAR **argv)
-// undefined reference to `WinMain@16' with tdm32
-#else
-#ifdef USE_TMAIN
-// int _tmain(int argc, TCHAR **argv)
-int wmain(int argc, WCHAR **argv)
-// undefined reference to `WinMain@16' with tdm32
-#else
-int main(int argc, char **argv)
+#include <wchar.h>
+#include <stdlib.h>
+
+extern int _CRT_glob;
+extern 
+#ifdef __cplusplus
+"C" 
 #endif
+void __wgetmainargs(int*,wchar_t***,wchar_t***,int,int*);
+
+#ifdef MAIN_USE_ENVP
+int wmain(int argc, wchar_t *argv[], wchar_t *envp[]);
+#else
+int wmain(int argc, wchar_t *argv[]);
 #endif
+
+int main() {
+   wchar_t **enpv, **argv;
+   int argc, si = 0;
+   __wgetmainargs(&argc, &argv, &enpv, _CRT_glob, &si); // this also creates the global variable __wargv
+#ifdef MAIN_USE_ENVP
+   return wmain(argc, argv, enpv);
+#else
+   return wmain(argc, argv);
+#endif
+}
+
+#endif //defined(__GNUC__) && defined(_UNICODE)
+
+//********************************************************************************
+int wmain(int argc, wchar_t *argv[])
 {
+static TCHAR file_spec[MAX_FILE_LEN+1] = _T("") ;
    int idx, result ;
-#if defined(USE_64BIT)  ||  defined(USE_TMAIN)
    for (idx=1; idx<argc; idx++) {
       TCHAR *p = argv[idx] ;
       _tcsncpy(file_spec, p, MAX_FILE_LEN);
       file_spec[MAX_FILE_LEN] = 0 ;
    }
-#else
-   char tfile_spec[MAX_FILE_LEN+1] = "" ;
-   for (idx=1; idx<argc; idx++) {
-      char *p = argv[idx] ;
-      strncpy(tfile_spec, p, MAX_FILE_LEN);
-      tfile_spec[MAX_FILE_LEN] = 0 ;
-      TCHAR *tptr = ascii2unicode(tfile_spec);
-      _tcscpy(file_spec, tptr);
-   }
-#endif   
 
    if (file_spec[0] == 0) {
       _tcscpy(file_spec, _T("."));

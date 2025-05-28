@@ -1,15 +1,10 @@
-> tdm32: I still can't use either _tmain() nor wmain(); 
-  I get the WinMain16 not found error...
-  
-  For now, I'm sticking with 32-bit compiler and main()...
-  I take inputs in ASCII, then convert them to Unicode before proceeding.
-  The result of this, is that I won't be able to input Unicode paths,
-  but any Unicode filenames that I encounter, will be displayed properly.
-
 > On redirection, neither current method outputs Unicode text.
 
 > on 64-bit build, .avif and .tif files fail to open
   Also, executable size goes from 230K to 816K
+  
+  That's okay, I don't really want the 64-bit build anyway.
+  
   
 
 
