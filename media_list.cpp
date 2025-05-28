@@ -8,7 +8,7 @@
 #include <tchar.h>
 
 #include "common.h"
-#include "conio32.h"
+#include "conio_min.h"
 #include "media_list.h"
 #include "qualify.h"
 

@@ -18,6 +18,9 @@
 TCHAR base_path[MAX_FILE_LEN+1] ;
 unsigned base_len ;  //  length of base_path
 
+//lint -esym(714, get_system_message)
+//lint -esym(759, get_system_message)
+//lint -esym(765, get_system_message)
 //*************************************************************
 //  each subsequent call to this function overwrites 
 //  the previous report.

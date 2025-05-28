@@ -14,6 +14,7 @@
 #include <tchar.h>
 
 #include "common.h"
+#include "conio_min.h"
 #include "media_list.h"
 #include "file_fmts.h"
 
@@ -339,7 +340,7 @@ int get_ani_info(TCHAR *fname, char *mlstr)
    return 0 ;
    
 error_exit:
-   _tprintf(_T("error exit: %s: %s\n"), fname, ascii2unicode(mlstr));
+   dsyslog(_T("error exit: %s: %s\n"), fname, ascii2unicode(mlstr));
    return 0 ;   
 }
 

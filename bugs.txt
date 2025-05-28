@@ -1,0 +1,8 @@
+1. I still can't use either _tmain() nor wmain(); 
+I get the WinMain16 not found error...
+
+2. Use _tprintf() if redirection is active
+
+3. create a stripped-down conio32 module, for simple apps like this one.
+
+4. switch to _tprintf() for redirection, though it won't support Unicode.
