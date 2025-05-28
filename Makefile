@@ -91,10 +91,10 @@ $(BIN): $(OBJS)
 
 # DO NOT DELETE
 
-media_list.o: common.h media_list.h qualify.h
+media_list.o: common.h conio32.h media_list.h qualify.h
 common.o: common.h
 qualify.o: qualify.h
-ext_lookup.o: common.h media_list.h file_fmts.h
+ext_lookup.o: common.h conio32.h media_list.h file_fmts.h
 file_fmts.o: common.h media_list.h file_fmts.h
 conio32.o: common.h conio32.h
 MediaInfoDll.o: MediaInfoDLL.h common.h media_list.h file_fmts.h

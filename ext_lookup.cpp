@@ -16,6 +16,7 @@
 #endif
 
 #include "common.h"
+#include "conio32.h"
 #include "media_list.h"
 #include "file_fmts.h"
 
@@ -68,9 +69,9 @@ int print_media_info(ffdata_t const * const fptr)
 
    //  display directory entry
    if (fptr->dirflag) {
-      _tprintf(_T("%14s  "), _T(""));
-      _tprintf(_T("%30s"), _T(" "));
-      _tprintf(_T("[%s]\n"), fptr->filename);
+      dsyslog(_T("%14s  "), _T(""));
+      dsyslog(_T("%30s"), _T(" "));
+      dsyslog(_T("[%s]\n"), fptr->filename);
    }
 
    //  display file entry
@@ -94,19 +95,19 @@ int print_media_info(ffdata_t const * const fptr)
       }
 
       //  show file size
-      _tprintf(_T("%14s  "), ascii2unicode(convert_to_commas(fptr->fsize, NULL)));
+      dsyslog(_T("%14s  "), ascii2unicode(convert_to_commas(fptr->fsize, NULL)));
 
       //  process multimedia display
       if (!show_normal_info) {
-         _tprintf(_T("%-30s"), ascii2unicode(mlstr));
+         dsyslog(_T("%-30s"), ascii2unicode(mlstr));
       } 
       //  display normal file listing
       else {
-         _tprintf(_T("%30s"), _T(" "));
+         dsyslog(_T("%30s"), _T(" "));
       }
 
       //  format filename as required
-      _tprintf(_T("%s\n"), fptr->filename);
+      dsyslog(_T("%s\n"), fptr->filename);
    }
    return 0 ;
 }

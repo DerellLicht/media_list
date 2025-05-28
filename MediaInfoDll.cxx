@@ -333,7 +333,7 @@ FILE_TYPE_UNK
       //  if there was alpha channel, this would be 4 instead.
       //  Note, though, that MediaInfo doesn't appear to have any way
       //  to check for alpha channel
-      sprintf(tempstr, "%u x %u, %u bpp", video_width, video_height, 3*audio_bitrate);
+      sprintf(tempstr, "%4u x %5u, %u bpp", video_width, video_height, 3*audio_bitrate);
       break;
       
    case FILE_TYPE_AUDIO:
@@ -353,10 +353,10 @@ FILE_TYPE_UNK
       
    case FILE_TYPE_VIDEO:
       if (run_time < 60.0) {
-         sprintf(tempstr, "%4u x %4u, %6.2f secs", video_width, video_height, run_time) ;
+         sprintf(tempstr, "%4u x %5u, %6.2f secs", video_width, video_height, run_time) ;
       } else {
          run_time /= 60.0 ;
-         sprintf(tempstr, "%4u x %4u, %6.2f mins", video_width, video_height, run_time) ;
+         sprintf(tempstr, "%4u x %5u, %6.2f mins", video_width, video_height, run_time) ;
       }
       break;
       

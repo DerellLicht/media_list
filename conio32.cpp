@@ -544,6 +544,21 @@ static void dputsi(const TCHAR *outstr, int slen)
 }
 
 //**********************************************************
+void dputsio(const TCHAR *outstr)
+{
+   DWORD wrlen ;
+   WORD slen = _tcslen(outstr) ;
+
+   //  watch out for trouble conditions
+   if (outstr == 0  ||  *outstr == 0)  //lint !e774
+      return ;
+
+   // _tprintf(_T("%s"), outstr);
+   WriteConsole(hStdOut, outstr, slen, &wrlen, 0) ;
+   sinfo.dwCursorPosition.X += slen ;
+}
+
+//**********************************************************
 void dputs(const TCHAR *outstr)
    {
    DWORD wrlen ;
@@ -628,3 +643,31 @@ void dprints(unsigned row, unsigned col, const TCHAR* outstr)
    dgotoxy(col, row) ;
    dputs(outstr) ;
 }   
+
+//********************************************************************
+//  On Windows platform, try to redefine printf/fprintf
+//  so we can output code to a debug window.
+//  Also, shadow syslog() within OutputDebugStringA()
+//  Note: printf() remapping was unreliable,
+//  but syslog worked great.
+//********************************************************************
+//lint -esym(714, syslog)
+//lint -esym(759, syslog)
+//lint -esym(765, syslog)
+int dsyslog(const TCHAR *fmt, ...)
+{
+   TCHAR consoleBuffer[3000] ;
+   va_list al; //lint !e522
+
+//lint -esym(526, __builtin_va_start)
+//lint -esym(628, __builtin_va_start)
+   va_start(al, fmt);   //lint !e1055 !e530
+   _vstprintf(consoleBuffer, fmt, al);   //lint !e64
+   // if (common_logging_enabled)
+   //    fprintf(cmlogfd, "%s", consoleBuffer) ;
+   // OutputDebugString(consoleBuffer) ;
+   dputsio(consoleBuffer) ;
+   va_end(al);
+   return 1;
+}
+

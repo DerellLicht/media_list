@@ -11,8 +11,15 @@
 #include <tchar.h>
 
 #include "common.h"
+#include "conio32.h"
 #include "media_list.h"
 #include "qualify.h"
+
+#define  VER_NUMBER "1.01"
+
+//lint -esym(843, Version, ShortVersion) could be declared as const
+TCHAR *Version = _T(" medialist, Version " VER_NUMBER " ") ;   //lint !e707
+TCHAR *ShortVersion = _T(" medialist " VER_NUMBER " ") ;       //lint !e707
 
 //  per Jason Hood, this turns off MinGW's command-line expansion, 
 //  so we can handle wildcards like we want to.                    
@@ -153,6 +160,7 @@ int main(int argc, char **argv)
       _tcscpy(file_spec, _T("."));
    }
 
+   console_init(Version) ;
    result = qualify(file_spec) ;
    if (result == QUAL_INV_DRIVE) {
       _tprintf(_T("%s: %d\n"), file_spec, result);
@@ -173,10 +181,10 @@ int main(int argc, char **argv)
    
    result = read_files(file_spec);
    if (result < 0) {
-      _tprintf(_T("filespec: %s, %s\n"), file_spec, strerror(-result));
+      dsyslog(_T("filespec: %s, %s\n"), file_spec, strerror(-result));
    }
    else {
-      _tprintf(_T("filespec: %s, fcount: %u\n"), file_spec, filecount);
+      dsyslog(_T("filespec: %s, fcount: %u\n"), file_spec, filecount);
       if (filecount > 0) {
          puts("");
          for (ffdata_t *ftemp = ftop; ftemp != NULL; ftemp = ftemp->next) {
@@ -195,9 +203,10 @@ int main(int argc, char **argv)
             total_ptime /= 60.0 ;
             _stprintf(timestr, _T("%.2f minutes     "), total_ptime) ;  //lint !e592
          }
-         _tprintf(_T("\ntotal playing time: %s\n"), timestr) ;
+         dsyslog(_T("\ntotal playing time: %s\n"), timestr) ;
       }
    }
+   restore_console_attribs();
    return 0;
 }
 

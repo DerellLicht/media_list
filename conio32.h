@@ -36,5 +36,7 @@ void dprintc(unsigned row, unsigned col, const TCHAR outchr);
 void dprintc(unsigned row, unsigned col, unsigned attr, const TCHAR outchr);
 void dputnchar(TCHAR chr, TCHAR attr, uint count);
 void dputs(const TCHAR *outstr);
+void dputsio(const TCHAR *outstr);
 void dprints(unsigned row, unsigned col, const TCHAR * outstr);
+int  dsyslog(const TCHAR *fmt, ...);
 // BOOL control_handler(DWORD dwCtrlType);

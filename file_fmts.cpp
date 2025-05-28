@@ -114,16 +114,16 @@ static int get_ico_cur_ani_info(u8 *bfr, char *mlstr, uint NumAniFrames)
    //       // colors = 1 << iptr->BitCount ;
    //       // printf("ICO:  %u: %u x %u, Planes: %u, BitCount: %u, colors: %u\n", 
    //       //    idx, iptr->Width, iptr->Height, iptr->Planes, iptr->BitCount, colors) ;
-   //       sprintf(tempstr, "%4u x %4u, %u bpp", iptr->Width, iptr->Height, iptr->BitCount) ;
+   //       sprintf(tempstr, "%4u x %5u, %u bpp", iptr->Width, iptr->Height, iptr->BitCount) ;
    //    }
    //    else {   //  cur
    //       // printf("CUR:  %u: %u x %u, colors: %u, dbytes: %u\n", 
    //       //    idx, iptr->Width, iptr->Height, iptr->ColorCount, iptr->SizeInBytes) ;
-   //       sprintf(tempstr, "%4u x %4u, %u data bytes", iptr->Width, iptr->Height, iptr->SizeInBytes) ;
+   //       sprintf(tempstr, "%4u x %5u, %u data bytes", iptr->Width, iptr->Height, iptr->SizeInBytes) ;
    //    }
    // }
    // else {
-   //    sprintf(tempstr, "%4u x %4u, %u colors", iptr->Width, iptr->Height, iptr->ColorCount) ;
+   //    sprintf(tempstr, "%4u x %5u, %u colors", iptr->Width, iptr->Height, iptr->ColorCount) ;
    // }
    // sprintf(mlstr, "%-30s", tempstr) ;
 
@@ -149,19 +149,19 @@ static int get_ico_cur_ani_info(u8 *bfr, char *mlstr, uint NumAniFrames)
       if (pmih->biSize == sizeof(BITMAPINFOHEADER)) {
          // printf("BitCount: %u, ClrUsed: %u\n", pmih->biBitCount, (uint) pmih->biClrUsed);
          if (NumAniFrames > 1) {
-            sprintf(tempstr, "%4u x %4u, %u bpp [%u]", 
+            sprintf(tempstr, "%4u x %5u, %u bpp [%u]", 
                (uint) pmih->biWidth,
                (uint) pmih->biWidth, //  don't use biHeight: height is 2 * width, for bmp reasons
                pmih->biBitCount, NumAniFrames) ;
          }
          else if (NumIcons > 1) {
-            sprintf(tempstr, "%4u x %4u, %u bpp [%u]", 
+            sprintf(tempstr, "%4u x %5u, %u bpp [%u]", 
                (uint) pmih->biWidth,
                (uint) pmih->biWidth, //  don't use biHeight: height is 2 * width, for bmp reasons
                pmih->biBitCount, NumIcons) ;
          }
          else {
-            sprintf(tempstr, "%4u x %4u, %u bpp", 
+            sprintf(tempstr, "%4u x %5u, %u bpp", 
                (uint) pmih->biWidth,
                (uint) pmih->biWidth, //  don't use biHeight: height is 2 * width, for bmp reasons
                pmih->biBitCount) ;
@@ -469,8 +469,8 @@ int get_jpeg_info(TCHAR *fname, char *mlstr)
    if (rows == 0  &&  cols == 0) {
       sprintf(mlstr, "%4s - no SOF0 segment      ", jpeg_fmt[format]) ;
    } else {     //                             "
-//    sprintf(mlstr, "%4u x %4u, %4s           ", 
-      sprintf(mlstr, "%4u x %4u, %u bpp %4s      ", 
+//    sprintf(mlstr, "%4u x %5u, %4s           ", 
+      sprintf(mlstr, "%4u x %5u, %u bpp %4s     ", 
          rows, cols, density_units*3, jpeg_fmt[format]) ;
    }
    return 0 ;
@@ -566,7 +566,7 @@ int get_webp_info(TCHAR *fname, char *mlstr)
          uconv.uc[0] = *hd++ ;
          uconv.uc[1] = *hd++ ;
          height = uconv.ul + 1;
-         sprintf(mlstr, "%4u x %4u, VP8X format    ", width, height) ;
+         sprintf(mlstr, "%4u x %5u, VP8X format    ", width, height) ;
          break ;
          
       case ' ':
@@ -582,7 +582,7 @@ int get_webp_info(TCHAR *fname, char *mlstr)
             uconv.uc[0] = *hd++ ;
             uconv.uc[1] = *hd++ ;
             height = uconv.ul ;
-            sprintf(mlstr, "%4u x %4u, VP8 format     ", width, height) ;
+            sprintf(mlstr, "%4u x %5u, VP8 format     ", width, height) ;
          } else {
             sprintf(mlstr, "VP8X bad sync code    ") ;
          }
@@ -674,7 +674,7 @@ int get_sid_info(TCHAR *fname, char *mlstr)
       rows = swap32(sid_info->height) ;
       bpp  = sid_info->color_clue1 * 8 ;
 
-      sprintf(tempstr, "%4u x %4u, %u bpp", cols, rows, bpp) ;
+      sprintf(tempstr, "%4u x %5u, %u bpp", cols, rows, bpp) ;
       sprintf(mlstr, "%-30s", tempstr) ;
    }
    return 0 ;
@@ -715,8 +715,8 @@ int get_gif_info(TCHAR *fname, char *mlstr)
       rows = gif_info->height ;
       bpp  = gif_info->bpp + 1 ;
 
-      // sprintf(tempstr, "%4u x %4u, %u colors", cols, rows, (1U << bpp)) ;
-      sprintf(tempstr, "%4u x %4u, %u bpp", cols, rows, bpp) ;
+      // sprintf(tempstr, "%4u x %5u, %u colors", cols, rows, (1U << bpp)) ;
+      sprintf(tempstr, "%4u x %5u, %u bpp", cols, rows, bpp) ;
       sprintf(mlstr, "%-30s", tempstr) ;
    }
    return 0 ;
@@ -742,7 +742,7 @@ int get_bmp_info(TCHAR *fname, char *mlstr)
       height = (uint) bmi->bmiHeader.biHeight ;
       bpp  = bmi->bmiHeader.biBitCount ;
 
-      sprintf(tempstr, "%4u x %4u, %u bpp", width, height, bpp) ;
+      sprintf(tempstr, "%4u x %5u, %u bpp", width, height, bpp) ;
       sprintf(mlstr, "%-30s", tempstr) ;
    }
    return 0 ;
@@ -836,19 +836,19 @@ int get_png_info(TCHAR *fname, char *mlstr)
       switch (colorType) {
       case 2:
          bpp = 3 * bitDepth ;
-         sprintf(tempstr, "%4u x %4u, %u bpp", cols, rows, bpp) ;
+         sprintf(tempstr, "%4u x %5u, %u bpp", cols, rows, bpp) ;
          break ;
          
       case 6:
          bpp = 4 * bitDepth ;
-         sprintf(tempstr, "%4u x %4u, %u bpp", cols, rows, bpp) ;
+         sprintf(tempstr, "%4u x %5u, %u bpp", cols, rows, bpp) ;
          break ;
          
       // case 0:
       // case 3:
       // case 4:
       default:
-         sprintf(tempstr, "%4u x %4u, [%u, %u]", cols, rows, colorType, bitDepth) ;
+         sprintf(tempstr, "%4u x %5u, [%u, %u]", cols, rows, colorType, bitDepth) ;
          break ;
       }
       sprintf(mlstr, "%-30s", tempstr) ;
@@ -998,10 +998,10 @@ int get_avi_info(TCHAR *fname, char *mlstr)
    }
 
    if (run_time < 60.0) {
-      sprintf(tempstr, "%4u x %4u, %.2f secs", cols, rows, run_time) ;
+      sprintf(tempstr, "%4u x %5u, %.2f secs", cols, rows, run_time) ;
    } else {
       run_time /= 60.0 ;
-      sprintf(tempstr, "%4u x %4u, %.2f mins", cols, rows, run_time) ;
+      sprintf(tempstr, "%4u x %5u, %.2f mins", cols, rows, run_time) ;
    }
    sprintf(mlstr, "%-30s", tempstr) ;
    return 0 ;
