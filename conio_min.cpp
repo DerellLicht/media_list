@@ -354,16 +354,10 @@ void dputs(const TCHAR *outstr)
 }
 
 //********************************************************************
-//  On Windows platform, try to redefine printf/fprintf
-//  so we can output code to a debug window.
-//  Also, shadow syslog() within OutputDebugStringA()
-//  Note: printf() remapping was unreliable,
-//  but syslog worked great.
-//********************************************************************
-//lint -esym(714, dsyslog)
-//lint -esym(759, dsyslog)
-//lint -esym(765, dsyslog)
-int dsyslog(const TCHAR *fmt, ...)
+//lint -esym(714, dputsf)
+//lint -esym(759, dputsf)
+//lint -esym(765, dputsf)
+int dputsf(const TCHAR *fmt, ...)
 {
    TCHAR consoleBuffer[3000] ;
    va_list al; //lint !e522

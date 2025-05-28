@@ -12,4 +12,4 @@ void dclrscr(void);
 void dnewline(void);
 void dreturn(void);
 void dputs(const TCHAR *outstr);
-int  dsyslog(const TCHAR *fmt, ...);
+int  dputsf(const TCHAR *fmt, ...);

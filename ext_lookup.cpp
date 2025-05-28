@@ -69,9 +69,9 @@ int print_media_info(ffdata_t const * const fptr)
 
    //  display directory entry
    if (fptr->dirflag) {
-      dsyslog(_T("%14s  "), _T(""));
-      dsyslog(_T("%30s"), _T(" "));
-      dsyslog(_T("[%s]\n"), fptr->filename);
+      dputsf(_T("%14s  "), _T(""));
+      dputsf(_T("%30s"), _T(" "));
+      dputsf(_T("[%s]\n"), fptr->filename);
    }
 
    //  display file entry
@@ -95,19 +95,19 @@ int print_media_info(ffdata_t const * const fptr)
       }
 
       //  show file size
-      dsyslog(_T("%14s  "), ascii2unicode(convert_to_commas(fptr->fsize, NULL)));
+      dputsf(_T("%14s  "), ascii2unicode(convert_to_commas(fptr->fsize, NULL)));
 
       //  process multimedia display
       if (!show_normal_info) {
-         dsyslog(_T("%-30s"), ascii2unicode(mlstr));
+         dputsf(_T("%-30s"), ascii2unicode(mlstr));
       } 
       //  display normal file listing
       else {
-         dsyslog(_T("%30s"), _T(" "));
+         dputsf(_T("%30s"), _T(" "));
       }
 
       //  format filename as required
-      dsyslog(_T("%s\n"), fptr->filename);
+      dputsf(_T("%s\n"), fptr->filename);
    }
    return 0 ;
 }

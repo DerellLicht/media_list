@@ -15,10 +15,6 @@
 /*                                                                */
 /******************************************************************/
 
-// #ifdef _WIN32_IE >= 0x0600
-// c:\mingw\include\shlwapi.h  72  Error 87: expression too complicated for #ifdef or #ifndef
-//lint -e87   expression too complicated for #ifdef or #ifndef  (rejecting >= )
-
 #include <windows.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -27,10 +23,11 @@
 //  lint says I don't need this header, and in fact for MSVC6.0
 //  I *don't* need it, but for gcc I do...
 #include <ctype.h>              //  tolower()
-#include <shlwapi.h>
+#include <shlwapi.h>    // PathIsUNC(), etc
 #include <limits.h>
 #include <tchar.h>
 
+// #include "conio_min.h"
 #include "qualify.h"
 
 #define  LOOP_FOREVER   true
@@ -94,8 +91,9 @@ unsigned qualify (TCHAR *argptr)
    //  get expanded path (this doesn't support UNC)
    //******************************************************
    plen = GetFullPathName (argptr, PATH_MAX, (LPTSTR) pathptr, NULL);
-   if (plen == 0)
+   if (plen == 0) {
       return QUAL_INV_DRIVE;
+   }
 
    len = _tcslen (pathptr);
    if (len == 3) {

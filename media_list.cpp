@@ -152,7 +152,8 @@ int wmain(int argc, wchar_t *argv[], wchar_t *envp[]);
 int wmain(int argc, wchar_t *argv[]);
 #endif
 
-int main() {
+int main() 
+{
    wchar_t **enpv, **argv;
    int argc, si = 0;
    __wgetmainargs(&argc, &argv, &enpv, _CRT_glob, &si); // this also creates the global variable __wargv
@@ -166,10 +167,24 @@ int main() {
 #endif //defined(__GNUC__) && defined(_UNICODE)
 
 //********************************************************************************
+static TCHAR file_spec[MAX_FILE_LEN+1] = _T("") ;
+
 int wmain(int argc, wchar_t *argv[])
 {
-static TCHAR file_spec[MAX_FILE_LEN+1] = _T("") ;
    int idx, result ;
+
+   console_init() ;
+   
+   //  okay, cause of this, is that apparently I have to use double-backslash
+   //  to put a quote after a backslash...
+   //  But forward slash works fine...
+   // > medialist glock17\"?????????? ?????????"
+   // arg 1: [glock17"??????????]
+   // arg 2: [?????????]
+
+   // > medialist glock17\\"?????????? ?????????"
+   // filespec: D:\SourceCode\Git\media_list\glock17\?????????? ?????????\*, fcount: 3
+   
    for (idx=1; idx<argc; idx++) {
       TCHAR *p = argv[idx] ;
       _tcsncpy(file_spec, p, MAX_FILE_LEN);
@@ -180,14 +195,11 @@ static TCHAR file_spec[MAX_FILE_LEN+1] = _T("") ;
       _tcscpy(file_spec, _T("."));
    }
 
-   console_init() ;
-   dsyslog(_T("\n%s\n"), Version) ;
    result = qualify(file_spec) ;
    if (result == QUAL_INV_DRIVE) {
-      dsyslog(_T("%s: %d\n"), file_spec, result);
+      dputsf(_T("%s: %d\n"), file_spec, result);
       return 1 ;
    }
-   // _tprintf(_T("file spec: %s\n"), file_spec);
    
    //  Extract base path from first filespec,
    //  and strip off filename
@@ -202,10 +214,10 @@ static TCHAR file_spec[MAX_FILE_LEN+1] = _T("") ;
    
    result = read_files(file_spec);
    if (result < 0) {
-      dsyslog(_T("filespec: %s, %s\n"), file_spec, strerror(-result));
+      dputsf(_T("filespec: %s, %s\n"), file_spec, strerror(-result));
    }
    else {
-      dsyslog(_T("filespec: %s, fcount: %u\n"), file_spec, filecount);
+      dputsf(_T("filespec: %s, fcount: %u\n"), file_spec, filecount);
       if (filecount > 0) {
          puts("");
          for (ffdata_t *ftemp = ftop; ftemp != NULL; ftemp = ftemp->next) {
@@ -224,7 +236,7 @@ static TCHAR file_spec[MAX_FILE_LEN+1] = _T("") ;
             total_ptime /= 60.0 ;
             _stprintf(timestr, _T("%.2f minutes     "), total_ptime) ;  //lint !e592
          }
-         dsyslog(_T("\ntotal playing time: %s\n"), timestr) ;
+         dputsf(_T("\ntotal playing time: %s\n"), timestr) ;
       }
    }
    restore_console_attribs();
