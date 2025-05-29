@@ -199,7 +199,7 @@ void restore_console_attribs(void)
 //*************************************************************************************
 //lint -esym(759,get_char) -esym(765,get_char) -esym(714,get_char) 
 CHAR get_char(void)
-   {
+{
    DWORD dwInputMode; /* to save the input mode */
    BOOL bSuccess;
    CHAR chBuf; /* buffer to read into */
@@ -211,8 +211,7 @@ CHAR get_char(void)
 
    //  Disable line input. 
    //  Echo input must be disabled when disabling line input 
-   bSuccess = SetConsoleMode(hStdIn, 
-      dwInputMode & ~ENABLE_LINE_INPUT & ~ENABLE_ECHO_INPUT);
+   bSuccess = SetConsoleMode(hStdIn, dwInputMode & ~ENABLE_LINE_INPUT & ~ENABLE_ECHO_INPUT);
    PERR(bSuccess, "SetConsoleMode");
 
    /* read a character from the console input */
@@ -224,11 +223,11 @@ CHAR get_char(void)
    PERR(bSuccess, "SetConsoleMode");
 
    return(chBuf);
-   }
+}
 
 //**********************************************************
 WORD get_scode(void)
-   {
+{
    WORD inchr ;
    inchr = _getch() ;
    if (inchr == 0)
@@ -243,7 +242,7 @@ WORD get_scode(void)
       inchr |= 0xE0 ;
       }   
    return inchr ;
-   }   
+}
 
 //**********************************************************
 // BOOL ScrollConsoleScreenBuffer(
