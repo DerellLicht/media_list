@@ -265,6 +265,8 @@ int hex_dump(u8 *bfr, int bytes)
 //*****************************************************************************
 // ULLONG_MAX = 18,446,744,073,709,551,615
 //*****************************************************************************
+#undef  USE_LLU
+
 char *convert_to_commas(ULONGLONG uli, char *outstr)
 {  //lint !e1066
    uint slen, j, inIdx ;
@@ -276,8 +278,11 @@ char *convert_to_commas(ULONGLONG uli, char *outstr)
    }
 
    // sprintf(temp_ull_str, "%"PRIu64"", uli);
-   // sprintf(temp_ull_str, "%llu", uli);
+#ifdef  USE_LLU
+   sprintf(temp_ull_str, "%llu", uli);
+#else   
    sprintf(temp_ull_str, "%I64u", uli);
+#endif   
    // _ui64toa(uli, temp_ull_str, 10) ;
    slen = strlen(temp_ull_str) ;
    inIdx = --slen ;//  convert byte-count to string index 

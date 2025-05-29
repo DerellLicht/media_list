@@ -1,3 +1,6 @@
 
 > On redirection, neither current method outputs Unicode text.
 
+  Research other options for redirection on Unicode
+
+

@@ -8,6 +8,7 @@ ifeq ($(USE_64BIT),YES)
 TOOLS=d:\tdm64\bin
 else
 TOOLS=c:\tdm32\bin
+#TOOLS=c:\mingw32\bin
 endif
 
 ifeq ($(USE_DEBUG),YES)
@@ -32,6 +33,10 @@ CxxFLAGS += -DUNICODE -D_UNICODE
 LiFLAGS += -dUNICODE -d_UNICODE
 LFLAGS += -dUNICODE -d_UNICODE
 endif
+# neither of these fix __gxx_personality_v0 runtime error
+# it is caused by the Dwarf version of the MinGW toolchain
+#LFLAGS += -lstdc++
+#LFLAGS += -fno-exceptions -fno-rtti 
 
 CPPSRC=media_list.cpp common.cpp qualify.cpp ext_lookup.cpp file_fmts.cpp conio_min.cpp
 

@@ -127,6 +127,12 @@ int read_files(TCHAR *filespec)
 }
 
 //********************************************************************************
+// #define  USE_SO_METHOD
+#undef  USE_SO_METHOD
+
+#ifndef  USE_SO_METHOD
+
+//********************************************************************************
 //  this solution is from:
 //  https://github.com/coderforlife/mingw-unicode-main/
 //********************************************************************************
@@ -165,16 +171,51 @@ int main()
 }
 
 #endif //defined(__GNUC__) && defined(_UNICODE)
+#endif
 
 //********************************************************************************
 static TCHAR file_spec[MAX_FILE_LEN+1] = _T("") ;
 
+#ifdef  USE_SO_METHOD
+int main(void) 
+#else
 int wmain(int argc, wchar_t *argv[])
+#endif
 {
    int idx, result ;
 
    console_init() ;
    
+   //********************************************************************************
+   //  got this solution from:
+   //  https://stackoverflow.com/questions/79642663/mingw-and-wmain-undefined-reference-to-winmain16/79642996#79642996
+   //********************************************************************************
+#ifdef  USE_SO_METHOD
+    LPWSTR *szArglist;
+    int nArgs;
+
+    // Get the command line string
+    LPWSTR commandLine = GetCommandLineW();
+
+    // Convert the command line string to an array of arguments
+    szArglist = CommandLineToArgvW(commandLine, &nArgs);
+
+    if (szArglist == NULL) {
+        wprintf(L"CommandLineToArgvW failed\n");
+        return 1;
+    } 
+    else {
+        for (idx = 0; idx < nArgs; idx++) {
+            // wprintf(L"%d: %s\n", i, szArglist[i]);
+            TCHAR *p = szArglist[idx] ;
+            _tcsncpy(file_spec, p, MAX_FILE_LEN);
+            file_spec[MAX_FILE_LEN] = 0 ;
+        }
+    }
+
+    // Free the memory allocated by CommandLineToArgvW
+    LocalFree(szArglist);
+#else
    //  okay, cause of this, is that apparently I have to use double-backslash
    //  to put a quote after a backslash...
    //  But forward slash works fine...
@@ -190,6 +231,7 @@ int wmain(int argc, wchar_t *argv[])
       _tcsncpy(file_spec, p, MAX_FILE_LEN);
       file_spec[MAX_FILE_LEN] = 0 ;
    }
+#endif   
 
    if (file_spec[0] == 0) {
       _tcscpy(file_spec, _T("."));
