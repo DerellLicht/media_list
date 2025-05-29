@@ -31,9 +31,6 @@ CFLAGS += -DUNICODE -D_UNICODE
 CxxFLAGS += -DUNICODE -D_UNICODE
 LiFLAGS += -dUNICODE -d_UNICODE
 LFLAGS += -dUNICODE -d_UNICODE
-ifeq ($(USE_64BIT),YES)
-LFLAGS += -municode
-endif
 endif
 
 CPPSRC=media_list.cpp common.cpp qualify.cpp ext_lookup.cpp file_fmts.cpp conio_min.cpp
