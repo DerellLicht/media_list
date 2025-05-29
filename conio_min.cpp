@@ -38,8 +38,6 @@
 #include "common.h"
 #include "conio_min.h"
 
-//lint -esym(818, title)   symbolcould be declared as pointing to const
-
 static HANDLE hStdOut ;
 static HANDLE hStdIn ;
 
@@ -49,14 +47,8 @@ static bool redirected = false ;
 
 static WORD original_attribs = 3 ;
 
-// static unsigned lines = 0 ;
-
-//lint -esym(759,control_handler) -esym(765, control_handler)
-
-//***************************************************************************
 //***************************************************************************
 //                GENERIC 32-BIT CONSOLE I/O FUNCTIONS
-//***************************************************************************
 //***************************************************************************
 
 // #define PERR(bSuccess, api) {if (!(bSuccess)) perr(__FILE__, __LINE__, api, GetLastError());}
@@ -68,9 +60,10 @@ static void PERR(bool bSuccess, PCHAR szApiName)
 }
 
 //**********************************************************
-//lint -esym(715,dwCtrlType)
+//lint -esym(759, control_handler) 
+//lint -esym(765, control_handler)
 static BOOL WINAPI control_handler(DWORD dwCtrlType)
-   {
+{
    BOOL bSuccess;
    DWORD dwMode;
 
@@ -82,7 +75,7 @@ static BOOL WINAPI control_handler(DWORD dwCtrlType)
 
    //  display message and do other work
    return FALSE ;
-   }   
+}   //lint !e715  dwCtrlType not used
 
 //***************************************************************************
 bool is_redirected(void)
