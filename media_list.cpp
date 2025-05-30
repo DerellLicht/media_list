@@ -169,11 +169,7 @@ int main()
 //********************************************************************************
 static TCHAR file_spec[MAX_FILE_LEN+1] = _T("") ;
 
-#ifdef  USE_SO_METHOD
-int main(void) 
-#else
 int wmain(int argc, wchar_t *argv[])
-#endif
 {
    int idx, result ;
 
