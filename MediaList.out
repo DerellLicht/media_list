@@ -1,6 +1,4 @@
 D:\SourceCode\Git\media_list Yes, Master?? > for %v in (audio, files, images, video) do medialist %v
-
-MediaList, Version 1.01
 filespec: D:\SourceCode\Git\media_list\audio\*, fcount: 8
 
     15,297,195   862 kbps VBR,   2.37 mins    02 Geralt of Rivia.flac
@@ -13,8 +11,6 @@ filespec: D:\SourceCode\Git\media_list\audio\*, fcount: 8
        337,143   128 kbps VBR,  21.13 secs    One_Step_Forward.ogg
 
 total playing time: 10.95 minutes
-
-MediaList, Version 1.01
 filespec: D:\SourceCode\Git\media_list\files\*, fcount: 33
 
     15,297,195   862 kbps VBR,   2.37 mins    02 Geralt of Rivia.flac
@@ -52,12 +48,13 @@ filespec: D:\SourceCode\Git\media_list\files\*, fcount: 33
      1,034,003  2048 x  1536, 24 bpp Exif     zzyzx.road2.jpg
 
 total playing time: 18.97 minutes
-
-MediaList, Version 1.01
-filespec: D:\SourceCode\Git\media_list\images\*, fcount: 25
+filespec: D:\SourceCode\Git\media_list\images\*, fcount: 28
 
         29,326    32 x    32, 8 bpp [13]      256swobusy.ani
          2,238    32 x    32, 8 bpp           armour.ico
+       365,046  4257 x  7265                  E08_SQ01.svg
+       354,188  6423 x  5589                  E08_SQ01_S2.svg
+       366,388  7138 x  4782                  E08_SQ01_S3.svg
         36,076    32 x    32, 8 bpp [16]      Ecliptic.ani
         16,958    64 x    64, 32 bpp          Firefox_64x64.ico
         15,790    32 x    32, 8 bpp [7]       Flames.ani
@@ -81,8 +78,6 @@ filespec: D:\SourceCode\Git\media_list\images\*, fcount: 25
      2,677,124  2048 x  1536, 24 bpp Jfif     zzyzx.refuge.jpg
      1,034,003  2048 x  1536, 24 bpp Exif     zzyzx.road2.jpg
    219,726,254  8500 x 20675, 24 bpp          ?????????.png
-
-MediaList, Version 1.01
 filespec: D:\SourceCode\Git\media_list\video\*, fcount: 10
 
      3,214,317   352 x   240,  12.68 secs     airforce.takeoff.mpg
