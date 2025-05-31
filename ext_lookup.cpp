@@ -43,6 +43,7 @@ static mm_lookup_t const mm_lookup[] = {
 { _T("tif"),  get_mi_info },
 { _T("tiff"), get_mi_info },
 { _T("webp"), get_webp_info },
+{ _T("svg"),  get_svg_info },
 //  audio formats
 { _T("flac"), get_mi_info },
 { _T("mp3"),  get_mi_info },

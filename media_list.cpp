@@ -12,7 +12,9 @@
 #include "media_list.h"
 #include "qualify.h"
 
-#define  VER_NUMBER "1.01"
+//  V1.01  Convert to Unicode
+//  V1.02  Add support for SVG files
+#define  VER_NUMBER "1.02"
 
 //lint -esym(843, Version, ShortVersion) could be declared as const
 TCHAR *Version = _T("MediaList, Version " VER_NUMBER " ") ;   //lint !e707

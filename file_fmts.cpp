@@ -13,6 +13,8 @@
 #include <fcntl.h>
 #include <tchar.h>
 
+//lint -esym(1055, atoi)
+
 #include "common.h"
 #include "conio_min.h"
 #include "media_list.h"
@@ -598,6 +600,55 @@ int get_webp_info(TCHAR *fname, char *mlstr)
          break ;      
       }
    }
+   return 0;
+}
+
+//************************************************************************
+//  SVG is actually a vector file format, with image-drawing options.
+//  As a first pass, I will search for the following string:
+//  style="width:4257px;height:7265px;background:#222222;"
+//  I don't know if all svg files have this field, 
+//  so more work may be required in the future.
+//************************************************************************
+// <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
+// contentStyleType="text/css" 
+// height="7265px" preserveAspectRatio="none" 
+// style="width:4257px;height:7265px;background:#222222;" 
+// version="1.1" viewBox="0 0 4257 7265" 
+// width="4257px" zoomAndPan="magnify"><defs/><g><rect fill="#222222" 
+//************************************************************************
+int get_svg_info(TCHAR *fname, char *mlstr)
+{
+   _stprintf(fpath, _T("%s\\%s"), base_path, fname) ;
+   int result = read_into_dbuffer(fname) ;
+   if (result != 0) {
+      sprintf(mlstr, "%-30s", "unreadable SVG") ;
+      return 0;
+   } 
+      //  first, search for the "fmt" string
+   if (strncmp((char *)  dbuffer,    "<svg", 4) != 0) {
+      sprintf(mlstr, "%-30s", "unknown svg format 1") ;
+      return 0 ;
+   }
+
+   //  style="width:4257px;height:7265px;background:#222222;"
+   char *hd = strstr((char *) dbuffer, "style=\"width:");   
+   if (hd == NULL) {
+      sprintf(mlstr, "%-30s", "unknown svg format 2") ;
+      return 0 ;
+   }
+   char *tl = (hd + 13);
+   uint width = atoi(tl) ;
+   tl = strstr(hd, ";height:");
+   if (tl == NULL) {
+      sprintf(mlstr, "%-30s", "unknown svg format 3") ;
+      return 0 ;
+   }
+   tl += 8 ;
+   uint height = atoi(tl);
+   char stemp[30] ;
+   sprintf(stemp, "%4u x %5u", width, height);
+   sprintf(mlstr, "%-30s", stemp) ;
    return 0;
 }
 
