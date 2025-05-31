@@ -219,7 +219,7 @@ int wmain(int argc, wchar_t *argv[])
       dputsf(_T("filespec: %s, %s\n"), file_spec, strerror(-result));
    }
    else {
-      dputsf(_T("filespec: %s, fcount: %u\n"), file_spec, filecount);
+      dputsf(_T("\nfilespec: %s, fcount: %u\n"), file_spec, filecount);
       if (filecount > 0) {
          puts("");
          for (ffdata_t *ftemp = ftop; ftemp != NULL; ftemp = ftemp->next) {
