@@ -15,6 +15,7 @@
 /*                                                                */
 /******************************************************************/
 
+
 #include <windows.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -27,7 +28,6 @@
 #include <limits.h>
 #include <tchar.h>
 
-// #include "conio_min.h"
 #include "qualify.h"
 
 #define  LOOP_FOREVER   true
@@ -55,7 +55,7 @@ unsigned qualify (TCHAR *argptr)
       int drive = _getdrive ();     //  1 = A:
       //  see if we have a UNC drive...
       if (drive == 0) {
-         GetCurrentDirectory (250, pathptr);
+         GetCurrentDirectory (250, pathptr); //lint !e534
          _tcscat (pathptr, _T("\\*"));
          goto exit_point;
       }
@@ -91,9 +91,8 @@ unsigned qualify (TCHAR *argptr)
    //  get expanded path (this doesn't support UNC)
    //******************************************************
    plen = GetFullPathName (argptr, PATH_MAX, (LPTSTR) pathptr, NULL);
-   if (plen == 0) {
+   if (plen == 0)
       return QUAL_INV_DRIVE;
-   }
 
    len = _tcslen (pathptr);
    if (len == 3) {
