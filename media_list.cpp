@@ -177,15 +177,16 @@ int wmain(int argc, wchar_t *argv[])
 
    console_init() ;
    
-   //  okay, cause of this, is that apparently I have to use double-backslash
-   //  to put a quote after a backslash...
+   //  okay, the cause of this, is that apparently I have to use 
+   //  double-backslash to put a quote after a backslash...
    //  But forward slash works fine...
-   // > medialist glock17\"?????????? ?????????"
-   // arg 1: [glock17"??????????]
-   // arg 2: [?????????]
-
-   // > medialist glock17\\"?????????? ?????????"
-   // filespec: D:\SourceCode\Git\media_list\glock17\?????????? ?????????\*, fcount: 3
+   // > medialist glock17\"буяновский страйкбол"
+   // arg 1: [glock17"буяновский]
+   // arg 2: [страйкбол]
+   
+   //  unicons derelict cornucopia "буяновский страйкбол"
+   // > medialist glock17\\"буяновский страйкбол"
+   // filespec: D:\SourceCode\Git\media_list\glock17\буяновский страйкбол\*, fcount: 3
    
    for (idx=1; idx<argc; idx++) {
       TCHAR *p = argv[idx] ;
