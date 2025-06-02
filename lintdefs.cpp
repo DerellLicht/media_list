@@ -18,9 +18,9 @@
 //  unicode warnings
 //lint -e559  Size of argument inconsistent with format
 
-//lint -esym(526, _wstat, _wopen)
-//lint -esym(628, _wstat, _wopen)
-//lint -esym(746, _wstat, _wopen)
+//lint -esym(526, _wstat, _wopen, atoi, exit)
+//lint -esym(628, _wstat, _wopen, atoi, exit)
+//lint -esym(746, _wstat, _wopen, atoi, exit)
 //lint -esym(1055, _wstat, _wopen)
 
 //  more common_funcs warnings
