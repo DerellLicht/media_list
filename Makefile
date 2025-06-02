@@ -16,8 +16,8 @@ CFLAGS = -Wall -g -c
 CxxFLAGS = -Wall -g -c
 LFLAGS = -g
 else
-CFLAGS = -Wall -s -O3 -c -m32
-CxxFLAGS = -Wall -s -O3 -c -m32
+CFLAGS = -Wall -s -O3 -c
+CxxFLAGS = -Wall -s -O3 -c
 LFLAGS = -s -O3 -m32
 endif
 CFLAGS += -Weffc++
