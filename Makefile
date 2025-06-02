@@ -38,7 +38,14 @@ endif
 #LFLAGS += -lstdc++
 #LFLAGS += -fno-exceptions -fno-rtti 
 
-CPPSRC=media_list.cpp common.cpp qualify.cpp ext_lookup.cpp file_fmts.cpp conio_min.cpp
+LiFLAGS += -Ider_libs
+CFLAGS += -Ider_libs
+CxxFLAGS += -Ider_libs
+
+CPPSRC=media_list.cpp ext_lookup.cpp file_fmts.cpp conio_min.cpp \
+der_libs\common_funcs.cpp \
+der_libs\common_win.cpp \
+der_libs\qualify.cpp 
 
 CXXSRC=MediaInfoDll.cxx
 
@@ -53,16 +60,16 @@ ifeq ($(USE_UNICODE),YES)
 CHTAIL += -DUNICODE -D_UNICODE
 endif
 
-LIBS=-lshlwapi
+LIBS=-lshlwapi -lgdi32 -lcomdlg32
 
 OBJS = $(CSRC:.c=.o) $(CPPSRC:.cpp=.o)  $(CXXSRC:.cxx=.o) 
 
 #**************************************************************************
 %.o: %.cpp
-	$(TOOLS)\g++ $(CFLAGS) $<
+	$(TOOLS)\g++ $(CFLAGS) -c $< -o $@
 
 %.o: %.cxx
-	$(TOOLS)\g++ $(CxxFLAGS) $<
+	$(TOOLS)\g++ $(CxxFLAGS) -c $< -o $@
 
 ifeq ($(USE_64BIT),NO)
 BIN = MediaList.exe
@@ -96,10 +103,8 @@ $(BIN): $(OBJS)
 
 # DO NOT DELETE
 
-media_list.o: common.h conio_min.h media_list.h qualify.h
-common.o: common.h
-qualify.o: qualify.h
-ext_lookup.o: common.h conio_min.h media_list.h file_fmts.h
-file_fmts.o: common.h conio_min.h media_list.h file_fmts.h
-conio_min.o: common.h conio_min.h
-MediaInfoDll.o: MediaInfoDLL.h common.h media_list.h file_fmts.h
+media_list.o: conio_min.h media_list.h
+ext_lookup.o: conio_min.h media_list.h file_fmts.h
+file_fmts.o: conio_min.h media_list.h file_fmts.h
+conio_min.o: conio_min.h
+MediaInfoDll.o: MediaInfoDLL.h media_list.h file_fmts.h

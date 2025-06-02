@@ -37,6 +37,10 @@ static ffdata_t *ftail = NULL;
 
 static uint filecount = 0 ;
 
+//  name of drive+path without filenames
+TCHAR base_path[MAX_FILE_LEN+1] ;
+unsigned base_len ;  //  length of base_path
+
 //**********************************************************************************
 int read_files(TCHAR *filespec)
 {

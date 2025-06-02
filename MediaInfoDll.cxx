@@ -64,6 +64,7 @@ typedef  unsigned int  uint ;
 
 #else
 #include "common.h"
+#include "commonw.h"
 #include "media_list.h"
 #include "file_fmts.h"
 

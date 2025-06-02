@@ -16,6 +16,7 @@
 #endif
 
 #include "common.h"
+#include "commonw.h"
 #include "conio_min.h"
 #include "media_list.h"
 #include "file_fmts.h"
@@ -96,7 +97,9 @@ int print_media_info(ffdata_t const * const fptr)
       }
 
       //  show file size
-      dputsf(_T("%14s  "), ascii2unicode(convert_to_commas(fptr->fsize, NULL)));
+      // char *c2c = convert_to_commas(fptr->fsize, NULL) ;
+      // dputsf(_T("%14s  "), ascii2unicode(c2c));
+      dputsf(_T("%14s  "), convert_to_commas(fptr->fsize, NULL));
 
       //  process multimedia display
       if (!show_normal_info) {

@@ -16,6 +16,7 @@
 //lint -esym(1055, atoi)
 
 #include "common.h"
+#include "commonw.h"
 #include "conio_min.h"
 #include "media_list.h"
 #include "file_fmts.h"
@@ -514,11 +515,11 @@ jpeg_unreadable:
 // VP8X format:  1800x1200 = 0x0708, 0x04b0, off by 1
 // https://www.ietf.org/id/draft-zern-webp-07.html#name-riff-file-format
 // 0000 0000 52 49 46 46 30 bb 05 00  57 45 42 50 56 50 38 58  RIFF0+.WEBPVP8X
-// 0000 0010 0a 00 00 00 20 00 00 00  07 07 00 af 04 00 49 43  .... ....».IC
+// 0000 0010 0a 00 00 00 20 00 00 00  07 07 00 af 04 00 49 43  .... ....ï¿½.IC
 
 // VP8 format:   576x768 = x0240, 0x0300, off by 0
-// 0000 0000 52 49 46 46 4c b9 01 00  57 45 42 50 56 50 38 20  RIFFL¦.WEBPVP8
-// 0000 0010 40 b9 01 00 10 dd 04 9d  01 2a 40 02 00 03 3e 51  @¦.¦¥*@.>Q
+// 0000 0000 52 49 46 46 4c b9 01 00  57 45 42 50 56 50 38 20  RIFFLï¿½.WEBPVP8
+// 0000 0010 40 b9 01 00 10 dd 04 9d  01 2a 40 02 00 03 3e 51  @ï¿½.ï¿½ï¿½*@.>Q
 //                                         |wwwww|lllll|
 
 // Future note:
