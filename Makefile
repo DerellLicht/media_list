@@ -51,7 +51,7 @@ CXXSRC=MediaInfoDll.cxx
 
 #  clang-tidy options
 CHFLAGS = -header-filter=.*
-CHTAIL = -- 
+CHTAIL = -- -Ider_libs
 #CHTAIL += -Ider_libs
 ifeq ($(USE_64BIT),YES)
 CHTAIL += -DUSE_64BIT
