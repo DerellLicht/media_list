@@ -47,10 +47,8 @@ unsigned base_len ;  //  length of base_path
 int read_files(TCHAR *filespec)
 {
    WIN32_FIND_DATA fdata ; //  long-filename file struct
-   HANDLE handle;
-   // ffdata_t *ftemp;
 
-   handle = FindFirstFile (filespec, &fdata);
+   HANDLE handle = FindFirstFile (filespec, &fdata);
    //  according to MSDN, Jan 1999, the following is equivalent
    //  to the preceding... unfortunately, under Win98SE, it's not...
    // handle = FindFirstFileEx(target[i], FindExInfoStandard, &fdata, 
