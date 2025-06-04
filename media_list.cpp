@@ -145,7 +145,7 @@ int read_files(TCHAR *filespec)
 
       //  search for another file
       if (FindNextFile (handle, &fdata) == 0) {
-         done = 1;
+         done = true;
       }
    }
 
