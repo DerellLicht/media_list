@@ -16,11 +16,12 @@
 
 //  V1.01  Convert to Unicode
 //  V1.02  Add support for SVG files
-#define  VER_NUMBER "1.02"
+//  V1.03  Converted files linked list to vector/unique_ptr
+#define  VER_NUMBER "1.03"
 
 //lint -esym(843, Version, ShortVersion) could be declared as const
 TCHAR *Version = _T("MediaList, Version " VER_NUMBER " ") ;   //lint !e707
-TCHAR *ShortVersion = _T(" medialist " VER_NUMBER " ") ;       //lint !e707
+// TCHAR *ShortVersion = _T(" medialist " VER_NUMBER " ") ;       //lint !e707
 
 //  per Jason Hood, this turns off MinGW's command-line expansion, 
 //  so we can handle wildcards like we want to.                    
@@ -181,7 +182,7 @@ int wmain(int argc, wchar_t *argv[])
    int idx, result ;
 
    console_init() ;
-   
+   dputsf(L"%s\n", Version);
    //  okay, the cause of this, is that apparently I have to use 
    //  double-backslash to put a quote after a backslash...
    //  But forward slash works fine...
@@ -225,9 +226,9 @@ int wmain(int argc, wchar_t *argv[])
       dputsf(_T("filespec: %s, %s\n"), file_spec, strerror(-result));
    }
    else {
-      dputsf(_T("\nfilespec: %s, fcount: %u\n"), file_spec, filecount);
+      dputsf(_T("filespec: %s, fcount: %u\n"), file_spec, filecount);
       if (filecount > 0) {
-         puts("");
+         dputsf(L"\n");
          // std::vector<std::unique_ptr<ffdata_t>> flist;
          std::vector<std::unique_ptr<ffdata>>::iterator it ;
          for(it = flist.begin(); it != flist.end(); ++it)    {
@@ -235,7 +236,6 @@ int wmain(int argc, wchar_t *argv[])
             // dputsf(_T("%s\n"), ftemp->filename);
             print_media_info(ftemp);
          }
-
       }
       
       //  see if there is any special results to display
@@ -249,6 +249,7 @@ int wmain(int argc, wchar_t *argv[])
          }
          dputsf(_T("\ntotal playing time: %s\n"), timestr) ;
       }
+      dputsf(L"\n");
    }
    restore_console_attribs();
    return 0;

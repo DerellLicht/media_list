@@ -111,7 +111,7 @@ int print_media_info(ffdata_t const * const fptr)
       }
 
       //  format filename as required
-      dputsf(_T("%s\n"), fptr->filename);
+      dputsf(L"%s\n", fptr->filename);
    }
    return 0 ;
 }
