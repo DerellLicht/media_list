@@ -21,7 +21,9 @@ typedef struct ffdata {
    ULONGLONG      fsize ;
    TCHAR          *filename ;
    uchar          dirflag ;
+#ifdef _lint   
    struct ffdata  *next ;
+#endif   
 } ffdata_t ;
 
 //  ext_lookup.cpp

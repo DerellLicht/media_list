@@ -98,11 +98,9 @@ int read_files(TCHAR *filespec)
 #else         
          // flist.push_back(std::make_unique<ffdata_t>());  //  this works
          flist.emplace_back(std::make_unique<ffdata_t>());  //  this works
-         // flist.emplace_back();   //  this didn't work; following ftemp is NULL
          ffdata_t *ftemp = flist.back().get();
          if (ftemp == NULL) {
             dputsf(L"nope, that didn't work...\n");
-            // done = true ;
             break ;    
          }
 #endif         
