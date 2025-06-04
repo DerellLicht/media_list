@@ -5,6 +5,10 @@
 
 #include <windows.h>
 #include <stdio.h>
+#ifndef _lint
+#include <vector>
+#include <memory>
+#endif
 #include <tchar.h>
 
 #include "common.h"
@@ -32,8 +36,12 @@ double total_ptime = 0.0 ;
 //lint -esym(818, filespec, argv)  //could be declared as pointing to const
 //lint -e10  Expecting '}'
 
+#ifdef _lint
 static ffdata_t *ftop  = NULL;
 static ffdata_t *ftail = NULL;
+#else
+std::vector<std::unique_ptr<ffdata_t>> flist;
+#endif
 
 static uint filecount = 0 ;
 
@@ -45,9 +53,9 @@ unsigned base_len ;  //  length of base_path
 int read_files(TCHAR *filespec)
 {
    WIN32_FIND_DATA fdata ; //  long-filename file struct
-   int done, fn_okay ;
+   int fn_okay ;
    HANDLE handle;
-   ffdata_t *ftemp;
+   // ffdata_t *ftemp;
 
    handle = FindFirstFile (filespec, &fdata);
    //  according to MSDN, Jan 1999, the following is equivalent
@@ -59,7 +67,7 @@ int read_files(TCHAR *filespec)
    }
 
    //  loop on find_next
-   done = 0;
+   bool done = false;
    while (!done) {
       //  filter out directories if not requested
       if ((fdata.dwFileAttributes & FILE_ATTRIBUTE_VOLID) != 0)
@@ -81,10 +89,23 @@ int read_files(TCHAR *filespec)
       if (fn_okay) {
          filecount++;
 
+         // dputsf(_T("%s\n"), fdata.cFileName);
          //****************************************************
          //  allocate and initialize the structure
          //****************************************************
-         ftemp = (ffdata_t *) new ffdata_t ;
+#ifdef _lint         
+         ffdata_t *ftemp = (ffdata_t *) new ffdata_t ;
+#else         
+         // flist.push_back(std::make_unique<ffdata_t>());  //  this works
+         flist.emplace_back(std::make_unique<ffdata_t>());  //  this works
+         // flist.emplace_back();   //  this didn't work; following ftemp is NULL
+         ffdata_t *ftemp = flist.back().get();
+         if (ftemp == NULL) {
+            dputsf(L"nope, that didn't work...\n");
+            // done = true ;
+            break ;    
+         }
+#endif         
          ZeroMemory((void *) ftemp, sizeof(ffdata_t));
 
          ftemp->attrib = (uchar) fdata.dwFileAttributes;
@@ -113,6 +134,7 @@ int read_files(TCHAR *filespec)
          //****************************************************
          //  add the structure to the file list
          //****************************************************
+#ifdef _lint         
          if (ftop == NULL) {
             ftop = ftemp;
          }
@@ -120,6 +142,7 @@ int read_files(TCHAR *filespec)
             ftail->next = ftemp;
          }
          ftail = ftemp;
+#endif         
       }  //  if file is parseable...
 
       //  search for another file
@@ -218,7 +241,7 @@ int wmain(int argc, wchar_t *argv[])
    }
    base_len = _tcslen(base_path) ;
    // printf("base path: %s\n", base_path);
-   
+
    result = read_files(file_spec);
    if (result < 0) {
       dputsf(_T("filespec: %s, %s\n"), file_spec, strerror(-result));
@@ -227,8 +250,15 @@ int wmain(int argc, wchar_t *argv[])
       dputsf(_T("\nfilespec: %s, fcount: %u\n"), file_spec, filecount);
       if (filecount > 0) {
          puts("");
+         // std::vector<std::unique_ptr<ffdata_t>> flist;
+#ifdef _lint         
          for (ffdata_t *ftemp = ftop; ftemp != NULL; ftemp = ftemp->next) {
-            // _tprintf(_T("%s\n"), ftemp->filename);
+#else
+         std::vector<std::unique_ptr<ffdata>>::iterator it ;
+         for(it = flist.begin(); it != flist.end(); ++it)    {
+            ffdata_t *ftemp = it->get() ;
+#endif
+            // dputsf(_T("%s\n"), ftemp->filename);
             print_media_info(ftemp);
          }
 
