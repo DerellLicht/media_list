@@ -47,7 +47,6 @@ unsigned base_len ;  //  length of base_path
 int read_files(TCHAR *filespec)
 {
    WIN32_FIND_DATA fdata ; //  long-filename file struct
-   int fn_okay ;
    HANDLE handle;
    // ffdata_t *ftemp;
 
@@ -61,24 +60,25 @@ int read_files(TCHAR *filespec)
    }
 
    //  loop on find_next
+   bool fn_okay = false ;
    bool done = false;
    while (!done) {
       //  filter out directories if not requested
       if ((fdata.dwFileAttributes & FILE_ATTRIBUTE_VOLID) != 0)
-         fn_okay = 0;
+         fn_okay = false;
       else if ((fdata.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != FILE_ATTRIBUTE_DIRECTORY)
-         fn_okay = 1;
+         fn_okay = true;
       //  For directories, filter out "." and ".."
       else if (fdata.cFileName[0] != _T('.')) //  fn=".something"
-         fn_okay = 1;
+         fn_okay = true;
       else if (fdata.cFileName[1] == 0)   //  fn="."
-         fn_okay = 0;
+         fn_okay = false;
       else if (fdata.cFileName[1] != _T('.')) //  fn="..something"
-         fn_okay = 1;
+         fn_okay = true;
       else if (fdata.cFileName[2] == 0)   //  fn=".."
-         fn_okay = 0;
+         fn_okay = false;
       else
-         fn_okay = 1;
+         fn_okay = true;
 
       if (fn_okay) {
          filecount++;
