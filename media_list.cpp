@@ -5,10 +5,8 @@
 
 #include <windows.h>
 #include <stdio.h>
-#ifndef _lint
 #include <vector>
 #include <memory>
-#endif
 #include <tchar.h>
 
 #include "common.h"
@@ -36,12 +34,7 @@ double total_ptime = 0.0 ;
 //lint -esym(818, filespec, argv)  //could be declared as pointing to const
 //lint -e10  Expecting '}'
 
-#ifdef _lint
-static ffdata_t *ftop  = NULL;
-static ffdata_t *ftail = NULL;
-#else
 std::vector<std::unique_ptr<ffdata_t>> flist;
-#endif
 
 static uint filecount = 0 ;
 
@@ -93,9 +86,6 @@ int read_files(TCHAR *filespec)
          //****************************************************
          //  allocate and initialize the structure
          //****************************************************
-#ifdef _lint         
-         ffdata_t *ftemp = (ffdata_t *) new ffdata_t ;
-#else         
          // flist.push_back(std::make_unique<ffdata_t>());  //  this works
          flist.emplace_back(std::make_unique<ffdata_t>());  //  this works
          ffdata_t *ftemp = flist.back().get();
@@ -103,7 +93,6 @@ int read_files(TCHAR *filespec)
             dputsf(L"nope, that didn't work...\n");
             break ;    
          }
-#endif         
          ZeroMemory((void *) ftemp, sizeof(ffdata_t));
 
          ftemp->attrib = (uchar) fdata.dwFileAttributes;
@@ -132,15 +121,6 @@ int read_files(TCHAR *filespec)
          //****************************************************
          //  add the structure to the file list
          //****************************************************
-#ifdef _lint         
-         if (ftop == NULL) {
-            ftop = ftemp;
-         }
-         else {
-            ftail->next = ftemp;
-         }
-         ftail = ftemp;
-#endif         
       }  //  if file is parseable...
 
       //  search for another file
@@ -249,13 +229,9 @@ int wmain(int argc, wchar_t *argv[])
       if (filecount > 0) {
          puts("");
          // std::vector<std::unique_ptr<ffdata_t>> flist;
-#ifdef _lint         
-         for (ffdata_t *ftemp = ftop; ftemp != NULL; ftemp = ftemp->next) {
-#else
          std::vector<std::unique_ptr<ffdata>>::iterator it ;
          for(it = flist.begin(); it != flist.end(); ++it)    {
             ffdata_t *ftemp = it->get() ;
-#endif
             // dputsf(_T("%s\n"), ftemp->filename);
             print_media_info(ftemp);
          }

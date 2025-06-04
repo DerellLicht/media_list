@@ -31,4 +31,37 @@
 //lint -e734   Loss of precision (assignment) (31 bits to 15 bits)
 //lint -e732   Loss of sign (arg. no. 3) (int to unsigned long)
 
-
+//  warnings/errors caused by PcLint not supporting STL, or C++11 standard
+//lint -e19    Useless Declaration
+//lint -e26    Expected an expression, found ')'
+//lint -e30    Expected an integer constant
+//lint -e32    Field size (member 'std::_Vector_base<int,int>::_Vector_impl::_Tp_alloc_type')
+//lint -e38    Offset of symbol 'std::_Vector_base<int,int>::_Vector_impl_data::pointer'
+//lint -e40    Undeclared identifier 'make_unique'
+//lint -e46    field type should be an integral or enumeration type
+//lint -e48    Bad type
+//lint -e52    Expected an lvalue
+//lint -e53    Expected a scalar
+//lint -e55    Bad type
+//lint -e58    Bad type
+//lint -e61    Bad type
+//lint -e64    Type mismatch (initialization) (struct ffdata * = int)
+//lint -e78    Symbol ... typedef'ed at line ... used in expression
+//lint -e151   Token 'flist' inconsistent with abstract type
+//lint -e503   Boolean argument to relational
+//lint -e522   Highest operation, operator '!=', lacks side-effects
+//lint -e526   Symbol not defined
+//lint -e530   Symbol 'ffdata_t' (line 26, file media_list.h) not initialized
+//lint -e628   no argument information provided for function 
+//lint -e746   call to function not made in the presence of a prototype
+//lint -e1013  Symbol not a member of class ''
+//lint -e1015  Symbol '_M_allocate' not found in class
+//lint -e1039  Symbol is not a member of
+//lint -e1040  Symbol is not a legal
+//lint -e1054  template variable declaration expects a type, int assumed
+//lint -e1055  Symbol undeclared, assumed to return int
+//lint -e1057  Member '__gnu_cxx::__is_integer_nonstrict<<1>>::__value' cannot be used
+//lint -e1062  template must be either a class or a function
+//lint -e1070  No scope in which to find symbol 'pointer'
+//lint -e1077  Could not evaluate default template parameter '=typename _Alloc::value_type'
+//lint -e1087  Previous declaration of '__gnu_cxx::__is_signed' (line 88) is incompatible
