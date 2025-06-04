@@ -44,15 +44,15 @@ TCHAR base_path[MAX_FILE_LEN+1] ;
 unsigned base_len ;  //  length of base_path
 
 //**********************************************************************************
-ffdata::ffdata() :
-attrib(0),
-ft({}),  //lint !e155 !e1025
-fsize(0),
-filename(NULL),
-dirflag(0)
-{
-   // dputsf(L"calling constructor for ffdata\n");
-}
+// ffdata::ffdata() :
+// attrib(0),
+// ft({}),  //lint !e155 !e1025
+// fsize(0),
+// filename(NULL),
+// dirflag(0)
+// {
+//    // dputsf(L"calling constructor for ffdata\n");
+// }
 
 //**********************************************************************************
 int read_files(TCHAR *filespec)
@@ -100,10 +100,7 @@ int read_files(TCHAR *filespec)
          // flist.push_back(std::make_unique<ffdata_t>());
          flist.emplace_back(std::make_unique<ffdata_t>());
          ffdata_p ftemp = flist.back().get();
-         if (ftemp == NULL) {
-            dputsf(L"nope, that didn't work...\n");
-            break ;    
-         }
+         *ftemp = {} ;   //lint !e155 zero the struct - perhaps not needed??
 
          ftemp->attrib = (uchar) fdata.dwFileAttributes;
 

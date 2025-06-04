@@ -22,7 +22,7 @@ typedef struct ffdata {
    wchar_t        *filename ;
    uchar          dirflag ;
    // struct ffdata  *next ;
-   ffdata();   //  constructor
+   // ffdata();   //  constructor
 } ffdata_t, *ffdata_p ;
 
 //  ext_lookup.cpp
