@@ -44,6 +44,17 @@ TCHAR base_path[MAX_FILE_LEN+1] ;
 unsigned base_len ;  //  length of base_path
 
 //**********************************************************************************
+ffdata::ffdata() :
+attrib(0),
+ft({}),  //lint !e155 !e1025
+fsize(0),
+filename(NULL),
+dirflag(0)
+{
+   // dputsf(L"calling constructor for ffdata\n");
+}
+
+//**********************************************************************************
 int read_files(TCHAR *filespec)
 {
    WIN32_FIND_DATA fdata ; //  long-filename file struct
@@ -82,17 +93,17 @@ int read_files(TCHAR *filespec)
          filecount++;
 
          // dputsf(_T("%s\n"), fdata.cFileName);
+         // ffdata_t fttemp() ;
          //****************************************************
          //  allocate and initialize the structure
          //****************************************************
-         // flist.push_back(std::make_unique<ffdata_t>());  //  this works
-         flist.emplace_back(std::make_unique<ffdata_t>());  //  this works
-         ffdata_t *ftemp = flist.back().get();
+         // flist.push_back(std::make_unique<ffdata_t>());
+         flist.emplace_back(std::make_unique<ffdata_t>());
+         ffdata_p ftemp = flist.back().get();
          if (ftemp == NULL) {
             dputsf(L"nope, that didn't work...\n");
             break ;    
          }
-         ZeroMemory((void *) ftemp, sizeof(ffdata_t));
 
          ftemp->attrib = (uchar) fdata.dwFileAttributes;
 
@@ -111,7 +122,6 @@ int read_files(TCHAR *filespec)
          iconv.u[1] = fdata.nFileSizeHigh;
          ftemp->fsize = iconv.i;
 
-         // ftemp->filename = (char *) malloc(strlen ((char *) fdata.cFileName) + 1);
          ftemp->filename = (TCHAR *) new TCHAR[(_tcslen ((TCHAR *) fdata.cFileName) + 1)];
          _tcscpy (ftemp->filename, (TCHAR *) fdata.cFileName);
 
@@ -230,7 +240,7 @@ int wmain(int argc, wchar_t *argv[])
          // std::vector<std::unique_ptr<ffdata_t>> flist;
          std::vector<std::unique_ptr<ffdata>>::iterator it ;
          for(it = flist.begin(); it != flist.end(); ++it)    {
-            ffdata_t *ftemp = it->get() ;
+            ffdata_p ftemp = it->get() ;
             // dputsf(_T("%s\n"), ftemp->filename);
             print_media_info(ftemp);
          }

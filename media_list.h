@@ -14,14 +14,16 @@ extern TCHAR base_path[MAX_FILE_LEN+1] ;
 extern unsigned base_len ;  //  length of base_path
 
 //************************************************************
+//lint -esym(1401, ffdata::ft)  member not initialized by constructor
 typedef struct ffdata {
    uchar          attrib ;
    FILETIME       ft ;
    ULONGLONG      fsize ;
-   TCHAR          *filename ;
+   wchar_t        *filename ;
    uchar          dirflag ;
    // struct ffdata  *next ;
-} ffdata_t ;
+   ffdata();   //  constructor
+} ffdata_t, *ffdata_p ;
 
 //  ext_lookup.cpp
 int print_media_info(ffdata_t const * const fptr);
