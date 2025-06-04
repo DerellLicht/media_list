@@ -1,5 +1,6 @@
 //lint -esym(40, errno)
 
+//lint -e10   Expecting ';'
 //lint -e534  Ignoring return value of function
 //lint -e713  Loss of precision (arg. no. 2) (unsigned int to long)
 //lint -e737  Loss of sign in promotion from int to unsigned long
@@ -45,6 +46,7 @@
 //lint -e55    Bad type
 //lint -e58    Bad type
 //lint -e61    Bad type
+//lint -e63    Expected an lvalue
 //lint -e64    Type mismatch (initialization) (struct ffdata * = int)
 //lint -e78    Symbol ... typedef'ed at line ... used in expression
 //lint -e151   Token 'flist' inconsistent with abstract type
@@ -65,3 +67,4 @@
 //lint -e1070  No scope in which to find symbol 'pointer'
 //lint -e1077  Could not evaluate default template parameter '=typename _Alloc::value_type'
 //lint -e1087  Previous declaration of '__gnu_cxx::__is_signed' (line 88) is incompatible
+//lint -e1712  default constructor not defined for class 'ffdata'

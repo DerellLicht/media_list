@@ -114,4 +114,4 @@ int print_media_info(ffdata_t const * const fptr)
       dputsf(L"%s\n", fptr->filename);
    }
    return 0 ;
-}
+}  //lint !e550

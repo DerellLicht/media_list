@@ -15,15 +15,15 @@ extern unsigned base_len ;  //  length of base_path
 
 //************************************************************
 //lint -esym(1401, ffdata::ft)  member not initialized by constructor
-typedef struct ffdata {
-   uchar          attrib ;
-   FILETIME       ft ;
-   ULONGLONG      fsize ;
-   wchar_t        *filename ;
-   uchar          dirflag ;
-   // struct ffdata  *next ;
-   // ffdata();   //  constructor
-} ffdata_t, *ffdata_p ;
+struct ffdata {
+   uchar          attrib {};
+   FILETIME       ft {};
+   ULONGLONG      fsize {};      //equivalent to = 0;
+   wchar_t        *filename {};  //or = nullptr;
+   bool          dirflag {};
+   // struct ffdata  *next ;  //  no longer needed, with vector
+} ;
+typedef ffdata ffdata_t, *ffdata_p ;
 
 //  ext_lookup.cpp
 int print_media_info(ffdata_t const * const fptr);

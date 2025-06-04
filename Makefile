@@ -5,7 +5,7 @@ USE_64BIT = NO
 USE_UNICODE = YES
 
 ifeq ($(USE_64BIT),YES)
-TOOLS=d:\tdm64\bin
+TOOLS=c:\tdm-gcc-64\bin
 else
 TOOLS=c:\tdm32\bin
 #TOOLS=c:\mingw32\bin

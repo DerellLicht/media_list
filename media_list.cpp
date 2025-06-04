@@ -19,9 +19,7 @@
 //  V1.03  Converted files linked list to vector/unique_ptr
 #define  VER_NUMBER "1.03"
 
-//lint -esym(843, Version, ShortVersion) could be declared as const
-TCHAR *Version = _T("MediaList, Version " VER_NUMBER " ") ;   //lint !e707
-// TCHAR *ShortVersion = _T(" medialist " VER_NUMBER " ") ;       //lint !e707
+static TCHAR const * const Version = _T("MediaList, Version " VER_NUMBER " ") ;   //lint !e707
 
 //  per Jason Hood, this turns off MinGW's command-line expansion, 
 //  so we can handle wildcards like we want to.                    
@@ -36,23 +34,13 @@ double total_ptime = 0.0 ;
 //lint -e10  Expecting '}'
 
 std::vector<std::unique_ptr<ffdata_t>> flist;
+// std::vector<ffdata_t> flist;
 
 static uint filecount = 0 ;
 
 //  name of drive+path without filenames
 TCHAR base_path[MAX_FILE_LEN+1] ;
 unsigned base_len ;  //  length of base_path
-
-//**********************************************************************************
-// ffdata::ffdata() :
-// attrib(0),
-// ft({}),  //lint !e155 !e1025
-// fsize(0),
-// filename(NULL),
-// dirflag(0)
-// {
-//    // dputsf(L"calling constructor for ffdata\n");
-// }
 
 //**********************************************************************************
 int read_files(TCHAR *filespec)
@@ -97,10 +85,9 @@ int read_files(TCHAR *filespec)
          //****************************************************
          //  allocate and initialize the structure
          //****************************************************
-         // flist.push_back(std::make_unique<ffdata_t>());
+         // flist.emplace_back(ffdata_t());
          flist.emplace_back(std::make_unique<ffdata_t>());
          ffdata_p ftemp = flist.back().get();
-         *ftemp = {} ;   //lint !e155 zero the struct - perhaps not needed??
 
          ftemp->attrib = (uchar) fdata.dwFileAttributes;
 
@@ -122,12 +109,12 @@ int read_files(TCHAR *filespec)
          ftemp->filename = (TCHAR *) new TCHAR[(_tcslen ((TCHAR *) fdata.cFileName) + 1)];
          _tcscpy (ftemp->filename, (TCHAR *) fdata.cFileName);
 
-         ftemp->dirflag = ftemp->attrib & FILE_ATTRIBUTE_DIRECTORY;
+         ftemp->dirflag = (ftemp->attrib & FILE_ATTRIBUTE_DIRECTORY) ? true : false ;
 
          //****************************************************
          //  add the structure to the file list
          //****************************************************
-      }  //  if file is parseable...
+      }  //lint !e550  end while()
 
       //  search for another file
       if (FindNextFile (handle, &fdata) == 0) {
@@ -234,8 +221,8 @@ int wmain(int argc, wchar_t *argv[])
       dputsf(_T("filespec: %s, fcount: %u\n"), file_spec, filecount);
       if (filecount > 0) {
          dputsf(L"\n");
-         // std::vector<std::unique_ptr<ffdata_t>> flist;
          std::vector<std::unique_ptr<ffdata>>::iterator it ;
+         // std::vector<ffdata>::iterator it ;
          for(it = flist.begin(); it != flist.end(); ++it)    {
             ffdata_p ftemp = it->get() ;
             // dputsf(_T("%s\n"), ftemp->filename);
