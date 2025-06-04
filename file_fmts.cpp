@@ -21,7 +21,7 @@
 #include "media_list.h"
 #include "file_fmts.h"
 
-static char tempstr[MAXLINE+1] ;
+static char tempstr[MAX_LINE_LEN+1] ;
 static TCHAR fpath[MAX_FILE_LEN+2] ;
 
 #define  DBUFFER_LEN    1024

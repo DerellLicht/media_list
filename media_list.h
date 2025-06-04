@@ -4,7 +4,6 @@
 //**********************************************************************************
 
 #define  MAX_EXT_SIZE   8
-#define  MAXLINE  1024
 
 //lint -esym(759, total_ptime)  header declaration for symbol could be moved from header to module
 extern double total_ptime ;

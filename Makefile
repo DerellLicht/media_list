@@ -41,6 +41,7 @@ endif
 LiFLAGS += -Ider_libs
 CFLAGS += -Ider_libs
 CxxFLAGS += -Ider_libs
+IFLAGS += -Ider_libs
 
 CPPSRC=media_list.cpp ext_lookup.cpp file_fmts.cpp conio_min.cpp \
 der_libs\common_funcs.cpp \
@@ -62,7 +63,7 @@ endif
 
 LIBS=-lshlwapi -lgdi32 -lcomdlg32
 
-OBJS = $(CSRC:.c=.o) $(CPPSRC:.cpp=.o)  $(CXXSRC:.cxx=.o) 
+OBJS = $(CPPSRC:.cpp=.o)  $(CXXSRC:.cxx=.o) 
 
 #**************************************************************************
 %.o: %.cpp
@@ -96,15 +97,21 @@ lint:
 	cmd /C "c:\lint9\lint-nt +v -width(160,4) $(LiFLAGS) -ic:\lint9 mingw.lnt -os(_lint.tmp) lintdefs.cpp $(CPPSRC)"
 
 depend: 
-	makedepend $(CSRC) $(CPPSRC) $(CXXSRC)
+	makedepend $(IFLAGS) $(CPPSRC) $(CXXSRC)
 
 $(BIN): $(OBJS)
 	$(TOOLS)\g++ $(OBJS) $(LFLAGS) -o $(BIN) $(LIBS) 
 
 # DO NOT DELETE
 
-media_list.o: conio_min.h media_list.h
-ext_lookup.o: conio_min.h media_list.h file_fmts.h
-file_fmts.o: conio_min.h media_list.h file_fmts.h
-conio_min.o: conio_min.h
-MediaInfoDll.o: MediaInfoDLL.h media_list.h file_fmts.h
+media_list.o: der_libs/common.h conio_min.h media_list.h der_libs/qualify.h
+ext_lookup.o: der_libs/common.h der_libs/commonw.h conio_min.h media_list.h
+ext_lookup.o: file_fmts.h
+file_fmts.o: der_libs/common.h der_libs/commonw.h conio_min.h media_list.h
+file_fmts.o: file_fmts.h
+conio_min.o: der_libs/common.h conio_min.h
+der_libs\common_funcs.o: der_libs/common.h
+der_libs\common_win.o: der_libs/common.h der_libs/commonw.h
+der_libs\qualify.o: der_libs/qualify.h
+MediaInfoDll.o: MediaInfoDLL.h der_libs/common.h der_libs/commonw.h
+MediaInfoDll.o: media_list.h file_fmts.h

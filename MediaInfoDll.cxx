@@ -68,7 +68,7 @@ typedef  unsigned int  uint ;
 #include "media_list.h"
 #include "file_fmts.h"
 
-static char tempstr[MAXLINE+1] ;
+static char tempstr[MAX_LINE_LEN+1] ;
 #endif
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
