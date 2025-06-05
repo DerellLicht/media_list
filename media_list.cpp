@@ -33,8 +33,8 @@ double total_ptime = 0.0 ;
 //lint -esym(818, filespec, argv)  //could be declared as pointing to const
 //lint -e10  Expecting '}'
 
-std::vector<std::unique_ptr<ffdata_t>> flist;
-// std::vector<ffdata_t> flist;
+std::vector<std::unique_ptr<ffdata>> flist;
+std::vector<ffdata> ffiles;
 
 static uint filecount = 0 ;
 
@@ -86,7 +86,7 @@ int read_files(TCHAR *filespec)
          //  allocate and initialize the structure
          //****************************************************
          // flist.emplace_back(ffdata_t());
-         flist.emplace_back(std::make_unique<ffdata_t>());
+         flist.emplace_back(std::make_unique<ffdata>());
          ffdata_p ftemp = flist.back().get();
 
          ftemp->attrib = (uchar) fdata.dwFileAttributes;

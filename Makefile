@@ -7,8 +7,9 @@ USE_UNICODE = YES
 ifeq ($(USE_64BIT),YES)
 TOOLS=c:\tdm-gcc-64\bin
 else
-TOOLS=c:\tdm32\bin
+#TOOLS=c:\tdm32\bin
 #TOOLS=c:\mingw32\bin
+TOOLS=D:\clang\bin
 endif
 
 ifeq ($(USE_DEBUG),YES)
@@ -16,8 +17,8 @@ CFLAGS = -Wall -g -c
 CxxFLAGS = -Wall -g -c
 LFLAGS = -g
 else
-CFLAGS = -Wall -s -O3 -c
-CxxFLAGS = -Wall -s -O3 -c
+CFLAGS = -Wall -O3 -c
+CxxFLAGS = -Wall -O3 -c
 LFLAGS = -s -O3
 endif
 CFLAGS += -Weffc++
