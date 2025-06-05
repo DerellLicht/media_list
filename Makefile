@@ -3,12 +3,16 @@
 USE_DEBUG = NO
 USE_64BIT = NO
 USE_UNICODE = YES
+USE_CLANG = YES
 
 ifeq ($(USE_64BIT),YES)
 TOOLS=c:\tdm-gcc-64\bin
 else
+ifeq ($(USE_CLANG),YES)
+TOOLS=D:\clang\bin
+else
 TOOLS=c:\tdm32\bin
-#TOOLS=D:\clang\bin
+endif
 endif
 
 ifeq ($(USE_DEBUG),YES)
@@ -34,6 +38,9 @@ LiFLAGS += -dUNICODE -d_UNICODE
 LFLAGS += -dUNICODE -d_UNICODE
 endif
 
+ifeq ($(USE_CLANG),YES)
+CFLAGS += -DUSING_CLANG
+endif
 LiFLAGS += -Ider_libs
 CFLAGS += -Ider_libs
 CxxFLAGS += -Ider_libs
