@@ -3,7 +3,7 @@
 USE_DEBUG = NO
 USE_64BIT = NO
 USE_UNICODE = YES
-USE_CLANG = YES
+USE_CLANG = NO
 
 ifeq ($(USE_64BIT),YES)
 TOOLS=c:\tdm-gcc-64\bin
