@@ -29,9 +29,9 @@ int _CRT_glob = 0 ;
 
 double total_ptime = 0.0 ;
 
-//lint -esym(534, FindClose)  // Ignoring return value of function
+// lint -esym(534, FindClose)  // Ignoring return value of function
 //lint -esym(818, filespec, argv)  //could be declared as pointing to const
-//lint -e10  Expecting '}'
+// lint -e10  Expecting '}'
 
 std::vector<std::unique_ptr<ffdata>> flist;
 std::vector<ffdata> ffiles;

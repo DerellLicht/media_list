@@ -15,11 +15,20 @@ extern unsigned base_len ;  //  length of base_path
 
 //************************************************************
 //lint -esym(1401, ffdata::ft)  member not initialized by constructor
+
+//  DDM: the squiggly-braces after the field names, are non-static data member initializers.
+// from n1ghtyunso  06/04/25 on reddit:
+// There is even a benefit in using non-static data member initializers.
+// For types with multiple constructors, the compiler will make sure that any member 
+// not set in the constructor still gets the specified default value.
+// When you do this in the default constructor instead, another constructor is still 
+// able to leave some members uninitialized.
+
 struct ffdata {
    uchar       attrib {};
    FILETIME    ft {};
-   u64         fsize {};      //equivalent to = 0;
-   wchar_t     *filename {};  //or = nullptr;
+   u64         fsize {};      //  equivalent to = 0;
+   wchar_t     *filename {nullptr};
    bool        dirflag {};
    // struct ffdata  *next ;  //  no longer needed, with vector
 } ;

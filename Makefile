@@ -7,9 +7,8 @@ USE_UNICODE = YES
 ifeq ($(USE_64BIT),YES)
 TOOLS=c:\tdm-gcc-64\bin
 else
-#TOOLS=c:\tdm32\bin
-#TOOLS=c:\mingw32\bin
-TOOLS=D:\clang\bin
+TOOLS=c:\tdm32\bin
+#TOOLS=D:\clang\bin
 endif
 
 ifeq ($(USE_DEBUG),YES)
@@ -34,10 +33,6 @@ CxxFLAGS += -DUNICODE -D_UNICODE
 LiFLAGS += -dUNICODE -d_UNICODE
 LFLAGS += -dUNICODE -d_UNICODE
 endif
-# neither of these fix __gxx_personality_v0 runtime error
-# it is caused by the Dwarf version of the MinGW toolchain
-#LFLAGS += -lstdc++
-#LFLAGS += -fno-exceptions -fno-rtti 
 
 LiFLAGS += -Ider_libs
 CFLAGS += -Ider_libs
