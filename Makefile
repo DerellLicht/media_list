@@ -3,7 +3,7 @@
 USE_DEBUG = NO
 USE_64BIT = NO
 USE_UNICODE = YES
-USE_CLANG = NO
+USE_CLANG = YES
 
 ifeq ($(USE_64BIT),YES)
 TOOLS=c:\tdm-gcc-64\bin
@@ -30,6 +30,9 @@ ifeq ($(USE_64BIT),YES)
 CFLAGS += -DUSE_64BIT
 CxxFLAGS += -DUSE_64BIT
 endif
+
+# debugging ___chkstk_ms issue with claing
+# LFLAGS += -v
 
 ifeq ($(USE_UNICODE),YES)
 CFLAGS += -DUNICODE -D_UNICODE
@@ -68,12 +71,15 @@ LIBS=-lshlwapi -lgdi32 -lcomdlg32
 
 OBJS = $(CPPSRC:.cpp=.o)  $(CXXSRC:.cxx=.o) 
 
+GPP_NAME=g++
+#GPP_NAME=clang++
+
 #**************************************************************************
 %.o: %.cpp
-	$(TOOLS)\g++ $(CFLAGS) -c $< -o $@
+	$(TOOLS)\$(GPP_NAME) $(CFLAGS) -c $< -o $@
 
 %.o: %.cxx
-	$(TOOLS)\g++ $(CxxFLAGS) -c $< -o $@
+	$(TOOLS)\$(GPP_NAME) $(CxxFLAGS) -c $< -o $@
 
 ifeq ($(USE_64BIT),NO)
 BIN = MediaList.exe
@@ -84,7 +90,7 @@ endif
 all: $(BIN)
 
 clean:
-	rm -f *.o *.exe *~ *.zip
+	rm -f $(OBJS) *.exe *~ *.zip
 
 dist:
 	rm -f media_list.zip
@@ -103,7 +109,7 @@ depend:
 	makedepend $(IFLAGS) $(CPPSRC) $(CXXSRC)
 
 $(BIN): $(OBJS)
-	$(TOOLS)\g++ $(OBJS) $(LFLAGS) -o $(BIN) $(LIBS) 
+	$(TOOLS)\$(GPP_NAME) $(OBJS) $(LFLAGS) -o $(BIN) $(LIBS) 
 
 # DO NOT DELETE
 
