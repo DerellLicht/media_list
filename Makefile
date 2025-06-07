@@ -5,6 +5,11 @@ USE_64BIT = NO
 USE_UNICODE = YES
 USE_CLANG = NO
 
+#  clang++ vs tdm g++
+#  clang gives *much* clearer compiler error messages...
+#  However, programs built with clang++ will require libc++.dll.
+#  in order to be used elsewhere.
+#  That is why the executable files are smaller than TDM ...
 ifeq ($(USE_64BIT),YES)
 TOOLS=c:\tdm-gcc-64\bin
 else
