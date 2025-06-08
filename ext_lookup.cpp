@@ -9,7 +9,7 @@
 #define  _WIN32_WINNT    0x0600
 #endif
 #include <windows.h>
-#include <stdio.h>
+#include <string>
 #include <tchar.h>
 #ifdef USE_64BIT
 #include <fileapi.h>
@@ -64,8 +64,10 @@ static mm_lookup_t const mm_lookup[] = {
 { _T(""), 0 }} ;
 
 //************************************************************************
-int print_media_info(ffdata_t const * const fptr)
+//lint -esym(759, print_media_info) header declaration for symbol could be moved from header to module
+int print_media_info(ffdata& ftemp)
 {
+   ffdata *fptr = &ftemp ;
    char mlstr[31] = "";  //  holds media-specific data
    bool show_normal_info = true ;
 
@@ -73,7 +75,7 @@ int print_media_info(ffdata_t const * const fptr)
    if (fptr->dirflag) {
       dputsf(_T("%14s  "), _T(""));
       dputsf(_T("%30s"), _T(" "));
-      dputsf(_T("[%s]\n"), fptr->filename);
+      dputsf(_T("[%s]\n"), fptr->filename.c_str());
    }
 
    //  display file entry
@@ -81,15 +83,14 @@ int print_media_info(ffdata_t const * const fptr)
       TCHAR *p ;
       unsigned idx ;
 
-      p = _tcsrchr(fptr->filename, _T('.')) ;
+      p = _tcsrchr((wchar_t *)fptr->filename.c_str(), _T('.')) ;
       if (p != 0  &&  _tcslen(p) <= MAX_EXT_SIZE) {
          p++ ; //  skip past the period
 
          for (idx=0; mm_lookup[idx].ext[0] != 0; idx++) {
             if (_tcsnicmp(p, mm_lookup[idx].ext, _tcslen(mm_lookup[idx].ext)) == 0) {
-               // _tprintf(_T("%s [%u] found\n"), mm_lookup[idx].ext, idx);
                //  call the special string generator function
-               (*mm_lookup[idx].func)(fptr->filename, mlstr) ; //lint !e522
+               (*mm_lookup[idx].func)((wchar_t *)fptr->filename.c_str(), mlstr) ; //lint !e522
                show_normal_info = false ;
                break;
             }
@@ -111,7 +112,7 @@ int print_media_info(ffdata_t const * const fptr)
       }
 
       //  format filename as required
-      dputsf(L"%s\n", fptr->filename);
+      dputsf(L"%s\n", fptr->filename.c_str());
    }
-   return 0 ;
+   return 0 ;  //lint !e438
 }  //lint !e550

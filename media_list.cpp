@@ -4,7 +4,8 @@
 //**********************************************************************************
 
 #include <windows.h>
-#include <stdio.h>
+#include <cstdio>
+#include <string>
 #include <vector>
 #include <memory>
 #include <tchar.h>
@@ -33,14 +34,35 @@ double total_ptime = 0.0 ;
 //lint -esym(818, filespec, argv)  //could be declared as pointing to const
 // lint -e10  Expecting '}'
 
+#ifdef  USE_UNIQUE_PTR
 std::vector<std::unique_ptr<ffdata>> flist;
-std::vector<ffdata> ffiles;
+#else
+std::vector<ffdata> flist;
+#endif
 
+//lint -esym(843, filecount)  Variable could be declared as const
 static uint filecount = 0 ;
 
 //  name of drive+path without filenames
 TCHAR base_path[MAX_FILE_LEN+1] ;
 unsigned base_len ;  //  length of base_path
+
+//**********************************************************************************
+#ifndef  USE_UNIQUE_PTR
+ffdata::ffdata(
+    DWORD sattrib,
+    FILETIME sft,
+    ULONGLONG sfsize,
+    std::wstring sfilename,
+    bool sdirflag
+) :
+attrib(sattrib),
+ft(sft),
+fsize(sfsize),
+filename(sfilename),
+dirflag(sdirflag)
+{}
+#endif
 
 //**********************************************************************************
 int read_files(TCHAR *filespec)
@@ -86,8 +108,9 @@ int read_files(TCHAR *filespec)
          //  allocate and initialize the structure
          //****************************************************
          // flist.emplace_back(ffdata_t());
+#ifdef  USE_UNIQUE_PTR
          flist.emplace_back(std::make_unique<ffdata>());
-         ffdata_p ftemp = flist.back().get();
+         ffdata *ftemp = flist.back().get();
 
          ftemp->attrib = (uchar) fdata.dwFileAttributes;
 
@@ -110,7 +133,14 @@ int read_files(TCHAR *filespec)
          _tcscpy (ftemp->filename, (TCHAR *) fdata.cFileName);
 
          ftemp->dirflag = (ftemp->attrib & FILE_ATTRIBUTE_DIRECTORY) ? true : false ;
-
+#else         
+        flist.emplace_back( fdata.dwFileAttributes,
+                            fdata.ftCreationTime,
+                           (fdata.nFileSizeHigh * 1LL<<32) + fdata.nFileSizeLow,
+                            fdata.cFileName,
+                           (fdata.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ? true : false);
+#endif         
+                           
          //****************************************************
          //  add the structure to the file list
          //****************************************************
@@ -165,6 +195,20 @@ int main()
 }
 
 #endif //defined(__GNUC__) && defined(_UNICODE)
+
+//**************************************************************
+//  test function
+//**************************************************************
+// static void use_struct(ffdata& file)
+// {
+//    if (file.dirflag) {
+//       dputsf(L"[%s]\n", file.filename.c_str());
+//    }
+//    else {
+//       // std::wprintf(L"%s\n", file.filename.c_str());
+//       dputsf(L"%s\n", file.filename.c_str());
+//    }
+// }
 
 //********************************************************************************
 static TCHAR file_spec[MAX_FILE_LEN+1] = _T("") ;
@@ -221,14 +265,25 @@ int wmain(int argc, wchar_t *argv[])
       dputsf(_T("filespec: %s, fcount: %u\n"), file_spec, filecount);
       if (filecount > 0) {
          dputsf(L"\n");
+#ifdef  USE_UNIQUE_PTR
          std::vector<std::unique_ptr<ffdata>>::iterator it ;
          // std::vector<ffdata>::iterator it ;
          for(it = flist.begin(); it != flist.end(); ++it)    {
-            ffdata_p ftemp = it->get() ;
+            ffdata *ftemp = it->get() ;
             // dputsf(_T("%s\n"), ftemp->filename);
             print_media_info(ftemp);
          }
-      }
+#else
+         for(auto &file : flist)
+         {
+            // use_struct(file);
+            print_media_info(file);
+         }
+#endif         
+      }  //lint !e681 !e42 !e529
+      // media_list.cpp  283  Warning 681: Loop is not entered
+      // media_list.cpp  283  Error 42: Expected a statement
+      // media_list.cpp  283  Warning 529: Symbol 'file' (line 277) not subsequently referenced
       
       //  see if there is any special results to display
       TCHAR timestr[80] ;

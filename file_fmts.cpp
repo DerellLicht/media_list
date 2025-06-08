@@ -8,8 +8,7 @@
 
 // #undef __STRICT_ANSI__
 #include <windows.h>
-#include <stdio.h>
-#include <io.h>
+#include <string>    //  std::wstring, sprintf
 #include <fcntl.h>
 #include <tchar.h>
 
@@ -88,7 +87,7 @@ static int get_ico_cur_ani_info(u8 *bfr, char *mlstr, uint NumAniFrames)
    // hex_dump(bfr, 64);
    u16 *uptr = (u16 *) bfr ;
    if (*uptr != 0) {
-      sprintf(tempstr, "offset 0 bad: 0x%04X", *uptr) ;
+      sprintf(tempstr, "offset 0 bad: 0x%04X", (u16) *uptr) ;
       sprintf(mlstr, "%-30s", tempstr) ;
       return 0;
    }

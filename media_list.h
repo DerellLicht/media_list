@@ -23,6 +23,12 @@ extern unsigned base_len ;  //  length of base_path
 // not set in the constructor still gets the specified default value.
 // When you do this in the default constructor instead, another constructor is still 
 // able to leave some members uninitialized.
+//lint -esym(768, ffdata::attrib)  global struct member not referenced
+
+// #define  USE_UNIQUE_PTR
+#undef  USE_UNIQUE_PTR
+
+#ifdef  USE_UNIQUE_PTR
 
 struct ffdata {
    uchar       attrib {};
@@ -30,10 +36,22 @@ struct ffdata {
    u64         fsize {};      //  equivalent to = 0;
    wchar_t     *filename {nullptr};
    bool        dirflag {};
-   // struct ffdata  *next ;  //  no longer needed, with vector
 } ;
-typedef ffdata ffdata_t, *ffdata_p ;
+
+#else
+struct ffdata 
+{
+    DWORD attrib {};
+    FILETIME ft {};
+    ULONGLONG fsize {};
+    std::wstring filename {nullptr};
+    bool dirflag {} ;
+    ffdata(DWORD sattrib, FILETIME sft, ULONGLONG sfsize, std::wstring sfilename, bool sdirflag );
+} ;
+
+#endif
 
 //  ext_lookup.cpp
-int print_media_info(ffdata_t const * const fptr);
+int print_media_info(ffdata& ftemp);
+// int print_media_info(ffdata const * const fptr);
 
