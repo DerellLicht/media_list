@@ -25,20 +25,6 @@ extern unsigned base_len ;  //  length of base_path
 // able to leave some members uninitialized.
 //lint -esym(768, ffdata::attrib)  global struct member not referenced
 
-// #define  USE_UNIQUE_PTR
-#undef  USE_UNIQUE_PTR
-
-#ifdef  USE_UNIQUE_PTR
-
-struct ffdata {
-   uchar       attrib {};
-   FILETIME    ft {};
-   u64         fsize {};      //  equivalent to = 0;
-   wchar_t     *filename {nullptr};
-   bool        dirflag {};
-} ;
-
-#else
 struct ffdata 
 {
     DWORD attrib {};
@@ -49,9 +35,6 @@ struct ffdata
     ffdata(DWORD sattrib, FILETIME sft, ULONGLONG sfsize, std::wstring sfilename, bool sdirflag );
 } ;
 
-#endif
-
 //  ext_lookup.cpp
 int print_media_info(ffdata& ftemp);
-// int print_media_info(ffdata const * const fptr);
 
