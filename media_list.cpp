@@ -78,19 +78,14 @@ int read_files(TCHAR *filespec)
    bool fn_okay = false ;
    bool done = false;
    while (!done) {
-      //  filter out directories if not requested
       if ((fdata.dwFileAttributes & FILE_ATTRIBUTE_VOLID) != 0)
          fn_okay = false;
       else if ((fdata.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != FILE_ATTRIBUTE_DIRECTORY)
          fn_okay = true;
       //  For directories, filter out "." and ".."
-      else if (fdata.cFileName[0] != _T('.')) //  fn=".something"
-         fn_okay = true;
-      else if (fdata.cFileName[1] == 0)   //  fn="."
+      else if (_tcscmp(fdata.cFileName, L".") == 0)
          fn_okay = false;
-      else if (fdata.cFileName[1] != _T('.')) //  fn="..something"
-         fn_okay = true;
-      else if (fdata.cFileName[2] == 0)   //  fn=".."
+      else if (_tcscmp(fdata.cFileName, L"..") == 0)
          fn_okay = false;
       else
          fn_okay = true;
@@ -109,10 +104,6 @@ int read_files(TCHAR *filespec)
                            (fdata.nFileSizeHigh * 1LL<<32) + fdata.nFileSizeLow,
                             fdata.cFileName,
                            (fdata.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ? true : false);
-                           
-         //****************************************************
-         //  add the structure to the file list
-         //****************************************************
       }  //lint !e550  end while()
 
       //  search for another file
