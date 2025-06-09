@@ -179,6 +179,7 @@ int wmain(int argc, wchar_t *argv[])
 
    console_init() ;
    dputsf(L"%s\n", Version);
+   dputsf(L"sizeof(int*): %u bytes\n", sizeof(int*));
    //  okay, the cause of this, is that apparently I have to use 
    //  double-backslash to put a quote after a backslash...
    //  But forward slash works fine...
