@@ -20,7 +20,7 @@
 //  V1.03  Converted files linked list to vector/unique_ptr
 #define  VER_NUMBER "1.03"
 
-static TCHAR const * const Version = _T("MediaList, Version " VER_NUMBER " ") ;   //lint !e707
+static TCHAR const * const Version = _T("MediaList, Version " VER_NUMBER ) ;   //lint !e707
 
 //  per Jason Hood, this turns off MinGW's command-line expansion, 
 //  so we can handle wildcards like we want to.                    
@@ -178,9 +178,8 @@ int wmain(int argc, wchar_t *argv[])
    int idx, result ;
 
    console_init() ;
-   dputsf(L"%s\n", Version);
-   dputsf(L"sizeof(int*): %u bytes\n", sizeof(int*));
-   //  okay, the cause of this, is that apparently I have to use 
+   dputsf(L"%s, %u-bit\n", Version, get_build_size());
+   //  okay, the cause of this, is that apparently I have to use
    //  double-backslash to put a quote after a backslash...
    //  But forward slash works fine...
    // > medialist glock17\"буяновский страйкбол"
