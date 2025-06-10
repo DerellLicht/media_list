@@ -4,6 +4,8 @@ USE_DEBUG = NO
 USE_64BIT = NO
 USE_UNICODE = YES
 USE_CLANG = NO
+# use -static for clang and cygwin/mingw
+USE_STATIC = NO
 
 #  clang++ vs tdm g++
 #  clang gives *much* clearer compiler error messages...
@@ -11,12 +13,12 @@ USE_CLANG = NO
 #  in order to be used elsewhere.
 #  That is why the executable files are smaller than TDM ...
 ifeq ($(USE_64BIT),YES)
-TOOLS=c:\tdm-gcc-64\bin
+TOOLS=d:\tdm64\bin
 else
 ifeq ($(USE_CLANG),YES)
-TOOLS=D:\clang\bin
+TOOLS=d:\clang\bin
 else
-TOOLS=c:\tdm32\bin
+TOOLS=d:\tdm32\bin
 endif
 endif
 
@@ -36,9 +38,6 @@ CFLAGS += -DUSE_64BIT
 CxxFLAGS += -DUSE_64BIT
 endif
 
-# debugging ___chkstk_ms issue with claing
-# LFLAGS += -v
-
 ifeq ($(USE_UNICODE),YES)
 CFLAGS += -DUNICODE -D_UNICODE
 CxxFLAGS += -DUNICODE -D_UNICODE
@@ -53,6 +52,10 @@ LiFLAGS += -Ider_libs
 CFLAGS += -Ider_libs
 CxxFLAGS += -Ider_libs
 IFLAGS += -Ider_libs
+
+ifeq ($(USE_STATIC),YES)
+LFLAGS += -static
+endif
 
 CPPSRC=media_list.cpp ext_lookup.cpp file_fmts.cpp conio_min.cpp \
 der_libs\common_funcs.cpp \
