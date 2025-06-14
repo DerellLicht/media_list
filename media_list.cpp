@@ -7,7 +7,6 @@
 #include <cstdio>
 #include <string>
 #include <vector>
-#include <memory>
 #include <tchar.h>
 
 #include "common.h"
@@ -42,6 +41,9 @@ static uint filecount = 0 ;
 //  name of drive+path without filenames
 TCHAR base_path[MAX_FILE_LEN+1] ;
 unsigned base_len ;  //  length of base_path
+
+//lint -e129  declaration expected, identifier '__created' ignored
+std::unique_ptr<conio_min> console ;
 
 //**********************************************************************************
 //  constructor for ffdata struct
@@ -93,8 +95,7 @@ int read_files(TCHAR *filespec)
       if (fn_okay) {
          filecount++;
 
-         // dputsf(_T("%s\n"), fdata.cFileName);
-         // ffdata_t fttemp() ;
+         // console->dputsf(_T("%s\n"), fdata.cFileName);
          //****************************************************
          //  allocate and initialize the structure
          //****************************************************
@@ -162,11 +163,10 @@ int main()
 // static void use_struct(ffdata& file)
 // {
 //    if (file.dirflag) {
-//       dputsf(L"[%s]\n", file.filename.c_str());
+//       console->dputsf(L"[%s]\n", file.filename.c_str());
 //    }
 //    else {
-//       // std::wprintf(L"%s\n", file.filename.c_str());
-//       dputsf(L"%s\n", file.filename.c_str());
+//       console->dputsf(L"%s\n", file.filename.c_str());
 //    }
 // }
 
@@ -177,8 +177,13 @@ int wmain(int argc, wchar_t *argv[])
 {
    int idx, result ;
 
-   console_init() ;
-   dputsf(L"%s, %u-bit\n", Version, get_build_size());
+   // console_init() ;
+   console = std::make_unique<conio_min>() ;
+   if (!console->init_okay()) {  //lint !e530
+      wprintf(L"console init failed\n");
+      return 1 ;
+   }
+   console->dputsf(L"%s, %u-bit\n", Version, get_build_size());
    //  okay, the cause of this, is that apparently I have to use
    //  double-backslash to put a quote after a backslash...
    //  But forward slash works fine...
@@ -202,7 +207,7 @@ int wmain(int argc, wchar_t *argv[])
 
    result = qualify(file_spec) ;
    if (result == QUAL_INV_DRIVE) {
-      dputsf(_T("%s: %d\n"), file_spec, result);
+      console->dputsf(_T("%s: %d\n"), file_spec, result);
       return 1 ;
    }
    
@@ -219,12 +224,12 @@ int wmain(int argc, wchar_t *argv[])
 
    result = read_files(file_spec);
    if (result < 0) {
-      dputsf(_T("filespec: %s, %s\n"), file_spec, strerror(-result));
+      console->dputsf(_T("filespec: %s, %s\n"), file_spec, strerror(-result));
    }
    else {
-      dputsf(_T("filespec: %s, fcount: %u\n"), file_spec, filecount);
+      console->dputsf(_T("filespec: %s, fcount: %u\n"), file_spec, filecount);
       if (filecount > 0) {
-         dputsf(L"\n");
+         console->dputsf(L"\n");
          for(auto &file : flist)
          {
             // use_struct(file);
@@ -244,11 +249,11 @@ int wmain(int argc, wchar_t *argv[])
             total_ptime /= 60.0 ;
             _stprintf(timestr, _T("%.2f minutes     "), total_ptime) ;  //lint !e592
          }
-         dputsf(_T("\ntotal playing time: %s\n"), timestr) ;
+         console->dputsf(_T("\ntotal playing time: %s\n"), timestr) ;
       }
-      dputsf(L"\n");
+      console->dputsf(L"\n");
    }
-   restore_console_attribs();
+   // restore_console_attribs(); //  now handled by conio_min class
    return 0;
 }
 

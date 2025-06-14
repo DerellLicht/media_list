@@ -73,9 +73,9 @@ int print_media_info(ffdata& ftemp)
 
    //  display directory entry
    if (fptr->dirflag) {
-      dputsf(_T("%14s  "), _T(""));
-      dputsf(_T("%30s"), _T(" "));
-      dputsf(_T("[%s]\n"), fptr->filename.c_str());
+      console->dputsf(_T("%14s  "), _T(""));
+      console->dputsf(_T("%30s"), _T(" "));
+      console->dputsf(_T("[%s]\n"), fptr->filename.c_str());
    }
 
    //  display file entry
@@ -99,20 +99,20 @@ int print_media_info(ffdata& ftemp)
 
       //  show file size
       // char *c2c = convert_to_commas(fptr->fsize, NULL) ;
-      // dputsf(_T("%14s  "), ascii2unicode(c2c));
-      dputsf(_T("%14s  "), convert_to_commas(fptr->fsize, NULL));
+      // console->dputsf(_T("%14s  "), ascii2unicode(c2c));
+      console->dputsf(_T("%14s  "), convert_to_commas(fptr->fsize, NULL));
 
       //  process multimedia display
       if (!show_normal_info) {
-         dputsf(_T("%-30s"), ascii2unicode(mlstr));
+         console->dputsf(_T("%-30s"), ascii2unicode(mlstr));
       } 
       //  display normal file listing
       else {
-         dputsf(_T("%30s"), _T(" "));
+         console->dputsf(_T("%30s"), _T(" "));
       }
 
       //  format filename as required
-      dputsf(L"%s\n", fptr->filename.c_str());
+      console->dputsf(L"%s\n", fptr->filename.c_str());
    }
    return 0 ;  //lint !e438
 }  //lint !e550

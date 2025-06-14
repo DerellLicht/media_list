@@ -54,6 +54,7 @@ using namespace MediaInfoNameSpace;
 // #include <windows.h>
 #include <stdio.h>
 #include <errno.h>
+#include <memory> //  required for unique_ptr
 #include <io.h>   // _lseeki64
 #include <sys/stat.h>   // _open
 #include <fcntl.h>   // _open
@@ -65,6 +66,7 @@ typedef  unsigned int  uint ;
 #else
 #include "common.h"
 #include "commonw.h"
+#include "conio_min.h"
 #include "media_list.h"
 #include "file_fmts.h"
 

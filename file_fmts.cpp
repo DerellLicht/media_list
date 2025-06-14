@@ -342,7 +342,7 @@ int get_ani_info(TCHAR *fname, char *mlstr)
    return 0 ;
    
 error_exit:
-   dputsf(_T("error exit: %s: %s\n"), fname, ascii2unicode(mlstr));
+   console->dputsf(_T("error exit: %s: %s\n"), fname, ascii2unicode(mlstr));
    return 0 ;   
 }
 

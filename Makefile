@@ -57,7 +57,8 @@ ifeq ($(USE_STATIC),YES)
 LFLAGS += -static
 endif
 
-CPPSRC=media_list.cpp ext_lookup.cpp file_fmts.cpp conio_min.cpp \
+CPPSRC=media_list.cpp ext_lookup.cpp file_fmts.cpp \
+der_libs\conio_min.cpp \
 der_libs\common_funcs.cpp \
 der_libs\common_win.cpp \
 der_libs\qualify.cpp 
@@ -121,14 +122,15 @@ $(BIN): $(OBJS)
 
 # DO NOT DELETE
 
-media_list.o: der_libs/common.h conio_min.h media_list.h der_libs/qualify.h
-ext_lookup.o: der_libs/common.h der_libs/commonw.h conio_min.h media_list.h
-ext_lookup.o: file_fmts.h
-file_fmts.o: der_libs/common.h der_libs/commonw.h conio_min.h media_list.h
-file_fmts.o: file_fmts.h
-conio_min.o: der_libs/common.h conio_min.h
+media_list.o: der_libs/common.h der_libs/conio_min.h media_list.h
+media_list.o: der_libs/qualify.h
+ext_lookup.o: der_libs/common.h der_libs/commonw.h der_libs/conio_min.h
+ext_lookup.o: media_list.h file_fmts.h
+file_fmts.o: der_libs/common.h der_libs/commonw.h der_libs/conio_min.h
+file_fmts.o: media_list.h file_fmts.h
+der_libs\conio_min.o: der_libs/common.h der_libs/conio_min.h
 der_libs\common_funcs.o: der_libs/common.h
 der_libs\common_win.o: der_libs/common.h der_libs/commonw.h
 der_libs\qualify.o: der_libs/qualify.h
 MediaInfoDll.o: MediaInfoDLL.h der_libs/common.h der_libs/commonw.h
-MediaInfoDll.o: media_list.h file_fmts.h
+MediaInfoDll.o: der_libs/conio_min.h media_list.h file_fmts.h

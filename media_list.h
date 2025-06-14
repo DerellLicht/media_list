@@ -3,6 +3,8 @@
 //  media_list.cpp - list info about various media files
 //**********************************************************************************
 
+#include <memory> //  required for unique_ptr
+
 #define  MAX_EXT_SIZE   8
 
 //lint -esym(759, total_ptime)  header declaration for symbol could be moved from header to module
@@ -12,6 +14,9 @@ extern double total_ptime ;
 //lint -esym(759, base_len)   header declaration for symbol could be moved from header to module
 extern TCHAR base_path[MAX_FILE_LEN+1] ;
 extern unsigned base_len ;  //  length of base_path
+
+//lint -e766  Header file 'der_libs\conio_min.h' not used in module 'ext_lookup.cpp'
+extern std::unique_ptr<conio_min> console ;
 
 //************************************************************
 //lint -esym(1401, ffdata::ft)  member not initialized by constructor
@@ -30,7 +35,7 @@ struct ffdata
     DWORD attrib {};
     FILETIME ft {};
     ULONGLONG fsize {};
-    std::wstring filename {nullptr};
+    std::wstring filename {};
     bool dirflag {} ;
     ffdata(DWORD sattrib, FILETIME sft, ULONGLONG sfsize, std::wstring sfilename, bool sdirflag );
 } ;
