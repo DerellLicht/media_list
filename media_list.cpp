@@ -157,19 +157,6 @@ int main()
 
 #endif //defined(__GNUC__) && defined(_UNICODE)
 
-//**************************************************************
-//  test function
-//**************************************************************
-// static void use_struct(ffdata& file)
-// {
-//    if (file.dirflag) {
-//       console->dputsf(L"[%s]\n", file.filename.c_str());
-//    }
-//    else {
-//       console->dputsf(L"%s\n", file.filename.c_str());
-//    }
-// }
-
 //********************************************************************************
 // static TCHAR file_spec[MAX_FILE_LEN+1] = _T("") ;
 static std::wstring file_spec(L"");
@@ -236,9 +223,6 @@ int wmain(int argc, wchar_t *argv[])
             print_media_info(file);
          }
       }  //lint !e681 !e42 !e529
-      // media_list.cpp  283  Warning 681: Loop is not entered
-      // media_list.cpp  283  Error 42: Expected a statement
-      // media_list.cpp  283  Warning 529: Symbol 'file' (line 277) not subsequently referenced
       
       //  see if there is any special results to display
       TCHAR timestr[80] ;
@@ -253,7 +237,6 @@ int wmain(int argc, wchar_t *argv[])
       }
       console->dputsf(L"\n");
    }
-   // restore_console_attribs(); //  now handled by conio_min class
    return 0;
 }
 
