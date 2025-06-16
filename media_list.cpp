@@ -171,12 +171,11 @@ int main()
 // }
 
 //********************************************************************************
-static TCHAR file_spec[MAX_FILE_LEN+1] = _T("") ;
+// static TCHAR file_spec[MAX_FILE_LEN+1] = _T("") ;
+static std::wstring file_spec(L"");
 
 int wmain(int argc, wchar_t *argv[])
 {
-   int idx, result ;
-
    // console_init() ;
    console = std::make_unique<conio_min>() ;
    if (!console->init_okay()) {  //lint !e530
@@ -194,18 +193,19 @@ int wmain(int argc, wchar_t *argv[])
    //  unicons derelict cornucopia "буяновский страйкбол"
    // > medialist glock17\\"буяновский страйкбол"
    // filespec: D:\SourceCode\Git\media_list\glock17\буяновский страйкбол\*, fcount: 3
-   
-   for (idx=1; idx<argc; idx++) {
-      TCHAR *p = argv[idx] ;
-      _tcsncpy(file_spec, p, MAX_FILE_LEN);
-      file_spec[MAX_FILE_LEN] = 0 ;
+   if (argc == 1) {
+      file_spec = L"." ;
+   }
+   else if (argc == 2) {
+      file_spec = argv[1] ;
+   }
+   else {
+      console->dputsf(_T("Usage: media_list [file_path]\n"));
+      console->dputsf(_T("If file_path is not specified, current folder will be used\n"));
+      return 1 ;
    }
 
-   if (file_spec[0] == 0) {
-      _tcscpy(file_spec, _T("."));
-   }
-
-   result = qualify(file_spec) ;
+   int result = qualify(file_spec) ;
    if (result == QUAL_INV_DRIVE) {
       console->dputsf(_T("%s: %d\n"), file_spec, result);
       return 1 ;
@@ -213,7 +213,7 @@ int wmain(int argc, wchar_t *argv[])
    
    //  Extract base path from first filespec,
    //  and strip off filename
-   _tcscpy(base_path, file_spec) ;
+   _tcscpy(base_path, file_spec.c_str()) ;
    TCHAR *strptr = _tcsrchr(base_path, _T('\\')) ;
    if (strptr != 0) {
        strptr++ ;  //lint !e613  skip past backslash, to filename
@@ -222,12 +222,12 @@ int wmain(int argc, wchar_t *argv[])
    base_len = _tcslen(base_path) ;
    // printf("base path: %s\n", base_path);
 
-   result = read_files(file_spec);
+   result = read_files((TCHAR *)file_spec.c_str());
    if (result < 0) {
-      console->dputsf(_T("filespec: %s, %s\n"), file_spec, strerror(-result));
+      console->dputsf(_T("filespec: %s, %s\n"), file_spec.c_str(), strerror(-result));
    }
    else {
-      console->dputsf(_T("filespec: %s, fcount: %u\n"), file_spec, filecount);
+      console->dputsf(_T("filespec: %s, fcount: %u\n"), file_spec.c_str(), filecount);
       if (filecount > 0) {
          console->dputsf(L"\n");
          for(auto &file : flist)
