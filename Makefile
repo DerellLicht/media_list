@@ -78,6 +78,8 @@ ifeq ($(USE_UNICODE),YES)
 CHTAIL += -DUNICODE -D_UNICODE
 endif
 
+LINTFILES=lintdefs.cpp lintdefs.ref.h 
+
 LIBS=-lshlwapi -lgdi32 -lcomdlg32
 
 OBJS = $(CPPSRC:.cpp=.o)  $(CXXSRC:.cxx=.o) 
@@ -114,7 +116,7 @@ check:
 	cmd /C "d:\clang\bin\clang-tidy.exe $(CHFLAGS) $(CPPSRC) $(CHTAIL)"
 
 lint:
-	cmd /C "c:\lint9\lint-nt +v -width(160,4) $(LiFLAGS) -ic:\lint9 mingw.lnt -os(_lint.tmp) lintdefs.cpp $(CPPSRC)"
+	cmd /C "c:\lint9\lint-nt +v -width(160,4) $(LiFLAGS) -ic:\lint9 mingw.lnt -os(_lint.tmp) $(LINTFILES) $(CPPSRC)"
 
 depend: 
 	makedepend $(IFLAGS) $(CPPSRC) $(CXXSRC)
