@@ -135,6 +135,6 @@ file_fmts.o: media_list.h file_fmts.h
 der_libs\conio_min.o: der_libs/common.h der_libs/conio_min.h
 der_libs\common_funcs.o: der_libs/common.h
 der_libs\common_win.o: der_libs/common.h der_libs/commonw.h
-der_libs\qualify.o: der_libs/common.h der_libs/conio_min.h der_libs/qualify.h
+der_libs\qualify.o: der_libs/common.h der_libs/qualify.h
 MediaInfoDll.o: MediaInfoDLL.h der_libs/common.h der_libs/commonw.h
 MediaInfoDll.o: der_libs/conio_min.h media_list.h file_fmts.h
