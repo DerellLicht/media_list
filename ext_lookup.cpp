@@ -1,5 +1,5 @@
 //**********************************************************************************
-//  Copyright (c) 1998-2025 Daniel D. Miller                       
+//  Copyright (c) 1998-2026 Daniel D. Miller                       
 //  ext_lookup - file extension lookup
 //  This file contains the extension-lookup and vectoring table and function.
 //**********************************************************************************
@@ -10,6 +10,7 @@
 #endif
 #include <windows.h>
 #include <string>
+#include <vector>
 #include <tchar.h>
 #ifdef USE_64BIT
 #include <fileapi.h>
@@ -24,12 +25,22 @@
 //************************************************************************
 //  lookup tables for special-extension display functions
 //************************************************************************
-typedef struct mm_lookup_s {
-   TCHAR  ext[MAX_EXT_SIZE] ;
+struct mm_lookup_s {
+   TCHAR ext[MAX_EXT_SIZE] ;
    int (*func)(TCHAR *fname, char *mlstr) ;
-} mm_lookup_t ;
+   mm_lookup_s (wchar_t iext[MAX_EXT_SIZE], int (*ifunc)(TCHAR *fname, char *mlstr));
+} ;
 
-static mm_lookup_t const mm_lookup[] = {
+mm_lookup_s::mm_lookup_s (TCHAR iext[MAX_EXT_SIZE], int (*ifunc)(TCHAR *fname, char *mlstr)
+) :
+   ext(L""),
+   func(ifunc)
+{
+   _tcsncpy(ext, iext, MAX_EXT_SIZE);
+   ext[MAX_EXT_SIZE-1] = 0 ;
+}
+
+static std::vector<mm_lookup_s> mm_lookup = {
 //  image formats
 { _T("ani"),  get_ani_info },
 { _T("avif"), get_mi_info },
@@ -60,8 +71,8 @@ static mm_lookup_t const mm_lookup[] = {
 { _T("mpeg"), get_mi_info },
 { _T("mpg"),  get_mi_info },
 { _T("webm"), get_mi_info },
-{ _T("wmv"),  get_mi_info },
-{ _T(""), 0 }} ;
+{ _T("wmv"),  get_mi_info }
+} ;
 
 //************************************************************************
 //lint -esym(759, print_media_info) header declaration for symbol could be moved from header to module
@@ -80,17 +91,14 @@ int print_media_info(ffdata& ftemp)
 
    //  display file entry
    else {
-      TCHAR *p ;
-      unsigned idx ;
-
-      p = _tcsrchr((wchar_t *)fptr->filename.c_str(), _T('.')) ;
+      TCHAR *p = _tcsrchr((wchar_t *)fptr->filename.c_str(), _T('.')) ;
       if (p != 0  &&  _tcslen(p) <= MAX_EXT_SIZE) {
          p++ ; //  skip past the period
 
-         for (idx=0; mm_lookup[idx].ext[0] != 0; idx++) {
-            if (_tcsnicmp(p, mm_lookup[idx].ext, _tcslen(mm_lookup[idx].ext)) == 0) {
+         for(auto &mm_element : mm_lookup) {
+            if (_tcsnicmp(p, mm_element.ext, _tcslen(mm_element.ext)) == 0) {
                //  call the special string generator function
-               (*mm_lookup[idx].func)((wchar_t *)fptr->filename.c_str(), mlstr) ; //lint !e522
+               (*mm_element.func)((wchar_t *)fptr->filename.c_str(), mlstr) ; //lint !e522
                show_normal_info = false ;
                break;
             }
