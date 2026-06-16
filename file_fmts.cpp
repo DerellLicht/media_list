@@ -12,7 +12,10 @@
 #include <fcntl.h>
 #include <tchar.h>
 
-//lint -esym(1055, atoi)
+//lint -esym(757, get_mi_info) global declarator not referenced
+//  Info 759: header declaration for symbol could be moved from header to module
+//lint -esym(759, get_bmp_info, get_gif_info, get_ico_cur_info, get_jpeg_info)
+//lint -esym(759, get_png_info, get_sid_info, get_svg_info, get_webp_info)
 
 #include "common.h"
 #include "commonw.h"

@@ -16,6 +16,8 @@
 #include <fileapi.h>
 #endif
 
+//lint -esym(818, iext) could be declared as pointing to const
+
 #include "common.h"
 #include "commonw.h"
 #include "conio_min.h"
@@ -40,7 +42,8 @@ mm_lookup_s::mm_lookup_s (TCHAR iext[MAX_EXT_SIZE], int (*ifunc)(TCHAR *fname, c
    ext[MAX_EXT_SIZE-1] = 0 ;
 }
 
-static std::vector<mm_lookup_s> mm_lookup = {
+//lint -esym(752, mm_lookup) local declarator not referenced
+static std::vector<mm_lookup_s> const mm_lookup = { 
 //  image formats
 { _T("ani"),  get_ani_info },
 { _T("avif"), get_mi_info },
@@ -111,7 +114,7 @@ int print_media_info(ffdata& ftemp)
       console->dputsf(_T("%14s  "), convert_to_commas(fptr->fsize, NULL));
 
       //  process multimedia display
-      if (!show_normal_info) {
+      if (!show_normal_info) {   //lint !e774
          console->dputsf(_T("%-30s"), ascii2unicode(mlstr));
       } 
       //  display normal file listing
