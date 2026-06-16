@@ -638,14 +638,16 @@ int get_svg_info(TCHAR *fname, char *mlstr)
       return 0 ;
    }
    char *tl = (hd + 13);
-   uint width = atoi(tl) ;
+   // uint width = atoi(tl) ;
+   uint width = strtol(tl, NULL, 10) ;
    tl = strstr(hd, ";height:");
    if (tl == NULL) {
       sprintf(mlstr, "%-30s", "unknown svg format 3") ;
       return 0 ;
    }
    tl += 8 ;
-   uint height = atoi(tl);
+   // uint height = atoi(tl);
+   uint height = strtol(tl, NULL, 10);
    char stemp[30] ;
    sprintf(stemp, "%4u x %5u", width, height);
    sprintf(mlstr, "%-30s", stemp) ;

@@ -135,7 +135,7 @@ extern
 #ifdef __cplusplus
 "C" 
 #endif
-void __wgetmainargs(int*,wchar_t***,wchar_t***,int,int*);
+void __wgetmainargs(int*,wchar_t***,wchar_t***,int,int*);   // NOLINT
 
 #ifdef MAIN_USE_ENVP
 int wmain(int argc, wchar_t *argv[], wchar_t *envp[]);
@@ -143,7 +143,9 @@ int wmain(int argc, wchar_t *argv[], wchar_t *envp[]);
 int wmain(int argc, wchar_t *argv[]);
 #endif
 
-int main() 
+// warning: an exception may be thrown in function 'main' which should not throw exceptions 
+// [bugprone-exception-escape]
+int main() // NOLINT
 {
    wchar_t **enpv, **argv;
    int argc, si = 0;
@@ -194,7 +196,7 @@ int wmain(int argc, wchar_t *argv[])
 
    int result = qualify(file_spec) ;
    if (result == QUAL_INV_DRIVE) {
-      console->dputsf(_T("%s: %d\n"), file_spec, result);
+      console->dputsf(_T("%s: %d\n"), file_spec.c_str(), result);
       return 1 ;
    }
    
