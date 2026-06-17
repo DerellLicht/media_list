@@ -32,7 +32,7 @@ static u8 dbuffer[DBUFFER_LEN] ;
 //*********************************************************************
 static unsigned short get2bytes(unsigned char const * p)
 {
-   ul2uc_t uconv ;
+   ul2uc_t uconv {};
    
    uconv.uc[1] = *p++ ;
    uconv.uc[0] = *p ;
@@ -42,7 +42,7 @@ static unsigned short get2bytes(unsigned char const * p)
 //*********************************************************************
 static unsigned get4bytes(unsigned char const * p)
 {
-   ul2uc_t uconv ;
+   ul2uc_t uconv {};
    
    uconv.uc[3] = *p++ ;
    uconv.uc[2] = *p++ ;
@@ -557,7 +557,7 @@ int get_webp_info(TCHAR *fname, char *mlstr)
       sprintf(mlstr, "%-30s", "unknown webp format") ;
    }
    else {
-      ul2uc_t uconv ;
+      ul2uc_t uconv {};
       u8 *hd ;
       unsigned width, height ;
       switch (dbuffer[15]) {
@@ -703,7 +703,7 @@ typedef sid_info_t *sid_info_p ;
 
 u32 swap32(u32 invalue)
 {
-   ul2uc_t uconv ;
+   ul2uc_t uconv {};
    uconv.ul = invalue ;
    u8 utemp ;
    utemp = uconv.uc[0] ;

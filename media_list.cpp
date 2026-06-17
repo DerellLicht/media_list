@@ -58,7 +58,7 @@ ffdata::ffdata(
 attrib(sattrib),
 ft(sft),
 fsize(sfsize),
-filename(sfilename),
+filename(std::move(sfilename)),
 dirflag(sdirflag)
 {}
 
