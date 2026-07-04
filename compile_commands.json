@@ -1,0 +1,144 @@
+[
+ {
+  "directory": "D:\\SourceCode\\Git\\media_list",
+  "arguments": [
+   "D:/llvm/bin/i686-w64-mingw32-clang++.exe",
+   "-Wall",
+   "-O3",
+   "-c",
+   "-Weffc++",
+   "-Wno-write-strings",
+   "-DUNICODE",
+   "-D_UNICODE",
+   "-Ider_libs",
+   "media_list.cpp",
+   "-o",
+   "media_list.o"
+  ],
+  "file": "media_list.cpp"
+ },
+ {
+  "directory": "D:\\SourceCode\\Git\\media_list",
+  "arguments": [
+   "D:/llvm/bin/i686-w64-mingw32-clang++.exe",
+   "-Wall",
+   "-O3",
+   "-c",
+   "-Weffc++",
+   "-Wno-write-strings",
+   "-DUNICODE",
+   "-D_UNICODE",
+   "-Ider_libs",
+   "ext_lookup.cpp",
+   "-o",
+   "ext_lookup.o"
+  ],
+  "file": "ext_lookup.cpp"
+ },
+ {
+  "directory": "D:\\SourceCode\\Git\\media_list",
+  "arguments": [
+   "D:/llvm/bin/i686-w64-mingw32-clang++.exe",
+   "-Wall",
+   "-O3",
+   "-c",
+   "-Weffc++",
+   "-Wno-write-strings",
+   "-DUNICODE",
+   "-D_UNICODE",
+   "-Ider_libs",
+   "file_fmts.cpp",
+   "-o",
+   "file_fmts.o"
+  ],
+  "file": "file_fmts.cpp"
+ },
+ {
+  "directory": "D:\\SourceCode\\Git\\media_list",
+  "arguments": [
+   "D:/llvm/bin/i686-w64-mingw32-clang++.exe",
+   "-Wall",
+   "-O3",
+   "-c",
+   "-Weffc++",
+   "-Wno-write-strings",
+   "-DUNICODE",
+   "-D_UNICODE",
+   "-Ider_libs",
+   "der_libs/conio_min.cpp",
+   "-o",
+   "der_libs/conio_min.o"
+  ],
+  "file": "der_libs/conio_min.cpp"
+ },
+ {
+  "directory": "D:\\SourceCode\\Git\\media_list",
+  "arguments": [
+   "D:/llvm/bin/i686-w64-mingw32-clang++.exe",
+   "-Wall",
+   "-O3",
+   "-c",
+   "-Weffc++",
+   "-Wno-write-strings",
+   "-DUNICODE",
+   "-D_UNICODE",
+   "-Ider_libs",
+   "der_libs/common_funcs.cpp",
+   "-o",
+   "der_libs/common_funcs.o"
+  ],
+  "file": "der_libs/common_funcs.cpp"
+ },
+ {
+  "directory": "D:\\SourceCode\\Git\\media_list",
+  "arguments": [
+   "D:/llvm/bin/i686-w64-mingw32-clang++.exe",
+   "-Wall",
+   "-O3",
+   "-c",
+   "-Weffc++",
+   "-Wno-write-strings",
+   "-DUNICODE",
+   "-D_UNICODE",
+   "-Ider_libs",
+   "der_libs/common_win.cpp",
+   "-o",
+   "der_libs/common_win.o"
+  ],
+  "file": "der_libs/common_win.cpp"
+ },
+ {
+  "directory": "D:\\SourceCode\\Git\\media_list",
+  "arguments": [
+   "D:/llvm/bin/i686-w64-mingw32-clang++.exe",
+   "-Wall",
+   "-O3",
+   "-c",
+   "-Weffc++",
+   "-Wno-write-strings",
+   "-DUNICODE",
+   "-D_UNICODE",
+   "-Ider_libs",
+   "der_libs/qualify.cpp",
+   "-o",
+   "der_libs/qualify.o"
+  ],
+  "file": "der_libs/qualify.cpp"
+ },
+ {
+  "directory": "D:\\SourceCode\\Git\\media_list",
+  "arguments": [
+   "D:/llvm/bin/i686-w64-mingw32-clang++.exe",
+   "-Wall",
+   "-O3",
+   "-c",
+   "-DUNICODE",
+   "-D_UNICODE",
+   "-Ider_libs",
+   "MediaInfoDll.cxx",
+   "-o",
+   "MediaInfoDll.o"
+  ],
+  "file": "MediaInfoDll.cxx"
+ }
+]

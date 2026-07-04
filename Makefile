@@ -18,7 +18,7 @@ else
 ifeq ($(USE_CLANG),YES)
 TOOLS=d:\clang\bin
 else
-TOOLS=d:\tdm32\bin
+TOOLS=d:/tdm32/bin
 endif
 endif
 
@@ -60,23 +60,12 @@ endif
 IFLAGS += -DNOMAKEDEPEND
 
 CPPSRC=media_list.cpp ext_lookup.cpp file_fmts.cpp \
-der_libs\conio_min.cpp \
-der_libs\common_funcs.cpp \
-der_libs\common_win.cpp \
-der_libs\qualify.cpp 
+der_libs/conio_min.cpp \
+der_libs/common_funcs.cpp \
+der_libs/common_win.cpp \
+der_libs/qualify.cpp 
 
 CXXSRC=MediaInfoDll.cxx
-
-#  clang-tidy options
-CHFLAGS = -header-filter=.*
-CHTAIL = --
-CHTAIL += -Ider_libs
-ifeq ($(USE_64BIT),YES)
-CHTAIL += -DUSE_64BIT
-endif
-ifeq ($(USE_UNICODE),YES)
-CHTAIL += -DUNICODE -D_UNICODE
-endif
 
 LINTFILES=lintdefs.cpp lintdefs.ref.h 
 
@@ -89,10 +78,10 @@ GPP_NAME=g++
 
 #**************************************************************************
 %.o: %.cpp
-	$(TOOLS)\$(GPP_NAME) $(CFLAGS) -c $< -o $@
+	$(TOOLS)/$(GPP_NAME) $(CFLAGS) $< -o $@
 
 %.o: %.cxx
-	$(TOOLS)\$(GPP_NAME) $(CxxFLAGS) -c $< -o $@
+	$(TOOLS)/$(GPP_NAME) $(CxxFLAGS) $< -o $@
 
 ifeq ($(USE_64BIT),NO)
 BIN = MediaList.exe
@@ -113,7 +102,7 @@ wc:
 	wc -l *.cpp
 
 check:
-	cmd /C "d:\llvm\bin\clang-tidy.exe $(CHFLAGS) $(CPPSRC) $(CHTAIL)"
+	cmd /C "d:\llvm\bin\clang-tidy.exe $(CPPSRC)"
 
 lint:
 	cmd /C "c:\lint9\lint-nt +v -width(160,4) $(LiFLAGS) -ic:\lint9 mingw.lnt -os(_lint.tmp) $(LINTFILES) $(CPPSRC)"
@@ -122,7 +111,7 @@ depend:
 	makedepend $(IFLAGS) $(CPPSRC) $(CXXSRC)
 
 $(BIN): $(OBJS)
-	$(TOOLS)\$(GPP_NAME) $(OBJS) $(LFLAGS) -o $(BIN) $(LIBS) 
+	$(TOOLS)/$(GPP_NAME) $(OBJS) $(LFLAGS) -o $(BIN) $(LIBS) 
 
 # DO NOT DELETE
 
@@ -132,9 +121,9 @@ ext_lookup.o: der_libs/common.h der_libs/commonw.h der_libs/conio_min.h
 ext_lookup.o: media_list.h file_fmts.h
 file_fmts.o: der_libs/common.h der_libs/commonw.h der_libs/conio_min.h
 file_fmts.o: media_list.h file_fmts.h
-der_libs\conio_min.o: der_libs/common.h der_libs/conio_min.h
-der_libs\common_funcs.o: der_libs/common.h
-der_libs\common_win.o: der_libs/common.h der_libs/commonw.h
-der_libs\qualify.o: der_libs/common.h der_libs/qualify.h
+der_libs/conio_min.o: der_libs/common.h der_libs/conio_min.h
+der_libs/common_funcs.o: der_libs/common.h
+der_libs/common_win.o: der_libs/common.h der_libs/commonw.h
+der_libs/qualify.o: der_libs/common.h der_libs/qualify.h
 MediaInfoDll.o: MediaInfoDLL.h der_libs/common.h der_libs/commonw.h
 MediaInfoDll.o: der_libs/conio_min.h media_list.h file_fmts.h
