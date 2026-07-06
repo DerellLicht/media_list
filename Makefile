@@ -102,7 +102,7 @@ wc:
 	wc -l *.cpp
 
 cppc:
-	cmd /C "cppcheck --project=compile_commands.json --suppressions-list=./.suppress.cppcheck
+	cmd /C "cppcheck --project=compile_commands.json --std=c++14 --suppressions-list=./.suppress.cppcheck"
 
 check:
 	cmd /C "d:\llvm\bin\clang-tidy.exe $(CPPSRC)"
