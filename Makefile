@@ -101,6 +101,10 @@ dist:
 wc:
 	wc -l *.cpp
 
+cppc:
+#	cmd /C "cppcheck -I der_libs --suppressions-list=./.suppress.cppcheck $(CPPSRC)"
+	cmd /C "cppcheck --project=compile_commands.json --suppressions-list=./.suppress.cppcheck
+
 check:
 	cmd /C "d:\llvm\bin\clang-tidy.exe $(CPPSRC)"
 
