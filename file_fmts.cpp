@@ -240,7 +240,7 @@ typedef struct anih_header_s {
 //lint -esym(759, get_ani_info)
 int get_ani_info(TCHAR *fname, char *mlstr)
 {
-   uint *u32ptr ;
+   uint const * u32ptr ;
    uint data_len ;
    int result = read_into_dbuffer(fname) ;
    if (result != 0) {
@@ -477,7 +477,7 @@ int get_jpeg_info(TCHAR *fname, char *mlstr)
    } else {     //                             "
 //    sprintf(mlstr, "%4u x %5u, %4s           ", 
       sprintf(mlstr, "%4u x %5u, %u bpp %4s     ", 
-         rows, cols, density_units*3, jpeg_fmt[format]) ;
+         rows, cols, density_units*3U, jpeg_fmt[format]) ;
    }
    return 0 ;
 
@@ -558,7 +558,7 @@ int get_webp_info(TCHAR *fname, char *mlstr)
    }
    else {
       ul2uc_t uconv {};
-      u8 *hd ;
+      u8 const * hd ;
       unsigned width, height ;
       switch (dbuffer[15]) {
       case 'X':
@@ -718,7 +718,7 @@ u32 swap32(u32 invalue)
 int get_sid_info(TCHAR *fname, char *mlstr)
 {
    sid_info_p sid_info ;
-   unsigned rows, cols, bpp ;
+   // unsigned rows, cols, bpp ;
 
    int result = read_into_dbuffer(fname) ;
    if (result != 0) {
@@ -727,9 +727,9 @@ int get_sid_info(TCHAR *fname, char *mlstr)
       sprintf(mlstr, "%-30s", "unknown SID format") ;
    } else {
       sid_info = (sid_info_p) &dbuffer[0] ;
-      cols = swap32(sid_info->width) ;
-      rows = swap32(sid_info->height) ;
-      bpp  = sid_info->color_clue1 * 8 ;
+      unsigned cols = swap32(sid_info->width) ;
+      unsigned rows = swap32(sid_info->height) ;
+      unsigned bpp  = sid_info->color_clue1 * 8 ;
 
       sprintf(tempstr, "%4u x %5u, %u bpp", cols, rows, bpp) ;
       sprintf(mlstr, "%-30s", tempstr) ;
@@ -758,7 +758,6 @@ int get_gif_info(TCHAR *fname, char *mlstr)
 {
    int result ;
    gif_info_p gif_info ;
-   unsigned rows, cols, bpp ;
 
    result = read_into_dbuffer(fname) ;
    if (result != 0) {
@@ -768,9 +767,9 @@ int get_gif_info(TCHAR *fname, char *mlstr)
       sprintf(mlstr, "%-30s", "unknown GIF format") ;
    } else {
       gif_info = (gif_info_p) &dbuffer[6] ;  //  look past the label
-      cols = gif_info->width ;
-      rows = gif_info->height ;
-      bpp  = gif_info->bpp + 1 ;
+      unsigned cols = gif_info->width ;
+      unsigned rows = gif_info->height ;
+      unsigned bpp  = gif_info->bpp + 1 ;
 
       // sprintf(tempstr, "%4u x %5u, %u colors", cols, rows, (1U << bpp)) ;
       sprintf(tempstr, "%4u x %5u, %u bpp", cols, rows, bpp) ;

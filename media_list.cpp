@@ -163,7 +163,7 @@ int main() // NOLINT
 // static TCHAR file_spec[MAX_FILE_LEN+1] = _T("") ;
 static std::wstring file_spec(L"");
 
-int wmain(int argc, wchar_t *argv[])
+int wmain(int argc, wchar_t * argv[])
 {
    // console_init() ;
    console = std::make_unique<conio_min>() ;
