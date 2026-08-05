@@ -99,7 +99,7 @@ dist:
 	zip media_list.zip $(BIN) Readme.md MediaInfo.dll
 
 wc:
-	wc -l *.cpp
+	wc -l $(CPPSRC)
 
 cppc:
 	cmd /C "cppcheck --project=compile_commands.json --check-level=exhaustive --enable=all --std=c++14 --suppressions-list=./.suppress.cppcheck"
@@ -109,6 +109,9 @@ check:
 
 clint:
 	cmd /C "python ..\ClaudeLint.py --exclude der_libs"
+
+cstale:
+	cmd /C "python ..\check_compile_commands_stale.py"
 
 lint:
 	cmd /C "c:\lint9\lint-nt +v -width(160,4) $(LiFLAGS) -ic:\lint9 mingw.lnt -os(_lint.tmp) $(LINTFILES) $(CPPSRC)"
