@@ -35,7 +35,7 @@ struct ffdata
     DWORD attrib {};
     FILETIME ft {};
     ULONGLONG fsize {};
-    std::wstring filename {};
+    std::wstring filename ;
     bool dirflag {} ;
     ffdata(DWORD sattrib, FILETIME sft, ULONGLONG sfsize, std::wstring sfilename, bool sdirflag );
 } ;

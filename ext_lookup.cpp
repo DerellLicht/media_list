@@ -98,7 +98,7 @@ int print_media_info(ffdata& ftemp)
       if (p != 0  &&  _tcslen(p) <= MAX_EXT_SIZE) {
          p++ ; //  skip past the period
 
-         for(auto &mm_element : mm_lookup) {
+         for(const auto &mm_element : mm_lookup) {
             if (_tcsnicmp(p, mm_element.ext, _tcslen(mm_element.ext)) == 0) {
                //  call the special string generator function
                (*mm_element.func)((wchar_t *)fptr->filename.c_str(), mlstr) ; //lint !e522

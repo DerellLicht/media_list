@@ -88,9 +88,9 @@ typedef struct icon_entry_s {
 static int get_ico_cur_ani_info(u8 *bfr, char *mlstr, uint NumAniFrames)
 {
    // hex_dump(bfr, 64);
-   u16 *uptr = (u16 *) bfr ;
+   auto *uptr = (u16 *) bfr ;
    if (*uptr != 0) {
-      sprintf(tempstr, "offset 0 bad: 0x%04X", (u16) *uptr) ;
+      sprintf(tempstr, "offset 0 bad: 0x%04X", *uptr) ;
       sprintf(mlstr, "%-30s", tempstr) ;
       return 0;
    }
@@ -387,12 +387,8 @@ static char const * const jpeg_fmt[4] = {
 int get_jpeg_info(TCHAR *fname, char *mlstr)
 {
    int hdl, rbytes ;
-   // unsigned char *hd ;
-   // union ul2uc uconv ;
-   // unsigned char utemp ;
    unsigned format = 0, rows, cols ;
    u8 density_units = 0xFF ;
-   // unsigned short *usptr ;
    unsigned foffset = 0 ;  //  offset into file
    unsigned seglen ;
    unsigned short uflag ;
@@ -402,8 +398,9 @@ int get_jpeg_info(TCHAR *fname, char *mlstr)
    _stprintf(fpath, _T("%s\\%s"), base_path, fname) ;
 
    hdl = _topen(fpath, O_BINARY | O_RDONLY) ;
-   if (hdl < 0) 
+   if (hdl < 0) {
       goto jpeg_unreadable;
+   }
 
    rows = cols = 0 ;
    inbuffer = 1 ;
@@ -416,7 +413,7 @@ int get_jpeg_info(TCHAR *fname, char *mlstr)
          break;
       } 
       //  see if we're done reading file
-      else if (rbytes == 0) {
+      if (rbytes == 0) {
          // result = 0 ;
          break;
       }
@@ -562,7 +559,7 @@ int get_webp_info(TCHAR *fname, char *mlstr)
       unsigned width, height ;
       switch (dbuffer[15]) {
       case 'X':
-         hd = (u8 *) &dbuffer[24] ;
+         hd = &dbuffer[24] ;
          uconv.ul = 0;
          uconv.uc[0] = *hd++ ;
          uconv.uc[1] = *hd++ ;
@@ -579,7 +576,7 @@ int get_webp_info(TCHAR *fname, char *mlstr)
          if (dbuffer[23] == 0x9D  &&
              dbuffer[24] == 0x01  &&
              dbuffer[25] == 0x2A) {
-            hd = (u8 *) &dbuffer[26] ;
+            hd = &dbuffer[26] ;
             uconv.ul = 0;
             uconv.uc[0] = *hd++ ;
             uconv.uc[1] = *hd++ ;

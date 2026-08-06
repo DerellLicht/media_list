@@ -104,7 +104,7 @@ int read_files(TCHAR *filespec)
                             fdata.ftCreationTime,
                            (fdata.nFileSizeHigh * 1LL<<32) + fdata.nFileSizeLow,
                             fdata.cFileName,
-                           (fdata.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ? true : false);
+                           (fdata.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ? true : false); // NOLINT(readability-simplify-boolean-expr)
       }  //lint !e550  end while()
 
       //  search for another file
@@ -161,7 +161,8 @@ int main() // NOLINT
 
 //********************************************************************************
 // static TCHAR file_spec[MAX_FILE_LEN+1] = _T("") ;
-static std::wstring file_spec(L"");
+// static std::wstring file_spec(L"");
+static std::wstring file_spec ;
 
 int wmain(int argc, wchar_t * argv[])
 {
