@@ -5,14 +5,14 @@
 //**********************************************************************************
 
 #undef __STRICT_ANSI__
-#ifdef USE_64BIT
+#ifdef _WIN64
 #define  _WIN32_WINNT    0x0600
 #endif
 #include <windows.h>
 #include <string>
 #include <vector>
 #include <tchar.h>
-#ifdef USE_64BIT
+#ifdef _WIN64
 #include <fileapi.h>
 #endif
 

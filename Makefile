@@ -20,10 +20,6 @@ LFLAGS = -s -O3
 endif
 CFLAGS += -Weffc++
 CFLAGS += -Wno-write-strings
-ifeq ($(USE_64BIT),YES)
-CFLAGS += -DUSE_64BIT
-CxxFLAGS += -DUSE_64BIT
-endif
 
 ifeq ($(USE_UNICODE),YES)
 CFLAGS += -DUNICODE -D_UNICODE
