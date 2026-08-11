@@ -4,23 +4,10 @@ USE_DEBUG = NO
 USE_64BIT = NO
 USE_UNICODE = YES
 USE_CLANG = NO
-# use -static for clang and cygwin/mingw
-USE_STATIC = NO
+# sadly, cygwin mingw does not support gdiplus...
+USE_CYGWIN = NO
 
-#  clang++ vs tdm g++
-#  clang gives *much* clearer compiler error messages...
-#  However, programs built with clang++ will require libc++.dll.
-#  in order to be used elsewhere.
-#  That is why the executable files are smaller than TDM ...
-ifeq ($(USE_64BIT),YES)
-TOOLS=d:\tdm64\bin
-else
-ifeq ($(USE_CLANG),YES)
-TOOLS=d:\llvm\bin
-else
-TOOLS=d:/tdm32/bin
-endif
-endif
+include ..\tool_select.mak 
 
 ifeq ($(USE_DEBUG),YES)
 CFLAGS = -Wall -g -c
