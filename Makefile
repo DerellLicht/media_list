@@ -66,11 +66,7 @@ GPP_NAME=g++
 %.o: %.cxx
 	$(TOOLS)/$(GPP_NAME) $(CxxFLAGS) $< -o $@
 
-ifeq ($(USE_64BIT),NO)
 BIN = MediaList.exe
-else
-BIN = media_list64.exe
-endif
 
 all: $(BIN)
 
