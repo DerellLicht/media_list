@@ -7,7 +7,7 @@ USE_CLANG = NO
 # sadly, cygwin mingw does not support gdiplus...
 USE_CYGWIN = NO
 
-include ..\tool_select.mak 
+include der_libs\tool_select.mak
 
 ifeq ($(USE_DEBUG),YES)
 CFLAGS = -Wall -g -c
