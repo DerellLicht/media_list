@@ -75,7 +75,7 @@ clean:
 
 dist:
 	rm -f media_list.zip
-	zip media_list.zip $(BIN) Readme.md MediaInfo.dll
+	zip media_list.zip $(BIN) Readme.md MediaInfo.dll CHANGELOG.md
 
 wc:
 	wc -l $(CPPSRC)

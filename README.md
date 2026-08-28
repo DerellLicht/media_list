@@ -35,4 +35,9 @@ If you clone the repository without the --recursive flag,
 you can recover the submodule later, with this command:
 
 ```git submodule update --init --recursive```
+
+<hr>
+
+See [Changelog](CHANGELOG.md) for the full revision history.
+
 <br>

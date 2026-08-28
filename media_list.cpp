@@ -14,9 +14,6 @@
 #include "media_list.h"
 #include "qualify.h"
 
-//  V1.01  Convert to Unicode
-//  V1.02  Add support for SVG files
-//  V1.03  Converted files linked list to vector/unique_ptr
 #define  VER_NUMBER "1.03"
 
 static TCHAR const * const Version = _T("MediaList, Version " VER_NUMBER ) ;   //lint !e707
