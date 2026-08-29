@@ -56,26 +56,39 @@ LIBS=-lshlwapi -lgdi32 -lcomdlg32
 
 OBJS = $(CPPSRC:.cpp=.o)  $(CXXSRC:.cxx=.o) 
 
-GPP_NAME=g++
+#GPP_NAME=g++
 #GPP_NAME=clang++
 
+BASE := MediaList
+
+# Automatically parse the latest version block
+VERSION := $(shell grep -oE '\[[0-9]+\.[0-9]+\]' CHANGELOG.md | head -n 1 | tr -d '[]')
+DIST_ZIP := $(BASE)V$(VERSION).zip
 #**************************************************************************
 %.o: %.cpp
-	$(TOOLS)/$(GPP_NAME) $(CFLAGS) $< -o $@
+	$(TOOLS)/$(GNAME) $(CFLAGS) $< -o $@
 
 %.o: %.cxx
-	$(TOOLS)/$(GPP_NAME) $(CxxFLAGS) $< -o $@
+	$(TOOLS)/$(GNAME) $(CxxFLAGS) $< -o $@
 
-BIN = MediaList.exe
+BIN = $(BASE).exe
 
 all: $(BIN)
 
 clean:
 	rm -f $(OBJS) *.exe *~ *.zip
 
+# Your new automated release workflow
+release:
+	cmd /C "@echo Preparing GitHub release for v$(VERSION)..."
+	sed -n '/## \['$(VERSION)'\]/,/## \[/p' CHANGELOG.md | sed '$$d' > temp_notes.md
+	gh release create v$(VERSION) ./$(DIST_ZIP) ./CHANGELOG.md --notes-file temp_notes.md
+	rm temp_notes.md
+	cmd /C "@echo Release v$(VERSION) successfully uploaded to GitHub!"wc:
+	
 dist:
-	rm -f media_list.zip
-	zip media_list.zip $(BIN) Readme.md MediaInfo.dll CHANGELOG.md
+	rm -f *.zip
+	zip $(DIST_ZIP) $(BIN) Readme.md MediaInfo.dll CHANGELOG.md
 
 wc:
 	wc -l $(CPPSRC)
@@ -99,7 +112,7 @@ depend:
 	makedepend $(IFLAGS) $(CPPSRC) $(CXXSRC)
 
 $(BIN): $(OBJS)
-	$(TOOLS)/$(GPP_NAME) $(OBJS) $(LFLAGS) -o $(BIN) $(LIBS) 
+	$(TOOLS)/$(GNAME) $(OBJS) $(LFLAGS) -o $(BIN) $(LIBS) 
 
 # DO NOT DELETE
 
