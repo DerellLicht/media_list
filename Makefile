@@ -50,20 +50,20 @@ der_libs/qualify.cpp
 
 CXXSRC=MediaInfoDll.cxx
 
-LINTFILES=lintdefs.cpp lintdefs.ref.h 
-
 LIBS=-lshlwapi -lgdi32 -lcomdlg32
 
 OBJS = $(CPPSRC:.cpp=.o)  $(CXXSRC:.cxx=.o) 
 
-#GPP_NAME=g++
-#GPP_NAME=clang++
-
 BASE := MediaList
+BIN = $(BASE).exe
 
 # Automatically parse the latest version block
 VERSION := $(shell grep -oE '\[[0-9]+\.[0-9]+\]' CHANGELOG.md | head -n 1 | tr -d '[]')
 DIST_ZIP := $(BASE)V$(VERSION).zip
+
+# Force these action-only targets to always run
+.PHONY: dist release update
+
 #**************************************************************************
 %.o: %.cpp
 	$(TOOLS)/$(GNAME) $(CFLAGS) $< -o $@
@@ -71,27 +71,32 @@ DIST_ZIP := $(BASE)V$(VERSION).zip
 %.o: %.cxx
 	$(TOOLS)/$(GNAME) $(CxxFLAGS) $< -o $@
 
-BIN = $(BASE).exe
-
 all: $(BIN)
 
 clean:
 	rm -f $(OBJS) *.exe *~ *.zip
 
-# Your new automated release workflow
-release:
-	cmd /C "@echo Preparing GitHub release for v$(VERSION)..."
-	sed -n '/## \['$(VERSION)'\]/,/## \[/p' CHANGELOG.md | sed '$$d' > temp_notes.md
-	gh release create v$(VERSION) ./$(DIST_ZIP) ./CHANGELOG.md --notes-file temp_notes.md
-	rm temp_notes.md
-	cmd /C "@echo Release v$(VERSION) successfully uploaded to GitHub!"wc:
-	
 dist:
 	rm -f *.zip
 	zip $(DIST_ZIP) $(BIN) Readme.md MediaInfo.dll CHANGELOG.md
 
+# Your new automated release workflow
+release: dist
+	@cmd /C "@echo Preparing GitHub release for v$(VERSION)..."
+	sed -n '/## \['$(VERSION)'\]/,/## \[/p' CHANGELOG.md | sed '$$d' > temp_notes.md
+	gh release create v$(VERSION) ./$(DIST_ZIP) ./CHANGELOG.md --notes-file temp_notes.md
+	rm temp_notes.md
+	@cmd /C "@echo Release v$(VERSION) successfully uploaded to GitHub!"
+	
+# Your new update-in-place pipeline
+update: dist
+	@cmd /C "@echo Updating assets for existing release v$(VERSION)..."
+	@# Uploads and overwrites the .zip file and CHANGELOG.md on GitHub
+	gh release upload v$(VERSION) ./$(DIST_ZIP) ./CHANGELOG.md --clobber
+	@cmd /C "@echo Release v$(VERSION) assets successfully updated on GitHub!"
+
 wc:
-	wc -l $(CPPSRC)
+	wc -l $(CPPSRC) $(CXXSRC)
 
 cppc:
 	cmd /C "cppcheck --project=compile_commands.json --check-level=exhaustive --enable=all --std=c++14 --suppressions-list=./.suppress.cppcheck"
@@ -104,9 +109,6 @@ clint:
 
 cstale:
 	cmd /C "python ..\check_compile_commands_stale.py"
-
-lint:
-	cmd /C "c:\lint9\lint-nt +v -width(160,4) $(LiFLAGS) -ic:\lint9 mingw.lnt -os(_lint.tmp) $(LINTFILES) $(CPPSRC)"
 
 depend: 
 	makedepend $(IFLAGS) $(CPPSRC) $(CXXSRC)
