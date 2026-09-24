@@ -8,6 +8,7 @@ USE_CLANG = NO
 USE_CYGWIN = NO
 
 include der_libs\tool_select.mak
+include der_libs\release.mak
 
 ifeq ($(USE_DEBUG),YES)
 CFLAGS = -Wall -g -c
@@ -57,12 +58,10 @@ OBJS = $(CPPSRC:.cpp=.o)  $(CXXSRC:.cxx=.o)
 BASE := MediaList
 BIN = $(BASE).exe
 
-# Automatically parse the latest version block
-VERSION := $(shell grep -oE '\[[0-9]+\.[0-9]+\]' CHANGELOG.md | head -n 1 | tr -d '[]')
 DIST_ZIP := $(BASE)V$(VERSION).zip
 
 # Force these action-only targets to always run
-.PHONY: dist release update
+.PHONY: dist
 
 #**************************************************************************
 %.o: %.cpp
@@ -79,20 +78,6 @@ clean:
 dist:
 	rm -f *.zip
 	zip $(DIST_ZIP) $(BIN) Readme.md MediaInfo.dll CHANGELOG.md
-
-# Your new automated release workflow
-release: dist
-	@cmd /C "@echo Preparing GitHub release for v$(VERSION)..."
-	sed -n '/## \['$(VERSION)'\]/,/## \[/p' CHANGELOG.md | sed '$$d' > temp_notes.md
-	gh release create v$(VERSION) ./$(DIST_ZIP) ./CHANGELOG.md --notes-file temp_notes.md
-	rm temp_notes.md
-	@cmd /C "@echo Release v$(VERSION) successfully uploaded to GitHub!"
-	
-# Your corrected, bulletproof update-in-place pipeline
-update: dist
-	@cmd /C "@echo Updating assets for existing release v$(VERSION)..."
-	gh release upload v$(VERSION) ./$(DIST_ZIP) ./CHANGELOG.md --clobber
-	@cmd /C "@echo Release v$(VERSION) assets successfully updated on GitHub!"
 
 wc:
 	wc -l $(CPPSRC) $(CXXSRC)
