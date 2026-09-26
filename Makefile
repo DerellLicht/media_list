@@ -4,7 +4,6 @@ USE_DEBUG = NO
 USE_64BIT = NO
 USE_UNICODE = YES
 USE_CLANG = NO
-# sadly, cygwin mingw does not support gdiplus...
 USE_CYGWIN = NO
 
 include der_libs\tool_select.mak
